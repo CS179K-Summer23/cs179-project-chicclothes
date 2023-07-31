@@ -4,7 +4,7 @@
 Justin Delcid - jjdelcid
 Rovin Soriano - rsori013
 Sarokar Shrestha - sshre010
-Lucyann Lacdan - llacd001
+Lucyann Lacdan - Llucy14
 
 # Technologies
 React Native 
