@@ -7,10 +7,10 @@
 - Lucyann Lacdan - Llucy14
 
 # Technologies
-React Native 
-Expo Go
-Firebase
-Javascript
+- React Native 
+- Expo Go
+- Firebase
+- Javascript
 
 # Major Features:
 - 1.Login/Registration System//
