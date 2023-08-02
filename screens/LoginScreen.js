@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, Image,TouchableOpacity } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
@@ -18,41 +18,120 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Welcome to Login Screen</Text>
-        </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
+        <Image style={styles.image} source={require("./images/Clique_logo.png")} resizeMode={"contain"}/>
+        <View style={styles.inputContainer}>
+                        <Image
+                            source={require("./images/profilepic.jpeg")}
+                            style={styles.icon}
+                        />
+                        <TextInput
+                            style={[styles.input]}
+                            placeholder="Enter Username"
+                            placeholderTextColor="#003f5c"
+                            secureTextEntry={false}
+                            onChangeText={(username) => setUsername(username)}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <Image
+                            source={require("./images/passwordpic.png")}
+                            style={styles.icon}
+                        />
+                        <TextInput
+                            style={[styles.input]}
+                            placeholder="Enter Password"
+                            placeholderTextColor="#003f5c"
+                            secureTextEntry={true}
+                            onChangeText={(password) => setPassword(password)}
+                        />
+                    </View>
+          <TouchableOpacity style={styles.loginButton}onPress={handleLogin}>
+            <Text style={{ color: "black", fontWeight: "bold" }}>LOGIN</Text> 
+          </TouchableOpacity>
+          <TouchableOpacity
+                        style={styles.registerButton}
+                        onPress={() => navigation.navigate("Register")}
+                    >
+                        <Text style={styles.registerButtonText}>
+                            Don't have an account?{" "}
+                            <Text style={{ color: "black", fontWeight: "bold" }}>
+                                Sign Up
+                            </Text>
+                        </Text>
+                    </TouchableOpacity> 
+        </View> 
+      );
+    }
+    const styles = StyleSheet.create({
+      container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f5f5f5'
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      image: {
+        marginBottom: 80,
+        width: 335,
+        height: 135,
+      },
+      inputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
     },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: '#333',
+    icon: {
+        width: 35,
+        height: 35,
+        marginRight: 15,
+        marginBottom: 14,
     },
     input: {
-        width: 300,
-        height: 40,
+        justifyContent: "center",
+        width: "65%",
+        height: 50,
+    
+        paddingHorizontal: 1,
+        marginBottom: 23,
+    
+        fontSize: 16,
+        borderBottomWidth: 2,
+        borderBottomColor: "#ccc",
+        marginRight: 44,
+    },
+      inputView: {
+        backgroundColor: "#F5F5DC",
+        borderRadius: 30,
+        width: "70%",
+        height: 45,
+        marginBottom: 20,
+        alignItems: "center",
+      },
+      TextInput: {
+        height: 50,
+        flex: 1,
         padding: 10,
-        marginVertical: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        backgroundColor: '#fff',
+        marginLeft: 20,
+      },
+     
+      loginButton: {
+        width: "80%",
+        borderRadius: 25,
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 40,
+        backgroundColor: "#F5F5DC",
+      },
+      registerButton: {
+        width: "100%",
+        height: 50,
+        backgroundColor: "#fff",
+        justifyContent: "center",
+        alignItems: "center",
     },
-    signupContainer: {
-        marginTop: 20,
-        alignItems: 'center'
+    registerButtonText: {
+        color: "black",
+        fontSize: 16,
     },
-    signupText: {
-        marginBottom: 10
-    }
-});
+    });
 
 export default LoginScreen;
