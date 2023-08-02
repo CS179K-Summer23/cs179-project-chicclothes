@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
 
     const [username, setUsername] = useState('');
 
     const [password, setPassword] = useState('');
 
+    
     const [interests, setInterests] = useState('');
+
+
+    const [password2, setPassword2] = useState('');
+
 
     const handleRegister = () => {
         if (!name.trim() || !username.trim() || !password.trim() || !interests.trim()) 
@@ -20,11 +25,55 @@ const RegisterScreen = () => {
             //can add more to this later (such as making a password length requirement, etc.)
 
         }
+        
+        //check if passwords are the same
+        if (password.trim() != password2.trim()) {
+            Alert.alert('Error', 'Passwords Dont match');
+            return;
+        }
+
+        //password length check
+        if (password.toString().length < 5) {
+            Alert.alert('Error', 'Passwords Should be longer than 5 letter');
+            return; 
+        }
+        else if (!containsUpper(password)) {
+            console.log(password.toString.toString);
+            Alert.alert('Error', 'Passwords should contain a uppercase letter');
+            return;
+        }
+        else {
+            navigation.navigate('MainTabs', { screen: 'Home' });
+        }
+        // else if (!containsNum(password.toString)) {
+        //     console.log(password.toString);
+        //     Alert.alert('Error', 'Passwords should contain a  number');
+        //     return;
+        // }
     };
+
+    function containsUpper(str) {
+        return Boolean(str.match(/[A-Z]/));
+    }
+
+    // function containsNum(str2) {
+    //     return Boolean(str2.match(/[0-9]/));
+    // }
+
+
+
+
+
+    // const checkPassword = () => {
+    //     if (password.trim() != password2.trim()) {
+    //         setErrorMessage('Passwords do not match');
+    //     }
+    // }
+
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Welcome to RegisterScreen</Text>
+            <Text style={styles.text}>Register Now!</Text>
 
             <TextInput
                 style={styles.input}
@@ -47,6 +96,16 @@ const RegisterScreen = () => {
                 value={password}
                 onChangeText={text => setPassword(text)}
                 />
+
+            <TextInput 
+                style={styles.input}
+                placeholder="Repeat Password"
+                value={password2}
+                secureTextEntry // This will hide the password text
+                onChangeText={text => setPassword2(text)}
+            />
+
+            {/* <Text style={styles.mismatchText}>Passwords dont match!</Text> */}
 
             <TextInput 
                 style={styles.input}
@@ -96,8 +155,16 @@ const styles = StyleSheet.create(
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
+    },
+    mismatchText: {
+        color: 'red',
+        paddingTop: -20,
+        fontSize: 0,
+        opacity: 0
     }
+
 }
 );
+
 
 export default RegisterScreen;
