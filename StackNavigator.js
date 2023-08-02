@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // Import screens
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/SigningUp/RegisterScreen";
-import GenderScreen from "./screens/SigningUp/GenderScreen";
+//import GenderScreen from "./screens/SigningUp/GenderScreen";
 import BottomTabNavigator from './BottomTabNavigator'; 
 
 const Stack = createNativeStackNavigator();
@@ -25,11 +25,6 @@ const StackNavigator = () => {
             <Stack.Screen
                 name="Register"
                 component={RegisterScreen}
-                options={{ headerTintColor: "grey" }}
-            />
-            <Stack.Screen
-                name="Gender"
-                component={GenderScreen}
                 options={{ headerTintColor: "grey" }}
             />
             <Stack.Screen

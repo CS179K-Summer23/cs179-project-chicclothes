@@ -1,75 +1,59 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native';
+import { auth, db } from '../../configuration/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
-
-    const [username, setUsername] = useState('');
-
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    
     const [interests, setInterests] = useState('');
-
-
     const [password2, setPassword2] = useState('');
 
-
     const handleRegister = () => {
-        if (!name.trim() || !username.trim() || !password.trim() || !interests.trim()) 
-        {
-
+        if (!name.trim() || !email.trim() || !password.trim() || !interests.trim()) {
             Alert.alert('Error', 'Please fill all fields');
             return;
-
-            //can add more to this later (such as making a password length requirement, etc.)
-
         }
         
-        //check if passwords are the same
-        if (password.trim() != password2.trim()) {
-            Alert.alert('Error', 'Passwords Dont match');
+        if (password.trim() !== password2.trim()) {
+            Alert.alert('Error', 'Passwords Don\'t match');
             return;
         }
 
-        //password length check
-        if (password.toString().length < 5) {
-            Alert.alert('Error', 'Passwords Should be longer than 5 letter');
-            return; 
-        }
-        else if (!containsUpper(password)) {
-            console.log(password.toString.toString);
-            Alert.alert('Error', 'Passwords should contain a uppercase letter');
+        if (password.length < 5) {
+            Alert.alert('Error', 'Password should be longer than 5 letters');
             return;
         }
-        else {
-            navigation.navigate('MainTabs', { screen: 'Home' });
+
+        if (!containsUpper(password)) {
+            Alert.alert('Error', 'Password should contain an uppercase letter');
+            return;
         }
-        // else if (!containsNum(password.toString)) {
-        //     console.log(password.toString);
-        //     Alert.alert('Error', 'Passwords should contain a  number');
-        //     return;
-        // }
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+    
+                const usersRef = doc(db, "users", user.uid);
+                setDoc(usersRef, {
+                    name: name,
+                    email: email,
+                    interests: interests
+                });
+    
+                navigation.navigate('MainTabs', { screen: 'Home' });
+            })
+            .catch((error) => {
+                console.error("Error registering user:", error.message);
+                Alert.alert('Error', error.message);
+            });
     };
 
     function containsUpper(str) {
-        return Boolean(str.match(/[A-Z]/));
+        return /[A-Z]/.test(str);
     }
-
-    // function containsNum(str2) {
-    //     return Boolean(str2.match(/[0-9]/));
-    // }
-
-
-
-
-
-    // const checkPassword = () => {
-    //     if (password.trim() != password2.trim()) {
-    //         setErrorMessage('Passwords do not match');
-    //     }
-    // }
-
 
     return (
         <View style={styles.container}>
@@ -79,47 +63,45 @@ const RegisterScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={text => setName(text)}
-                />
+                onChangeText={setName}
+            />
 
             <TextInput
                 style={styles.input}
-                placeholder="Username"
-                value={username}
-                onChangeText={text => setUsername(text)}
-                />
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+            />
 
             <TextInput 
                 style={styles.input}
                 placeholder="Password"
                 secureTextEntry={true}
                 value={password}
-                onChangeText={text => setPassword(text)}
-                />
+                onChangeText={setPassword}
+            />
 
             <TextInput 
                 style={styles.input}
                 placeholder="Repeat Password"
+                secureTextEntry
                 value={password2}
-                secureTextEntry // This will hide the password text
-                onChangeText={text => setPassword2(text)}
+                onChangeText={setPassword2}
             />
-
-            {/* <Text style={styles.mismatchText}>Passwords dont match!</Text> */}
 
             <TextInput 
                 style={styles.input}
                 placeholder="Clothes you are interested in"
                 value={interests}
-                onChangeText={text => setInterests(text)}
-                />
-
-            <Button title="Register" onPress={handleRegister} 
+                onChangeText={setInterests}
             />
 
+            <Button title="Register" onPress={handleRegister} />
         </View>
     );
 }
+
+
 
 const styles = StyleSheet.create(
     {
