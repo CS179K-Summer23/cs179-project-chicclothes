@@ -19,7 +19,8 @@
     "firebase": "^10.1.0",
     "react": "^18.2.0",
     "react-native": "0.72.3",
-    "react-native-appearance": "^0.3.4"
+    "react-native-appearance": "^0.3.4",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
