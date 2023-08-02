@@ -8,6 +8,7 @@ const RegisterScreen = ({ navigation }) => {
 
     const [password, setPassword] = useState('');
 
+    
     const [interests, setInterests] = useState('');
 
 
