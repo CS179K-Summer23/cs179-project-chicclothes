@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
 
 const RegisterScreen = () => {
     const [name, setName] = useState('');
@@ -13,7 +13,7 @@ const RegisterScreen = () => {
     const handleRegister = () => {
         if (!name.trim() || !username.trim() || !password.trim() || !interests.trim()) 
         {
-            
+
             Alert.alert('Error', 'Please fill all fields');
             return;
 
@@ -75,17 +75,14 @@ const styles = StyleSheet.create(
         color: '#333',
     },
     input: {
-        justifyContent: "center",
-        width: "65%",
-        height: 50,
-
-        paddingHorizontal: 1,
-        marginBottom: 23,
-
-        fontSize: 16,
-        borderBottomWidth: 2,
-        borderBottomColor: "#ccc",
-        marginRight: 44,
+        width: 300,
+        height: 40,
+        padding: 10,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        backgroundColor: '#fff',
     },
     TextInput: {
         height: 50,
