@@ -9,6 +9,7 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState('');
 
     const [interests, setInterests] = useState('');
+    
 
     const [password2, setPassword2] = useState('');
 
