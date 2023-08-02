@@ -5,6 +5,14 @@ const LoginScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Welcome to Login Screen</Text>
+            <Button
+                title="Login"
+                onPress={() => {
+                    //Add login logic here...
+                    console.log("Login button pressed");
+                }
+                }
+                />
         </View>
     );
 }
