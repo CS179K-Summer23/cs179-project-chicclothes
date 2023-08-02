@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
 
     const [username, setUsername] = useState('');
@@ -9,7 +9,7 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState('');
 
     const [interests, setInterests] = useState('');
-    
+
 
     const [password2, setPassword2] = useState('');
 
@@ -41,20 +41,23 @@ const RegisterScreen = () => {
             Alert.alert('Error', 'Passwords should contain a uppercase letter');
             return;
         }
-        else if (!containsNum(password.toString)) {
-            console.log(password.toString);
-            Alert.alert('Error', 'Passwords should contain a  number');
-            return;
+        else {
+            navigation.navigate('MainTabs', { screen: 'Home' });
         }
+        // else if (!containsNum(password.toString)) {
+        //     console.log(password.toString);
+        //     Alert.alert('Error', 'Passwords should contain a  number');
+        //     return;
+        // }
     };
 
     function containsUpper(str) {
         return Boolean(str.match(/[A-Z]/));
     }
 
-    function containsNum(str2) {
-        return Boolean(str2.match(/[0-9]/));
-    }
+    // function containsNum(str2) {
+    //     return Boolean(str2.match(/[0-9]/));
+    // }
 
 
 
