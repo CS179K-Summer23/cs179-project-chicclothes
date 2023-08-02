@@ -11,8 +11,16 @@ const LoginScreen = () => {
                     //Add login logic here...
                     console.log("Login button pressed");
                 }
+            }
+            />
+            <Button
+                title="Sign Up"
+                onPress={() => {
+                    //Need to connect the button to lead to SignUpScreen
+                    console.log("Sign Up button pressed");
                 }
-                />
+            }
+            />
         </View>
     );
 }
