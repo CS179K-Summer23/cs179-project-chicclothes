@@ -7,16 +7,16 @@ const ProfileScreen = () => {
     const [activeModal, setActiveModal] = useState('');
     const scrollViewRef = useRef(null); //for setting button
     const sectionRef = useRef(null); //for setting range to show when press
-
+    const [pointsModalVisible, setPointsModalVisible] = useState(false); //points history
 
 
 
     const offers = [
-        { image: require('./images/offer1.png'), title: "Up to 25% off select styles", description: "MEMBER PRICES \n Valid until: 12/31/2030 11:59 pm" },
-        { image: require('./images/offer2.jpg'), title: "25% off select jeans", description: "DENIM DEAL \n Valid until: 12/31/2030 11:59 pm" },
-        { image: require('./images/offer3.png'), title: "Baby Clothes Bundles", description: "BABY ALIVE \n Valid until: 12/31/2030 11:59 pm" },
-        { image: require('./images/offer4.jpg'), title: "Earn $5 for every $50 you spend", description: "BACK-TO-SCHOOL DONATION \n Valid until: 12/31/2030 11:59 pm" },
-        { image: require('./images/offer5.jpg'), title: "20% off ChicCloset Sport", description: "DO SOME EXERCISE! \n Valid until: 12/31/2030 11:59 pm" },
+        { image: require('./images/offer1.png'), title: "Up to 25% off select \t       styles", description: "      MEMBER PRICES \n Valid until: 12/31/2030 " },
+        { image: require('./images/offer2.jpg'), title: "25% off select jeans", description: "\tDENIM DEAL \n Valid until: 12/31/2030 " },
+        { image: require('./images/offer3.png'), title: "Baby Clothes Bundles", description: "\tBABY ALIVE \n Valid until: 12/31/2030 " },
+        { image: require('./images/offer4.jpg'), title: "Earn $5 for every $50 \t    you spend", description: "BACK-TO-SCHOOL DONATION \n        Valid until: 12/31/2030 " },
+        { image: require('./images/offer5.jpg'), title: "20% off Clique Closet \t\tSport", description: "  DO SOME EXERCISE! \n Valid until: 12/31/2030 " },
     ];
 
     const options = [
@@ -89,21 +89,39 @@ const ProfileScreen = () => {
 
             <View style={styles.rewardContainer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={styles.rewardText}>0 points</Text>
-                    <Button
-                    title="points history"
-                    onPress={() => { /* your function to show modal */ }}
-                    color="black" // Set button text color to black
-                    />
-                </View>
-                <View style={styles.pointTracer}></View>
-                <Text style={styles.greyText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
-                <TouchableOpacity style={styles.memberIdButton} onPress={() => { setActiveModal('View Member ID'); setModalVisible(true); }}>
-                    <AntDesign name="qrcode" size={20} color="black" />
-                    <Text style={{ color: 'black', marginLeft: 10 }}>View Member ID</Text>
+                <Text style={styles.rewardText}>0 points</Text>
+                <TouchableOpacity onPress={() => setPointsModalVisible(true)}>
+                    <Text style={styles.pointsHistory}>points history</Text>
                 </TouchableOpacity>
+             </View>
+            <View style={styles.pointTracer}>
+                <View style={styles.redDot}></View>
+            </View> 
+                <Text style={styles.greyText}>You're 200 points away from your next reward and 500 points are needed to become a Silver Member. Vouchers are issued 30 days after purchased.</Text>
+                    <TouchableOpacity style={styles.memberIdButton} onPress={() => { setActiveModal('View Member ID'); setModalVisible(true); }}>
+                        <AntDesign name="qrcode" size={25} color="black" />
+                        <Text style={styles.memberIdText}>View Member ID</Text>
+                    </TouchableOpacity>
+                {/* Modal for points history */}
+                <Modal
+                animationType="slide"
+                transparent={true}
+                visible={pointsModalVisible}
+                onRequestClose={() => setPointsModalVisible(false)}
+                >
+                <View style={styles.centeredView}>
+                     <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Points History</Text>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setPointsModalVisible(false)}
+                        >
+                            <Text style={styles.textStyle}>Close</Text>
+                        </TouchableOpacity>
+                </View>
             </View>
-
+        </Modal>
+    </View>
 
                 <Text style={styles.offersTitle}>My Offers</Text>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.offerScrollView}>
@@ -170,10 +188,9 @@ const styles = StyleSheet.create({
     },
     rewardContainer: {
         width: '100%',
-        height: 200,
+        height: 250,
         backgroundColor: '#f0ebdf',
         padding: 20,
-        //borderRadius: 5,
         marginBottom: 20,
         justifyContent: 'space-between',
         alignItems: 'flex-start',
@@ -182,7 +199,15 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: '#000',
         borderBottomWidth: 1,
-        borderColor: 'black'
+        borderColor: 'black',
+        fontWeight: 'bold',
+    },
+    pointsHistory: {
+        textDecorationLine: 'underline',
+        fontSize: 10,
+        color: 'black',
+        marginLeft: 180,
+
     },
     greyText: {
         color: 'grey',
@@ -198,31 +223,49 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         backgroundColor: '#f0ebdf',
-        width: '80%',
+        width: '90%',
         alignSelf: 'center'
+    },
+    memberIdText: {
+        color: 'black',
+        marginLeft: 10,
+        fontWeight: 'bold',
+        fontSize: 15,
     },
     pointTracer: {
         height: 3,
         width: '100%',
         backgroundColor: 'grey',
-        marginVertical: 10, // Spacing above and below the line
-        // Add other styles for the point tracker marks if needed
+        marginVertical: 10,
+        position: 'relative', // To enable absolute positioning of the marks
     },
+    redDot: {
+        position: 'absolute',
+        left: 0,
+        top: '50%',
+        transform: [{ translateY: -5 }],
+        width: 10,
+        height: 10,
+        backgroundColor: 'red',
+        borderRadius: 5,
+    },
+   
     offersTitle: {
         alignSelf: 'flex-start', // Add this to override the parent's alignItems
         fontSize: 18,
         fontWeight: 'bold',
         marginLeft: 20,  // To give some space from the left edge
         marginTop: 20,
+        marginBottom:10,
     },
     offerScrollView: {
         paddingLeft: 20,
     },
     offerCard: {
         width: 160,
-        marginRight: 20,
+        marginRight: 30,
         backgroundColor: '#FFF',
-        padding: 10,
+        // padding: 10,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -234,10 +277,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     offerImage: {
-        width: 140,
-        height: 100,
+        width: 160,
+        height: 110,
         marginBottom: 10,
-        borderRadius: 10
+        // borderRadius: 10
+    },
+    offerTitle: {
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    offerDescription: {
+        color: 'grey',
+        fontSize: 10,
+        paddingBottom: 10,
     },
     optionButton: {
         flexDirection: 'row',
