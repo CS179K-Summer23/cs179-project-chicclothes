@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TextInput, Button, StyleSheet,Keyboard,TouchableWithoutFeedback } from 'react-native';
 import { AntDesign } from "@expo/vector-icons";
 
+
 const HelpUsImproveModalContent = ({ onClose }) => {
     const [rating, setRating] = useState(0);
     const [feedback, setFeedback] = useState('');
@@ -42,7 +43,6 @@ const HelpUsImproveModalContent = ({ onClose }) => {
     return (
         <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
         <>
-            
             <Image source={require('./images/improve.jpg')} style={styles.image} />
             <Text>Rate your app experience</Text>
             <View style={{ flexDirection: 'row' }}>

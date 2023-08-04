@@ -2,7 +2,9 @@ import React, { useState,useRef } from 'react';
 import { View, Text, StyleSheet, Modal, Button, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { AntDesign } from "@expo/vector-icons";
 import styles from './stylesheets'
-import HelpUsImproveModalContent from './HelpUsImproveModalContent'; // adjust the path accordingly
+import HelpUsImproveModalContent from './HelpUsImproveModalContent'; 
+import MembershipModalContent from './MembershipModalContent'; 
+
 
 
 const ProfileScreen = () => {
@@ -66,7 +68,7 @@ const ProfileScreen = () => {
             case 'My points':
                 return <Text style={styles.modalText}>Your points summary goes here.</Text>;
             case 'Membership':
-                return <Text style={styles.modalText}>Your membership details go here.</Text>;
+                return <MembershipModalContent onClose={() => setModalVisible(false)} />;
             case 'Help us Improve':
                 return <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />;
                 
@@ -134,7 +136,7 @@ const ProfileScreen = () => {
                 >
                 <View style={styles.centeredView}>
                      <View style={styles.modalView}>
-                        <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => setModalVisible(false)}>
+                        <TouchableOpacity style={{ position: 'absolute', top: 30, left: 10 }} onPress={() => setModalVisible(false)}>
                             <AntDesign name="arrowleft" size={40} color="black" />
                         </TouchableOpacity>
                         {renderModalContent()}

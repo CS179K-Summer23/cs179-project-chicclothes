@@ -154,9 +154,7 @@ const styles = StyleSheet.create({
         margin: 0, // remove the margin
         backgroundColor: "white",
         borderRadius: 0, // remove the border radius to take full screen
-        padding: 35,
         alignItems: "center",
-        justifyContent: "center", // to center the content vertically
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -165,6 +163,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+        paddingTop:70,
         
     },
     modalText: {
