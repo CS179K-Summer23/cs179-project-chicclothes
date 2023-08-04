@@ -2,6 +2,8 @@ import React, { useState,useRef } from 'react';
 import { View, Text, StyleSheet, Modal, Button, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { AntDesign } from "@expo/vector-icons";
 import styles from './stylesheets'
+import HelpUsImproveModalContent from './HelpUsImproveModalContent'; // adjust the path accordingly
+
 
 const ProfileScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -51,6 +53,10 @@ const ProfileScreen = () => {
                     <Text style={styles.modalText}></Text>
                 </>
             );
+            case 'Points History':
+                return <>
+                <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
+            </>
             case 'My orders':
                 return <Text style={styles.modalText}>Your orders list goes here.</Text>;
             case 'Payments':
@@ -61,10 +67,8 @@ const ProfileScreen = () => {
                 return <Text style={styles.modalText}>Your points summary goes here.</Text>;
             case 'Membership':
                 return <Text style={styles.modalText}>Your membership details go here.</Text>;
-            case 'Points History':
-                return <>
-                <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
-            </>
+            case 'Help us Improve':
+                return <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />;
                 
             default:
                 return null;
