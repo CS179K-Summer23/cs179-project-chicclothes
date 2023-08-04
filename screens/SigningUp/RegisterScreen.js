@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity} from 'react-native';
 import { auth, db } from '../../configuration/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -8,11 +8,12 @@ const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [interests, setInterests] = useState('');
+    // const [interests, setInterests] = useState('');
     const [password2, setPassword2] = useState('');
+    const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
     const handleRegister = () => {
-        if (!name.trim() || !email.trim() || !password.trim() || !interests.trim()) {
+        if (!name.trim() || !email.trim() || !password.trim()) {
             Alert.alert('Error', 'Please fill all fields');
             return;
         }
@@ -40,7 +41,7 @@ const RegisterScreen = ({ navigation }) => {
                 setDoc(usersRef, {
                     name: name,
                     email: email,
-                    interests: interests
+                    // interests: interests
                 });
     
                 navigation.navigate('MainTabs', { screen: 'Home' });
@@ -73,13 +74,18 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setEmail}
             />
 
-            <TextInput 
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry={true}
-                value={password}
-                onChangeText={setPassword}
-            />
+            <View style={styles.passwordContainer}>
+                <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Password"
+                    secureTextEntry={!isPasswordVisible}
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
+                    <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
+                </TouchableOpacity>
+            </View>
 
             <TextInput 
                 style={styles.input}
@@ -89,14 +95,9 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setPassword2}
             />
 
-            <TextInput 
-                style={styles.input}
-                placeholder="Clothes you are interested in"
-                value={interests}
-                onChangeText={setInterests}
-            />
-
-            <Button title="Register" onPress={handleRegister} />
+            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -111,19 +112,41 @@ const styles = StyleSheet.create(
         alignItems: "center",
         justifyContent: "center",
     },
-    text: {
-        fontSize: 18,
-        color: '#333',
-    },
-    input: {
+    passwordContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         width: 300,
-        height: 40,
+        height: 50,
         padding: 10,
         marginVertical: 10,
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         backgroundColor: '#fff',
+    },
+    text: {
+        // fontSize: 18,
+        // color: '#333',
+
+        fontSize: 24,
+        color: '#333',
+        fontWeight: "bold",
+        marginBottom: 20,
+    },
+    input: {
+        width: 300,
+        height: 50,
+        padding: 10,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+    },
+    passwordInput: {
+        width: '80%',
+        height: '100%',
     },
     TextInput: {
         height: 50,
@@ -132,19 +155,37 @@ const styles = StyleSheet.create(
         marginLeft: 20,
     },
     registerButton: {
-        width: "100%",
+        // width: "100%",
+        // height: 50,
+        // backgroundColor: "#fff",
+        // justifyContent: "center",
+        // alignItems: "center",
+
+        width: "80%",
+        borderRadius: 25,
         height: 50,
-        backgroundColor: "#fff",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
+        marginTop: 40,
+        backgroundColor: "#F5F5DC",
     },
     mismatchText: {
         color: 'red',
         paddingTop: -20,
         fontSize: 0,
         opacity: 0
+    },
+    buttonText: {
+        color: "#000",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    showPasswordButton: {
+        padding: 5,
+        position:'absolute',
+        right: 10,
+        top: 15,
     }
-
 }
 );
 
