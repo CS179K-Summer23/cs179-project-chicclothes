@@ -10,6 +10,7 @@ const RegisterScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     // const [interests, setInterests] = useState('');
     const [password2, setPassword2] = useState('');
+    const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
     const handleRegister = () => {
         if (!name.trim() || !email.trim() || !password.trim()) {
@@ -73,13 +74,18 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setEmail}
             />
 
-            <TextInput 
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry={true}
-                value={password}
-                onChangeText={setPassword}
-            />
+            <View style={styles.passwordContainer}>
+                <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Password"
+                    secureTextEntry={!isPasswordVisible}
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
+                    <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
+                </TouchableOpacity>
+            </View>
 
             <TextInput 
                 style={styles.input}
@@ -106,6 +112,19 @@ const styles = StyleSheet.create(
         alignItems: "center",
         justifyContent: "center",
     },
+    passwordContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 300,
+        height: 50,
+        padding: 10,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+    },
     text: {
         // fontSize: 18,
         // color: '#333',
@@ -124,6 +143,10 @@ const styles = StyleSheet.create(
         borderColor: '#ccc',
         borderRadius: 5,
         backgroundColor: '#fff',
+    },
+    passwordInput: {
+        width: '80%',
+        height: '100%',
     },
     TextInput: {
         height: 50,
@@ -156,6 +179,12 @@ const styles = StyleSheet.create(
         color: "#000",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    showPasswordButton: {
+        padding: 5,
+        position:'absolute',
+        right: 10,
+        top: 15,
     }
 }
 );
