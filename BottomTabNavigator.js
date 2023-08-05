@@ -1,4 +1,4 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./screens/HomeScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
 import ShoppingBagScreen from "./screens/ShoppingBagScreen";
@@ -9,7 +9,6 @@ import { AntDesign, Fontisto } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
-
   return (
     <Tab.Navigator
       screenOptions={{
@@ -23,10 +22,10 @@ const BottomTabNavigator = () => {
         },
         headerTintColor: "grey",
         headerTitleStyle: {
-          color : "grey",
+          color: "grey",
         },
         tabBarInactiveTintColor: "grey",
-        tabBarActiveTintColor: "red", //change it base on what u what it to be for the bottom icons 
+        tabBarActiveTintColor: "red", //change it base on what u what it to be for the bottom icons
         tabBarActiveBackgroundColor: "white",
       }}
     >
@@ -66,7 +65,7 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
-       <Tab.Screen
+      <Tab.Screen
         name="XFeature"
         component={RandomFeatureScreen}
         options={{
