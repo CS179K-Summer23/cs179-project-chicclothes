@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, Modal, Button, Image, ScrollView, TouchableOpac
 import { AntDesign } from "@expo/vector-icons";
 import styles from './stylesheets'
 
-const ProfileScreen = () => {
+
+
+const ProfileScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [activeModal, setActiveModal] = useState('');
     const scrollViewRef = useRef(null); //for setting button
@@ -24,7 +26,7 @@ const ProfileScreen = () => {
         { title: 'My points', icon: 'star' },
         { title: 'Membership', icon: 'idcard' },
         { title: 'Help us Improve', icon: 'heart' },
-        { title: 'Sign out', icon: 'logout' }
+        { title: 'Sign out', icon: 'logout'}
     ];
 
     const OptionButton = ({ title, icon }) => {
@@ -63,8 +65,10 @@ const ProfileScreen = () => {
                 return <Text style={styles.modalText}>Your membership details go here.</Text>;
             case 'Points History':
                 return <>
-                <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
-            </>
+                <Text style={styles.modalText}>POINT HISTROYYYYY</Text>;
+                </>
+            case 'Sign out':
+                navigation.navigate('Login');
                 
             default:
                 return null;
