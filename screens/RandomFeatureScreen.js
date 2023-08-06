@@ -1,10 +1,30 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import { GiftedChat } from 'react-native-gifted-chat';
+
 
 const RandomFeatureScreen = () => {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: 'Hello! Ask me anything!',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'ChatGPT',
+        },
+      },
+    ])
+  }, [])
+
+  
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to RandomFeatureScreen</Text>
+      <GiftedChat messages={messages} onSend={newMessages => onSend(newMessages)} user={{ _id: 1 }} />
     </View>
   );
 };
@@ -12,13 +32,7 @@ const RandomFeatureScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#f5f5f5",
-  },
-  text: {
-    fontSize: 18,
-    color: "#333",
   },
 });
 
