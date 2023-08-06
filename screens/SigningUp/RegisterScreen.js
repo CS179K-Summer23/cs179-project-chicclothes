@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback} from 'react-native';
 import { auth, db } from '../../configuration/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { storeUserDataInFirestore } from '../../hook/databaseQueries';
+
 
 const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
@@ -34,22 +36,22 @@ const RegisterScreen = ({ navigation }) => {
         }
 
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-    
-                const usersRef = doc(db, "users", user.uid);
-                setDoc(usersRef, {
-                    name: name,
-                    email: email,
-                    // interests: interests
-                });
-    
-                navigation.navigate('MainTabs', { screen: 'Home' });
-            })
-            .catch((error) => {
-                console.error("Error registering user:", error.message);
-                Alert.alert('Error', error.message);
+        .then((userCredential) => {
+            const user = userCredential.user;
+
+            return storeUserDataInFirestore(user.uid, {
+                name: name,
+                email: email,
+                // interests: interests (Uncomment this line if you decide to use the interests field later)
             });
+        })
+        .then(() => {
+            navigation.navigate('MainTabs', { screen: 'Home' });
+        })
+        .catch((error) => {
+            console.error("Error:", error.message);
+            Alert.alert('Error', error.message);
+        });
     };
 
     function containsUpper(str) {
@@ -57,6 +59,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <Text style={styles.text}>Register Now!</Text>
 
@@ -95,10 +98,15 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setPassword2}
             />
 
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+            <TouchableOpacity 
+                style={[ styles.registerButton,
+                (name && email && password && password2) ? { backgroundColor: "#E4E4CD" } : { backgroundColor: "red" }
+            ]}
+            onPress={handleRegister}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
         </View>
+        </TouchableWithoutFeedback>
     );
 }
 
