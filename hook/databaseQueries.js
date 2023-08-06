@@ -1,1 +1,7 @@
-//we will add the queries here for the data base read and write etc 
+import { db } from '../configuration/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+
+export const storeUserDataInFirestore = async (uid, data) => {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, data);
+}

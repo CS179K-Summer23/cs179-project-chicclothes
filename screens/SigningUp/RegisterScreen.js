@@ -1,77 +1,65 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback} from 'react-native';
+import { auth, db } from '../../configuration/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { storeUserDataInFirestore } from '../../hook/databaseQueries';
+
 
 const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
-
-    const [username, setUsername] = useState('');
-
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    
-    const [interests, setInterests] = useState('');
-
-
+    // const [interests, setInterests] = useState('');
     const [password2, setPassword2] = useState('');
-
+    const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
     const handleRegister = () => {
-        if (!name.trim() || !username.trim() || !password.trim() || !interests.trim()) 
-        {
-
+        if (!name.trim() || !email.trim() || !password.trim()) {
             Alert.alert('Error', 'Please fill all fields');
             return;
-
-            //can add more to this later (such as making a password length requirement, etc.)
-
         }
         
-        //check if passwords are the same
-        if (password.trim() != password2.trim()) {
-            Alert.alert('Error', 'Passwords Dont match');
+        if (password.trim() !== password2.trim()) {
+            Alert.alert('Error', 'Passwords Don\'t match');
             return;
         }
 
-        //password length check
-        if (password.toString().length < 5) {
-            Alert.alert('Error', 'Passwords Should be longer than 5 letter');
-            return; 
-        }
-        else if (!containsUpper(password)) {
-            console.log(password.toString.toString);
-            Alert.alert('Error', 'Passwords should contain a uppercase letter');
+        if (password.length < 5) {
+            Alert.alert('Error', 'Password should be longer than 5 letters');
             return;
         }
-        else {
-            navigation.navigate('MainTabs', { screen: 'Home' });
+
+        if (!containsUpper(password)) {
+            Alert.alert('Error', 'Password should contain an uppercase letter');
+            return;
         }
-        // else if (!containsNum(password.toString)) {
-        //     console.log(password.toString);
-        //     Alert.alert('Error', 'Passwords should contain a  number');
-        //     return;
-        // }
+
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+
+            return storeUserDataInFirestore(user.uid, {
+                name: name,
+                email: email,
+                // interests: interests (Uncomment this line if you decide to use the interests field later)
+            });
+        })
+        .then(() => {
+            navigation.navigate('MainTabs', { screen: 'Home' });
+        })
+        .catch((error) => {
+            console.error("Error:", error.message);
+            Alert.alert('Error', error.message);
+        });
     };
 
     function containsUpper(str) {
-        return Boolean(str.match(/[A-Z]/));
+        return /[A-Z]/.test(str);
     }
 
-    // function containsNum(str2) {
-    //     return Boolean(str2.match(/[0-9]/));
-    // }
-
-
-
-
-
-    // const checkPassword = () => {
-    //     if (password.trim() != password2.trim()) {
-    //         setErrorMessage('Passwords do not match');
-    //     }
-    // }
-
-
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <Text style={styles.text}>Register Now!</Text>
 
@@ -79,47 +67,50 @@ const RegisterScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={text => setName(text)}
-                />
+                onChangeText={setName}
+            />
 
             <TextInput
                 style={styles.input}
-                placeholder="Username"
-                value={username}
-                onChangeText={text => setUsername(text)}
-                />
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+            />
 
-            <TextInput 
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry={true}
-                value={password}
-                onChangeText={text => setPassword(text)}
+            <View style={styles.passwordContainer}>
+                <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Password"
+                    secureTextEntry={!isPasswordVisible}
+                    value={password}
+                    onChangeText={setPassword}
                 />
+                <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
+                    <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
+                </TouchableOpacity>
+            </View>
 
             <TextInput 
                 style={styles.input}
                 placeholder="Repeat Password"
+                secureTextEntry
                 value={password2}
-                secureTextEntry // This will hide the password text
-                onChangeText={text => setPassword2(text)}
+                onChangeText={setPassword2}
             />
 
-            {/* <Text style={styles.mismatchText}>Passwords dont match!</Text> */}
-
-            <TextInput 
-                style={styles.input}
-                placeholder="Clothes you are interested in"
-                value={interests}
-                onChangeText={text => setInterests(text)}
-                />
-
-            <Button title="Register" onPress={handleRegister} 
-            />
-
+            <TouchableOpacity 
+                style={[ styles.registerButton,
+                (name && email && password && password2) ? { backgroundColor: "#E4E4CD" } : { backgroundColor: "red" }
+            ]}
+            onPress={handleRegister}>
+                <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
         </View>
+        </TouchableWithoutFeedback>
     );
 }
+
+
 
 const styles = StyleSheet.create(
     {
@@ -129,19 +120,41 @@ const styles = StyleSheet.create(
         alignItems: "center",
         justifyContent: "center",
     },
-    text: {
-        fontSize: 18,
-        color: '#333',
-    },
-    input: {
+    passwordContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         width: 300,
-        height: 40,
+        height: 50,
         padding: 10,
         marginVertical: 10,
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         backgroundColor: '#fff',
+    },
+    text: {
+        // fontSize: 18,
+        // color: '#333',
+
+        fontSize: 24,
+        color: '#333',
+        fontWeight: "bold",
+        marginBottom: 20,
+    },
+    input: {
+        width: 300,
+        height: 50,
+        padding: 10,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+    },
+    passwordInput: {
+        width: '80%',
+        height: '100%',
     },
     TextInput: {
         height: 50,
@@ -150,19 +163,37 @@ const styles = StyleSheet.create(
         marginLeft: 20,
     },
     registerButton: {
-        width: "100%",
+        // width: "100%",
+        // height: 50,
+        // backgroundColor: "#fff",
+        // justifyContent: "center",
+        // alignItems: "center",
+
+        width: "80%",
+        borderRadius: 25,
         height: 50,
-        backgroundColor: "#fff",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
+        marginTop: 40,
+        backgroundColor: "#F5F5DC",
     },
     mismatchText: {
         color: 'red',
         paddingTop: -20,
         fontSize: 0,
         opacity: 0
+    },
+    buttonText: {
+        color: "#000",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    showPasswordButton: {
+        padding: 5,
+        position:'absolute',
+        right: 10,
+        top: 15,
     }
-
 }
 );
 
