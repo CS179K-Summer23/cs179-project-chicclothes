@@ -15,7 +15,10 @@ const SuggestionScreen = () => {
   const [responseMessage, setResponseMessage] = useState("");
 
   const sendMessage = async () => {
-    const message = `You are a top-tier fashion consultant, StyleGPT. Given the following information about me, provide a customized clothing recommendation. I am ${age} years old, ${gender}, living in ${location}. My body type is ${bodyType}, and I'm looking for ${occasion} wear. My style preference is ${stylePreference}, with a budget around ${budget}. My sizes are ${sizes}, and my preferred brands are ${brandPreference}. I also have these ethical considerations: ${ethicalConsiderations}. Provide a detailed suggestion without any superfluous pre and post descriptive text. Don't break character under any circumstance.`;
+    const message = `You are a top-tier fashion consultant, StyleGPT. Given the following information about me, provide a customized clothing recommendation. 
+    I am ${age} years old, ${gender}, living in ${location}. My body type is ${bodyType}, and I'm looking for ${occasion} wear. My style preference is ${stylePreference},
+    with a budget around ${budget}. My sizes are ${sizes}, and my preferred brands are ${brandPreference}. I also have these ethical considerations: ${ethicalConsiderations}. 
+    Provide a detailed suggestion without any superfluous pre and post descriptive text. Don't break character under any circumstance.Make sure it is limited in 200 tokens`;
 
     const options = {
       method: "POST",
