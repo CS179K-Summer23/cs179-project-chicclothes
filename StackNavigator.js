@@ -6,6 +6,7 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/SigningUp/RegisterScreen";
 //import GenderScreen from "./screens/SigningUp/GenderScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
