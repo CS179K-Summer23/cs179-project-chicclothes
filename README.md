@@ -13,9 +13,9 @@
 - Javascript
 
 # Major Features:
-- 1.Login/Registration System//
+- 1.Login/Registration System
 - 2.Product Filtering
-- 3.Review System
+- 3.Suggestion Idea for Clothing
 - 4.Favorites
 - 5.Search
 - 6.Card/ Checkout System
