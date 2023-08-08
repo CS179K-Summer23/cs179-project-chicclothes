@@ -13,6 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 import styles from "./stylesheets";
 import HelpUsImproveModalContent from './HelpUsImproveModalContent'; 
 import MembershipModalContent from './MembershipModalContent'; 
+import RandomFeatureScreen from './RandomFeatureScreen';
 
 const ProfileScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -56,6 +57,7 @@ const ProfileScreen = () => {
     { title: "Membership", icon: "idcard" },
     { title: "Help us Improve", icon: "heart" },
     { title: "Sign out", icon: "logout" },
+    { title: "Suggestion Bot", icon: "heart"},
   ];
 
 
@@ -111,7 +113,8 @@ const ProfileScreen = () => {
             return <MembershipModalContent onClose={() => setModalVisible(false)} />;
         case 'Help us Improve':
             return <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />;
-            
+        case 'Help us Improve':
+            return <RandomFeatureScreen onClose={() => setModalVisible(false)} />;
         default:
             return null;
     }
