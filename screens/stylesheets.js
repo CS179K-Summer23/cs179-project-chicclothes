@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 5,
         paddingBottom: 20,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#f9f9f9',
     },
     welcomeContainer: {
         flexDirection: 'row',
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15, // A little bit of padding to avoid touching the screen edges
         paddingTop:15,
         paddingBottom:10,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#f9f9f9',
     },
     welcomeUser: {
         fontSize: 30,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,   // Add padding to the left and right
         width: '90%',            // Set the width to 90%
         justifyContent: 'space-between',  // Distribute items (icon, text, arrow) equally
-        backgroundColor: '#ffffff',
+        backgroundColor: '#f9f9f9',
         // borderRadius: 5,
         alignSelf: 'center'  // Center the button within its parent
     },
