@@ -6,9 +6,12 @@ import ProfileScreen from "./screens/ProfileScreen";
 import SwipeMeScreen from './screens/SwipeMeScreen';
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 
+
 const Tab = createBottomTabNavigator();
 
+
 const BottomTabNavigator = () => {
+
 
   return (
     <Tab.Navigator
@@ -26,7 +29,7 @@ const BottomTabNavigator = () => {
           color : "grey",
         },
         tabBarInactiveTintColor: "grey",
-        tabBarActiveTintColor: "red", //change it base on what u what it to be for the bottom icons 
+        tabBarActiveTintColor: "red", //change it base on what u what it to be for the bottom icons
         tabBarActiveBackgroundColor: "white",
       }}
     >
@@ -49,7 +52,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Swipe Me Daddy"
+        name="Swipe Me"
         component={SwipeMeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -78,5 +81,6 @@ const BottomTabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
 
 export default BottomTabNavigator;

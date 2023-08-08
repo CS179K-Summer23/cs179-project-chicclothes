@@ -14,6 +14,7 @@ import styles from "./stylesheets";
 import HelpUsImproveModalContent from './HelpUsImproveModalContent'; 
 import MembershipModalContent from './MembershipModalContent'; 
 import SuggestionScreen from "./SuggestionBotModalContent";
+import PaymentMethodModalContent from "./PaymentMethodModalContent"; 
 
 
 const ProfileScreen = () => {
@@ -105,7 +106,7 @@ const ProfileScreen = () => {
         case 'My orders':
             return <Text style={styles.modalText}>Your orders list goes here.</Text>;
         case 'Payments':
-            return <Text style={styles.modalText}>Your payment details go here.</Text>;
+            return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />; 
         case 'Account Settings':
             return <Text style={styles.modalText}>Your account settings go here.</Text>;
         case 'My points':
