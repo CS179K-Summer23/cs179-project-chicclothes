@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         minHeight: 300,
         backgroundColor: '#f0ebdf',
         padding: 20,
-        marginBottom: '10px'
+        marginBottom: '10'
     },
     membershipTitle: {
         fontSize: 30,

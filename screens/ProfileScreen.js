@@ -15,6 +15,7 @@ import HelpUsImproveModalContent from './HelpUsImproveModalContent';
 import MembershipModalContent from './MembershipModalContent'; 
 import SuggestionScreen from "./SuggestionBotModalContent";
 import PaymentMethodModalContent from "./PaymentMethodModalContent"; 
+import OrdersModalsContent from "./OrdersModalsContent"; 
 
 
 const ProfileScreen = () => {
@@ -54,7 +55,6 @@ const ProfileScreen = () => {
   const options = [
     { title: "My orders", icon: "shoppingcart" },
     { title: "Payments", icon: "creditcard" },
-    { title: "Account Settings", icon: "setting" },
     { title: "My points", icon: "star" },
     { title: "Membership", icon: "idcard" },
     { title: "Help us Improve", icon: "heart" },
@@ -104,11 +104,9 @@ const ProfileScreen = () => {
             <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
         </>
         case 'My orders':
-            return <Text style={styles.modalText}>Your orders list goes here.</Text>;
+            return <OrdersModalsContent onClose = {() => setModalVisible(false)} />
         case 'Payments':
             return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />; 
-        case 'Account Settings':
-            return <Text style={styles.modalText}>Your account settings go here.</Text>;
         case 'My points':
             return <Text style={styles.modalText}>Your points summary goes here.</Text>;
         case 'Membership':
