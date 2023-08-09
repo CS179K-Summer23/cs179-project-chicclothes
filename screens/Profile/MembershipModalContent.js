@@ -56,7 +56,7 @@ const MembershipModalContent = ({ onClose }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.picContainer}>
-            <Image source={require("./images/ai.png")} style={styles.image} />
+            <Image source={require("../images/ai.png")} style={styles.image} />
           </View>
           <View ref={sectionRef}>
             <View style={styles.benefitsContainer}>

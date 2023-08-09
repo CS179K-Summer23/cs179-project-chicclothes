@@ -53,7 +53,7 @@ const HelpUsImproveModalContent = ({ onClose }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <>
-        <Image source={require("./images/improve.jpg")} style={styles.image} />
+        <Image source={require("../images/improve.jpg")} style={styles.image} />
         <Text style={styles.rateText}>Rate your app experience</Text>
         <View style={styles.starsDesign}>{renderStars()}</View>
         <Text style={styles.description}>

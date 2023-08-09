@@ -16,7 +16,8 @@ import MembershipModalContent from './MembershipModalContent';
 import SuggestionScreen from "./SuggestionBotModalContent";
 import PaymentMethodModalContent from "./PaymentMethodModalContent";
 import OrdersModalsContent from "./OrdersModalsContent";
-
+import PointsHistoryModalContent from "./PointsHistoryModalContent";
+import ViewMemIdModalContent from "./ViewMemIdModalContent";
 
 const ProfileScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,27 +28,27 @@ const ProfileScreen = () => {
 
   const offers = [
     {
-      image: require("./images/offer1.png"),
+      image: require("../images/offer1.png"),
       title: "Up to 25% off select \t       styles",
       description: "      MEMBER PRICES \n Valid until: 12/31/2030 ",
     },
     {
-      image: require("./images/offer2.jpg"),
+      image: require("../images/offer2.jpg"),
       title: "25% off select jeans",
       description: "\tDENIM DEAL \n Valid until: 12/31/2030 ",
     },
     {
-      image: require("./images/offer3.png"),
+      image: require("../images/offer3.png"),
       title: "Baby Clothes Bundles",
       description: "\tBABY ALIVE \n Valid until: 12/31/2030 ",
     },
     {
-      image: require("./images/offer4.jpg"),
+      image: require("../images/offer4.jpg"),
       title: "Earn $5 for every $50 \t    you spend",
       description: "BACK-TO-SCHOOL DONATION \n        Valid until: 12/31/2030 ",
     },
     {
-      image: require("./images/offer5.jpg"),
+      image: require("../images/offer5.jpg"),
       title: "20% off Clique Closet \t\tSport",
       description: "  DO SOME EXERCISE! \n Valid until: 12/31/2030 ",
     },
@@ -96,25 +97,15 @@ const ProfileScreen = () => {
   const renderModalContent = () => {
     switch (activeModal) {
       case "View Member ID":
-        return (
-          <>
-            <Image
-              source={require("./images/qrcode.png")}
-              style={styles.modalImage}
-            />
-            <Text style={styles.modalText}></Text>
-          </>
-        );
-        case 'Points History':
-          return <>
-          <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
-      </>
+          return <ViewMemIdModalContent onclose = {() => setModalVisible(false)}/>;   
+      case 'Points History':
+          return <PointsHistoryModalContent onclose = {() => setModalVisible(false)}/>; 
       case 'My orders':
-          return <OrdersModalsContent onClose = {() => setModalVisible(false)} />
+          return <OrdersModalsContent onClose = {() => setModalVisible(false)} />;
       case 'Payments':
           return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />;
       case 'My points':
-          return <Text style={styles.modalText}>Your points summary goes here.</Text>;
+          return <PointsHistroyModalContent onclose ={() => setModalVisible (false)} />;
       case 'Membership':
           return <MembershipModalContent onClose={() => setModalVisible(false)} />;
       case 'Help us Improve':
