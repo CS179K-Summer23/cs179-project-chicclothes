@@ -9,7 +9,10 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
+import ChatGptResponseModalContent from "./ChatGptResponseModalContent"
 
 const SuggestionScreen = () => {
   const [age, setAge] = useState("");
@@ -21,21 +24,22 @@ const SuggestionScreen = () => {
   const [budget, setBudget] = useState("");
   const [sizes, setSizes] = useState("");
   const [brandPreference, setBrandPreference] = useState("");
-  const [ethicalConsiderations, setEthicalConsiderations] = useState("");
+  const [Considerations, setConsiderations] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const sendMessage = async () => {
     const message = `You are a top-tier fashion consultant, StyleGPT. Given the following information about me, provide a customized clothing recommendation. 
     I am ${age} years old, ${gender}, living in ${location}. My body type is ${bodyType}, and I'm looking for ${occasion} wear. My style preference is ${stylePreference},
-    with a budget around ${budget}. My sizes are ${sizes}, and my preferred brands are ${brandPreference}. I also have these ethical considerations: ${ethicalConsiderations}. 
+    with a budget around ${budget}. My sizes are ${sizes}, and my preferred brands are ${brandPreference}. I also have these ethical considerations: ${Considerations}. 
     Provide a detailed suggestion without any superfluous pre and post descriptive text. Don't break character under any circumstance.Make sure it is limited in 200 tokens`;
 
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer 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",
+        Authorization: "Bearer ",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 200 }),
     };
@@ -58,12 +62,29 @@ const SuggestionScreen = () => {
         "Something went wrong while contacting the GPT API."
       );
     }
+
+    if (data.choices && data.choices[0] && data.choices[0].text) {
+      setResponseMessage(data.choices[0].text.trim());
+      setModalVisible(true);
+  } else {
+      console.log(data);
+  }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        style={{ width: "100%" }}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Suggestion Bot</Text>
+        </View>
         <View style={styles.container}>
+          <Text style={styles.direction}>
+            Need fashion inspiration? Answer a few questions and get tailored
+            suggestions. Answer with as much details as possible.
+          </Text>
           <TextInput
             style={styles.input}
             placeholder="Age"
@@ -78,39 +99,39 @@ const SuggestionScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Location"
-            value={location}
-            onChangeText={setLocation}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Body Type"
+            placeholder="Body Shape (Triangle, Rectangle, Oval, Hourglass)"
             value={bodyType}
             onChangeText={setBodyType}
           />
           <TextInput
             style={styles.input}
-            placeholder="Occasion"
+            placeholder="Sizes (waist, chest, T-shirt/Dress)"
+            value={sizes}
+            onChangeText={setSizes}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Current Season/ Location"
+            value={location}
+            onChangeText={setLocation}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Occasion/Event"
             value={occasion}
             onChangeText={setOccasion}
           />
           <TextInput
             style={styles.input}
-            placeholder="Style Preference"
+            placeholder="Style Preference (Classic? Formal? Vintage? Stree? etc.)"
             value={stylePreference}
             onChangeText={setStylePreference}
           />
           <TextInput
             style={styles.input}
-            placeholder="Budget"
+            placeholder="Budget Range"
             value={budget}
             onChangeText={setBudget}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Sizes"
-            value={sizes}
-            onChangeText={setSizes}
           />
           <TextInput
             style={styles.input}
@@ -120,27 +141,56 @@ const SuggestionScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Ethical Considerations"
-            value={ethicalConsiderations}
-            onChangeText={setEthicalConsiderations}
+            placeholder="Considerations (Ex: Don't like it too tight)"
+            value={Considerations}
+            onChangeText={setConsiderations}
           />
 
-          <Button title="Get Suggestions" onPress={sendMessage} />
-
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={sendMessage}
+          >
+            <Text style={styles.buttonText}>Get Suggestions</Text>
+          </TouchableOpacity>
           {responseMessage !== "" && (
             <Text style={styles.response}>{responseMessage}</Text>
           )}
         </View>
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+            }}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <ChatGptResponseModalContent message={responseMessage} />
+                    <TouchableOpacity
+                        style={{...styles.buttonContainer, marginTop: 10}}
+                        onPress={() => setModalVisible(!modalVisible)}
+                    >
+                        <Text style={styles.buttonText}>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
       </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    width: "100%",
+    alignItems: "center", 
+  },
   container: {
-    flex: 1,
+    width: "100%",
     padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f0ebdf",
   },
   input: {
     height: 40,
@@ -153,8 +203,63 @@ const styles = StyleSheet.create({
   },
   response: {
     marginTop: 20,
+    fontSize: 20,           // Increase the font size
+    fontWeight: '500',      // Adjust the font weight
+    borderWidth: 1,
+    padding: 10,            // Add padding inside the border
+    borderRadius: 5,        // Optionally, add rounded corners to the border
+    backgroundColor: "#fff", // Set the background color, if needed
+},
+
+  title: {
     fontSize: 18,
+    fontWeight: "700",
+    marginTop: 30,
+    padding: 10,
+    alignContent: "center",
   },
+  direction: {
+    fontSize: 17,
+    fontWeight: "500",
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    marginTop: 30,
+    borderWidth: 1,         
+    borderColor: 'black',   
+    borderRadius: 5,        
+    padding: 10,            
+    alignItems: 'center',   
+    justifyContent: 'center', 
+    backgroundColor: 'black'  
+  },
+  buttonText: {
+    color: 'white',         
+    fontSize: 16,          
+    fontWeight: 'bold',      
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+},
+modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+}
+  
 });
 
 export default SuggestionScreen;
