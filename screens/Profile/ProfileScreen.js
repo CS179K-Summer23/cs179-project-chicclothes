@@ -215,6 +215,7 @@ const ProfileScreen = () => {
                 onPress={() => setModalVisible(false)}
               >
                 <AntDesign name="arrowleft" size={40} color="black" />
+
               </TouchableOpacity>
               {renderModalContent()}
             </View>

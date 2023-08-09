@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     margin: 0, // remove the margin
-    backgroundColor: "white",
+    backgroundColor: "#f9f9f9",
     borderRadius: 0, // remove the border radius to take full screen
     alignItems: "center",
     shadowColor: "#000",
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    paddingTop: 70,
+    // paddingTop: 70,
   },
   modalText: {
     marginBottom: 15,
