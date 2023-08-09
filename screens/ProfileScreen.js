@@ -11,12 +11,11 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./stylesheets";
-import HelpUsImproveModalContent from './HelpUsImproveModalContent'; 
-import MembershipModalContent from './MembershipModalContent'; 
+import HelpUsImproveModalContent from "./HelpUsImproveModalContent";
+import MembershipModalContent from "./MembershipModalContent";
 import SuggestionScreen from "./SuggestionBotModalContent";
-import PaymentMethodModalContent from "./PaymentMethodModalContent"; 
-import OrdersModalsContent from "./OrdersModalsContent"; 
-
+import PaymentMethodModalContent from "./PaymentMethodModalContent";
+import OrdersModalsContent from "./OrdersModalsContent";
 
 const ProfileScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -59,9 +58,8 @@ const ProfileScreen = () => {
     { title: "Membership", icon: "idcard" },
     { title: "Help us Improve", icon: "heart" },
     { title: "Sign out", icon: "logout" },
-    { title: "Suggestion Bot", icon: "bulb1"},
+    { title: "Suggestion Bot", icon: "bulb1" },
   ];
-
 
   const OptionButton = ({ title, icon }) => {
     return (
@@ -92,33 +90,46 @@ const ProfileScreen = () => {
 
   const renderModalContent = () => {
     switch (activeModal) {
-        case 'View Member ID':
-            return (
-            <>
-                <Image source={require('./images/qrcode.png')} style={styles.modalImage} />
-                <Text style={styles.modalText}></Text>
-            </>
+      case "View Member ID":
+        return (
+          <>
+            <Image
+              source={require("./images/qrcode.png")}
+              style={styles.modalImage}
+            />
+            <Text style={styles.modalText}></Text>
+          </>
         );
-        case 'Points History':
-            return <>
+      case "Points History":
+        return (
+          <>
             <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
-        </>
-        case 'My orders':
-            return <OrdersModalsContent onClose = {() => setModalVisible(false)} />
-        case 'Payments':
-            return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />; 
-        case 'My points':
-            return <Text style={styles.modalText}>Your points summary goes here.</Text>;
-        case 'Membership':
-            return <MembershipModalContent onClose={() => setModalVisible(false)} />;
-        case 'Help us Improve':
-            return <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />;
-        case 'Suggestion Bot':
-            return <SuggestionScreen onClose={() => setModalVisible(false)} />;
-        default:
-            return null;
+          </>
+        );
+      case "My orders":
+        return <OrdersModalsContent onClose={() => setModalVisible(false)} />;
+      case "Payments":
+        return (
+          <PaymentMethodModalContent onClose={() => setModalVisible(false)} />
+        );
+      case "My points":
+        return (
+          <Text style={styles.modalText}>Your points summary goes here.</Text>
+        );
+      case "Membership":
+        return (
+          <MembershipModalContent onClose={() => setModalVisible(false)} />
+        );
+      case "Help us Improve":
+        return (
+          <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />
+        );
+      case "Suggestion Bot":
+        return <SuggestionScreen onClose={() => setModalVisible(false)} />;
+      default:
+        return null;
     }
-};
+  };
 
   const handleSettingsPress = () => {
     sectionRef.current.measure((x, y, width, height, pageX, pageY) => {

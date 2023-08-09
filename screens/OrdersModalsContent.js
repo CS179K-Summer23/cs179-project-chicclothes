@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 
 const OrderScreen = () => {
   const [selectedTab, setSelectedTab] = useState("Online Orders");
@@ -45,9 +45,14 @@ const OrderScreen = () => {
         </View>
 
         <View style={styles.errorBox}>
-        <AntDesign name="check" size={25} color="#333333" style={{ padding: 10 }} />
+          <AntDesign
+            name="check"
+            size={25}
+            color="#333333"
+            style={{ padding: 10 }}
+          />
           <Text style={styles.errorMessage}>
-            We can't display your receipts right now. Please check back later. 
+            We can't display your receipts right now. Please check back later.
           </Text>
         </View>
       </View>
@@ -64,7 +69,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, // makes sure container takes up the entire space
     backgroundColor: "#f5f5f5",
-    alignItems: 'center',
+    alignItems: "center",
   },
   tabContainer: {
     marginTop: 20,
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
   },
   selectedTabText: {
     color: "red",
-},
+  },
   underline: {
     height: 2,
     width: 120,
@@ -105,8 +110,8 @@ const styles = StyleSheet.create({
   errorMessage: {
     color: "#333333",
     fontSize: 16,
-    fontWeight: '400',
-    textAlign: 'center',
+    fontWeight: "400",
+    textAlign: "center",
     marginRight: 10,
   },
 });

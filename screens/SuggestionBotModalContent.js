@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert, StyleSheet,ScrollView, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 
 const SuggestionScreen = () => {
   const [age, setAge] = useState("");
@@ -24,7 +34,8 @@ const SuggestionScreen = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer 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",
+        Authorization:
+          "Bearer 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",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 200 }),
     };
@@ -50,25 +61,77 @@ const SuggestionScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress = {Keyboard.dismiss} accessible ={false}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ScrollView contentContainerStyle={styles.container}>
-    <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Age" value={age} onChangeText={setAge} />
-      <TextInput style={styles.input} placeholder="Gender" value={gender} onChangeText={setGender} />
-      <TextInput style={styles.input} placeholder="Location" value={location} onChangeText={setLocation} />
-      <TextInput style={styles.input} placeholder="Body Type" value={bodyType} onChangeText={setBodyType} />
-      <TextInput style={styles.input} placeholder="Occasion" value={occasion} onChangeText={setOccasion} />
-      <TextInput style={styles.input} placeholder="Style Preference" value={stylePreference} onChangeText={setStylePreference} />
-      <TextInput style={styles.input} placeholder="Budget" value={budget} onChangeText={setBudget} />
-      <TextInput style={styles.input} placeholder="Sizes" value={sizes} onChangeText={setSizes} />
-      <TextInput style={styles.input} placeholder="Brand Preference" value={brandPreference} onChangeText={setBrandPreference} />
-      <TextInput style={styles.input} placeholder="Ethical Considerations" value={ethicalConsiderations} onChangeText={setEthicalConsiderations} />
+        <View style={styles.container}>
+          <TextInput
+            style={styles.input}
+            placeholder="Age"
+            value={age}
+            onChangeText={setAge}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Gender"
+            value={gender}
+            onChangeText={setGender}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Location"
+            value={location}
+            onChangeText={setLocation}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Body Type"
+            value={bodyType}
+            onChangeText={setBodyType}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Occasion"
+            value={occasion}
+            onChangeText={setOccasion}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Style Preference"
+            value={stylePreference}
+            onChangeText={setStylePreference}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Budget"
+            value={budget}
+            onChangeText={setBudget}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Sizes"
+            value={sizes}
+            onChangeText={setSizes}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Brand Preference"
+            value={brandPreference}
+            onChangeText={setBrandPreference}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Ethical Considerations"
+            value={ethicalConsiderations}
+            onChangeText={setEthicalConsiderations}
+          />
 
-      <Button title="Get Suggestions" onPress={sendMessage} />
+          <Button title="Get Suggestions" onPress={sendMessage} />
 
-      {responseMessage !== "" && <Text style={styles.response}>{responseMessage}</Text>}
-    </View>
-    </ScrollView>
+          {responseMessage !== "" && (
+            <Text style={styles.response}>{responseMessage}</Text>
+          )}
+        </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
@@ -77,16 +140,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginTop: 10,
     borderRadius: 5,
     paddingLeft: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   response: {
     marginTop: 20,

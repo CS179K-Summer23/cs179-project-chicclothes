@@ -1,18 +1,14 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./screens/HomeScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
 import ShoppingBagScreen from "./screens/ShoppingBagScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import SwipeMeScreen from './screens/SwipeMeScreen';
+import SwipeMeScreen from "./screens/SwipeMeScreen";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
-
 
 const Tab = createBottomTabNavigator();
 
-
 const BottomTabNavigator = () => {
-
-
   return (
     <Tab.Navigator
       screenOptions={{
@@ -26,7 +22,7 @@ const BottomTabNavigator = () => {
         },
         headerTintColor: "grey",
         headerTitleStyle: {
-          color : "grey",
+          color: "grey",
         },
         tabBarInactiveTintColor: "grey",
         tabBarActiveTintColor: "red", //change it base on what u what it to be for the bottom icons
@@ -81,6 +77,5 @@ const BottomTabNavigator = () => {
     </Tab.Navigator>
   );
 };
-
 
 export default BottomTabNavigator;

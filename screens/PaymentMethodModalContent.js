@@ -15,16 +15,15 @@ export default function PaymentDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:20,
-    justifyContent: 'top',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    
+    padding: 20,
+    justifyContent: "top",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
   },
-  message:{
-    fontSize:16,
-    textAlign: 'center',
-    color: 'grey',
+  message: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "grey",
     marginTop: 20,
     // marginBottom: 20,
   },

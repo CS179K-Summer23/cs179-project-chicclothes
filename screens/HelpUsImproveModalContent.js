@@ -127,12 +127,11 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   submitButtonContainer: {}, // debating, i looks good without a border hmmmm
-  
-  centeredContainer:{
-    flex : 1,
-    justifyContent: 'center',
-    alignItems: 'center',  
-    
+
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   thankYou: {
     fontSize: 18,
@@ -141,8 +140,6 @@ const styles = StyleSheet.create({
   Done: {
     marginBottom: 200,
     borderWidth: 1,
-    
-    
   },
 });
 
