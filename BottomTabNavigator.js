@@ -3,10 +3,12 @@ import HomeScreen from "./screens/HomeScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
 import ShoppingBagScreen from "./screens/ShoppingBagScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import RandomFeatureScreen from "./screens/RandomFeatureScreen";
+import SwipeMeScreen from "./screens/SwipeMeScreen";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 
+
 const Tab = createBottomTabNavigator();
+
 
 const BottomTabNavigator = () => {
   return (
@@ -48,6 +50,15 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
+        name="Swipe Me"
+        component={SwipeMeScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="question" color={color} size={size} /> //change icon for this same with shopping bag idk what to put
+          ),
+        }}
+      />
+      <Tab.Screen
         name="ShoppingBag"
         component={ShoppingBagScreen}
         options={{
@@ -65,17 +76,11 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
-      <Tab.Screen
-        name="XFeature"
-        component={RandomFeatureScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="question" color={color} size={size} />
-          ),
-        }}
-      />
     </Tab.Navigator>
   );
 };
 
+
 export default BottomTabNavigator;
+
+

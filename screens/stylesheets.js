@@ -1,4 +1,6 @@
+
 import { StyleSheet } from "react-native";
+
 
 const styles = StyleSheet.create({
   //profile screen css
@@ -10,7 +12,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 5,
     paddingBottom: 20,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f9f9f9",
   },
   welcomeContainer: {
     flexDirection: "row",
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15, // A little bit of padding to avoid touching the screen edges
     paddingTop: 15,
     paddingBottom: 10,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f9f9f9",
   },
   welcomeUser: {
     fontSize: 30,
@@ -89,6 +91,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 
+
   offersTitle: {
     alignSelf: "flex-start", // Add this to override the parent's alignItems
     fontSize: 18,
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15, // Add padding to the left and right
     width: "90%", // Set the width to 90%
     justifyContent: "space-between", // Distribute items (icon, text, arrow) equally
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f9f9f9",
     // borderRadius: 5,
     alignSelf: "center", // Center the button within its parent
   },
@@ -153,9 +156,7 @@ const styles = StyleSheet.create({
     margin: 0, // remove the margin
     backgroundColor: "white",
     borderRadius: 0, // remove the border radius to take full screen
-    padding: 35,
     alignItems: "center",
-    justifyContent: "center", // to center the content vertically
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    paddingTop: 70,
   },
   modalText: {
     marginBottom: 15,
@@ -184,5 +186,6 @@ const styles = StyleSheet.create({
   },
   //profile screen css
 });
+
 
 export default styles;
