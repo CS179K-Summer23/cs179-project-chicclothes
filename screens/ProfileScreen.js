@@ -11,17 +11,19 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./stylesheets";
-import HelpUsImproveModalContent from './HelpUsImproveModalContent'; 
-import MembershipModalContent from './MembershipModalContent'; 
+import HelpUsImproveModalContent from './HelpUsImproveModalContent';
+import MembershipModalContent from './MembershipModalContent';
 import SuggestionScreen from "./SuggestionBotModalContent";
-import PaymentMethodModalContent from "./PaymentMethodModalContent"; 
-import OrdersModalsContent from "./OrdersModalsContent"; 
+import PaymentMethodModalContent from "./PaymentMethodModalContent";
+import OrdersModalsContent from "./OrdersModalsContent";
+
 
 const ProfileScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
   const sectionRef = useRef(null); //for setting range to show when press
+
 
   const offers = [
     {
@@ -51,6 +53,7 @@ const ProfileScreen = () => {
     },
   ];
 
+
   const options = [
     { title: "My orders", icon: "shoppingcart" },
     { title: "Payments", icon: "creditcard" },
@@ -60,6 +63,7 @@ const ProfileScreen = () => {
     { title: "Sign out", icon: "logout" },
     { title: "Suggestion Bot", icon: "bulb1" },
   ];
+
 
   const OptionButton = ({ title, icon }) => {
     return (
@@ -88,6 +92,7 @@ const ProfileScreen = () => {
     );
   };
 
+
   const renderModalContent = () => {
     switch (activeModal) {
       case "View Member ID":
@@ -107,7 +112,7 @@ const ProfileScreen = () => {
       case 'My orders':
           return <OrdersModalsContent onClose = {() => setModalVisible(false)} />
       case 'Payments':
-          return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />; 
+          return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />;
       case 'My points':
           return <Text style={styles.modalText}>Your points summary goes here.</Text>;
       case 'Membership':
@@ -123,11 +128,13 @@ const ProfileScreen = () => {
   }
   };
 
+
   const handleSettingsPress = () => {
     sectionRef.current.measure((x, y, width, height, pageX, pageY) => {
       scrollViewRef.current?.scrollTo({ x: 0, y: pageY, animated: true });
     });
   };
+
 
   return (
     <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
@@ -138,6 +145,7 @@ const ProfileScreen = () => {
             <AntDesign name="setting" size={35} color="black" />
           </TouchableOpacity>
         </View>
+
 
         <View style={styles.rewardContainer}>
           <View
@@ -177,6 +185,7 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
 
+
         <Text style={styles.offersTitle}>My Offers</Text>
         <ScrollView
           horizontal={true}
@@ -201,6 +210,7 @@ const ProfileScreen = () => {
           ))}
         </View>
 
+
         <Modal
           animationType="slide"
           transparent={true}
@@ -224,4 +234,7 @@ const ProfileScreen = () => {
   );
 };
 
+
 export default ProfileScreen;
+
+

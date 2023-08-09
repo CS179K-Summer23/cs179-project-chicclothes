@@ -6,7 +6,9 @@ import ProfileScreen from "./screens/ProfileScreen";
 import SwipeMeScreen from "./screens/SwipeMeScreen";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 
+
 const Tab = createBottomTabNavigator();
+
 
 const BottomTabNavigator = () => {
   return (
@@ -78,4 +80,7 @@ const BottomTabNavigator = () => {
   );
 };
 
+
 export default BottomTabNavigator;
+
+

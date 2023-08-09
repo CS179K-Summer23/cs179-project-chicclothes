@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 
+
 const styles = StyleSheet.create({
   //profile screen css
   mainScrollView: {
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     borderRadius: 5,
   },
+
 
   offersTitle: {
     alignSelf: "flex-start", // Add this to override the parent's alignItems
@@ -183,5 +185,6 @@ const styles = StyleSheet.create({
   },
   //profile screen css
 });
+
 
 export default styles;
