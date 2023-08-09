@@ -11,8 +11,8 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./stylesheets";
-import HelpUsImproveModalContent from './HelpUsImproveModalContent';
-import MembershipModalContent from './MembershipModalContent';
+import HelpUsImproveModalContent from "./HelpUsImproveModalContent";
+import MembershipModalContent from "./MembershipModalContent";
 import SuggestionScreen from "./SuggestionBotModalContent";
 import PaymentMethodModalContent from "./PaymentMethodModalContent";
 import OrdersModalsContent from "./OrdersModalsContent";
@@ -24,7 +24,6 @@ const ProfileScreen = () => {
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
   const sectionRef = useRef(null); //for setting range to show when press
-
 
   const offers = [
     {
@@ -54,7 +53,6 @@ const ProfileScreen = () => {
     },
   ];
 
-
   const options = [
     { title: "My orders", icon: "shoppingcart" },
     { title: "Payments", icon: "creditcard" },
@@ -64,7 +62,6 @@ const ProfileScreen = () => {
     { title: "Sign out", icon: "logout" },
     { title: "Suggestion Bot", icon: "bulb1" },
   ];
-
 
   const OptionButton = ({ title, icon }) => {
     return (
@@ -93,39 +90,46 @@ const ProfileScreen = () => {
     );
   };
 
-
   const renderModalContent = () => {
     switch (activeModal) {
       case "View Member ID":
-          return <ViewMemIdModalContent onclose = {() => setModalVisible(false)}/>;   
-      case 'Points History':
-          return <PointsHistoryModalContent onclose = {() => setModalVisible(false)}/>; 
-      case 'My orders':
-          return <OrdersModalsContent onClose = {() => setModalVisible(false)} />;
-      case 'Payments':
-          return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />;
-      case 'My points':
-          return <PointsHistoryModalContent onclose ={() => setModalVisible (false)} />;
-      case 'Membership':
-          return <MembershipModalContent onClose={() => setModalVisible(false)} />;
-      case 'Help us Improve':
-          return <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />;
-      case 'Sign out':
-          return null; // ned to implement this method
-      case 'Suggestion Bot':
-          return <SuggestionScreen onClose={() => setModalVisible(false)} />;
+        return <ViewMemIdModalContent onclose={() => setModalVisible(false)} />;
+      case "Points History":
+        return (
+          <PointsHistoryModalContent onclose={() => setModalVisible(false)} />
+        );
+      case "My orders":
+        return <OrdersModalsContent onClose={() => setModalVisible(false)} />;
+      case "Payments":
+        return (
+          <PaymentMethodModalContent onClose={() => setModalVisible(false)} />
+        );
+      case "My points":
+        return (
+          <PointsHistoryModalContent onclose={() => setModalVisible(false)} />
+        );
+      case "Membership":
+        return (
+          <MembershipModalContent onClose={() => setModalVisible(false)} />
+        );
+      case "Help us Improve":
+        return (
+          <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />
+        );
+      case "Sign out":
+        return null; // ned to implement this method
+      case "Suggestion Bot":
+        return <SuggestionScreen onClose={() => setModalVisible(false)} />;
       default:
-          return null;
-  }
+        return null;
+    }
   };
-
 
   const handleSettingsPress = () => {
     sectionRef.current.measure((x, y, width, height, pageX, pageY) => {
       scrollViewRef.current?.scrollTo({ x: 0, y: pageY, animated: true });
     });
   };
-
 
   return (
     <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
@@ -136,7 +140,6 @@ const ProfileScreen = () => {
             <AntDesign name="setting" size={35} color="black" />
           </TouchableOpacity>
         </View>
-
 
         <View style={styles.rewardContainer}>
           <View
@@ -176,7 +179,6 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
 
-
         <Text style={styles.offersTitle}>My Offers</Text>
         <ScrollView
           horizontal={true}
@@ -201,7 +203,6 @@ const ProfileScreen = () => {
           ))}
         </View>
 
-
         <Modal
           animationType="slide"
           transparent={true}
@@ -211,12 +212,12 @@ const ProfileScreen = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <TouchableOpacity
-                style={{ position: "absolute", top: 30, left: 10 }}
+                style={{ position: "absolute", top: 30, left: 10, zIndex: 10 }}
                 onPress={() => setModalVisible(false)}
               >
                 <AntDesign name="arrowleft" size={40} color="black" />
-
               </TouchableOpacity>
+
               {renderModalContent()}
             </View>
           </View>
@@ -225,6 +226,5 @@ const ProfileScreen = () => {
     </ScrollView>
   );
 };
-
 
 export default ProfileScreen;

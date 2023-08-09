@@ -39,8 +39,9 @@ const MembershipModalContent = ({ onClose }) => {
   };
 
   return (
+    <View>
+      <Text style={styles.title}>Membership</Text>
       <View style={styles.centeredView}>
-        <Text style={styles.title}>Member ID</Text>
         <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
           <View style={styles.container}>
             <View style={styles.rewardContainer}>
@@ -77,8 +78,7 @@ const MembershipModalContent = ({ onClose }) => {
           </View>
         </ScrollView>
       </View>
-      
-    
+    </View>
   );
 };
 
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 70,
+    
   },
   mainScrollView: {
     flex: 1,
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
-    position: 'absolute',  // Add this
-    bottom: 70,  // And this
+    marginTop: 30,
+    padding :10,
   },
 });
 
