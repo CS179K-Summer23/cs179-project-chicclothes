@@ -16,8 +16,8 @@ import MembershipModalContent from './MembershipModalContent';
 import SuggestionScreen from "./SuggestionBotModalContent";
 import PaymentMethodModalContent from "./PaymentMethodModalContent";
 import OrdersModalsContent from "./OrdersModalsContent";
-import PointsHistoryModalContent from "./PointsHistoryModalContent";
 import ViewMemIdModalContent from "./ViewMemIdModalContent";
+import PointsHistoryModalContent from "./PointsHistoryModalContent";
 
 const ProfileScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -105,7 +105,7 @@ const ProfileScreen = () => {
       case 'Payments':
           return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />;
       case 'My points':
-          return <PointsHistroyModalContent onclose ={() => setModalVisible (false)} />;
+          return <PointsHistoryModalContent onclose ={() => setModalVisible (false)} />;
       case 'Membership':
           return <MembershipModalContent onClose={() => setModalVisible(false)} />;
       case 'Help us Improve':
