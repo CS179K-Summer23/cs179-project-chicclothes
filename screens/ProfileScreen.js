@@ -11,11 +11,11 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./stylesheets";
-import HelpUsImproveModalContent from "./HelpUsImproveModalContent";
-import MembershipModalContent from "./MembershipModalContent";
+import HelpUsImproveModalContent from './HelpUsImproveModalContent'; 
+import MembershipModalContent from './MembershipModalContent'; 
 import SuggestionScreen from "./SuggestionBotModalContent";
-import PaymentMethodModalContent from "./PaymentMethodModalContent";
-import OrdersModalsContent from "./OrdersModalsContent";
+import PaymentMethodModalContent from "./PaymentMethodModalContent"; 
+import OrdersModalsContent from "./OrdersModalsContent"; 
 
 const ProfileScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -100,35 +100,27 @@ const ProfileScreen = () => {
             <Text style={styles.modalText}></Text>
           </>
         );
-      case "Points History":
-        return (
-          <>
-            <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
-          </>
-        );
-      case "My orders":
-        return <OrdersModalsContent onClose={() => setModalVisible(false)} />;
-      case "Payments":
-        return (
-          <PaymentMethodModalContent onClose={() => setModalVisible(false)} />
-        );
-      case "My points":
-        return (
-          <Text style={styles.modalText}>Your points summary goes here.</Text>
-        );
-      case "Membership":
-        return (
-          <MembershipModalContent onClose={() => setModalVisible(false)} />
-        );
-      case "Help us Improve":
-        return (
-          <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />
-        );
-      case "Suggestion Bot":
-        return <SuggestionScreen onClose={() => setModalVisible(false)} />;
+        case 'Points History':
+          return <>
+          <Text style={styles.modalText}>POINT HISTROYYYYY</Text>
+      </>
+      case 'My orders':
+          return <OrdersModalsContent onClose = {() => setModalVisible(false)} />
+      case 'Payments':
+          return <PaymentMethodModalContent onClose={() => setModalVisible(false)} />; 
+      case 'My points':
+          return <Text style={styles.modalText}>Your points summary goes here.</Text>;
+      case 'Membership':
+          return <MembershipModalContent onClose={() => setModalVisible(false)} />;
+      case 'Help us Improve':
+          return <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />;
+      case 'Sign out':
+          return null; // ned to implement this method
+      case 'Suggestion Bot':
+          return <SuggestionScreen onClose={() => setModalVisible(false)} />;
       default:
-        return null;
-    }
+          return null;
+  }
   };
 
   const handleSettingsPress = () => {
