@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import ChatGptResponseModalContent from "./ChatGptResponseModalContent"
+import ChatGptResponseModalContent from "./ChatGptResponseModalContent";
 
 const SuggestionScreen = () => {
   const [age, setAge] = useState("");
@@ -39,7 +39,8 @@ const SuggestionScreen = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer ",
+        Authorization:
+          "Bearer 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",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 200 }),
     };
@@ -50,8 +51,10 @@ const SuggestionScreen = () => {
         options
       );
       const data = await response.json();
+
       if (data.choices && data.choices[0] && data.choices[0].text) {
         setResponseMessage(data.choices[0].text.trim());
+        setModalVisible(true);
       } else {
         console.log(data);
       }
@@ -62,13 +65,6 @@ const SuggestionScreen = () => {
         "Something went wrong while contacting the GPT API."
       );
     }
-
-    if (data.choices && data.choices[0] && data.choices[0].text) {
-      setResponseMessage(data.choices[0].text.trim());
-      setModalVisible(true);
-  } else {
-      console.log(data);
-  }
   };
 
   return (
@@ -152,30 +148,27 @@ const SuggestionScreen = () => {
           >
             <Text style={styles.buttonText}>Get Suggestions</Text>
           </TouchableOpacity>
-          {responseMessage !== "" && (
-            <Text style={styles.response}>{responseMessage}</Text>
-          )}
         </View>
         <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
-            }}
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
         >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <ChatGptResponseModalContent message={responseMessage} />
-                    <TouchableOpacity
-                        style={{...styles.buttonContainer, marginTop: 10}}
-                        onPress={() => setModalVisible(!modalVisible)}
-                    >
-                        <Text style={styles.buttonText}>Close</Text>
-                    </TouchableOpacity>
-                </View>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <ChatGptResponseModalContent message={responseMessage} />
+              <TouchableOpacity
+                style={{ ...styles.buttonContainer, marginTop: 10 }}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
             </View>
+          </View>
         </Modal>
       </ScrollView>
     </TouchableWithoutFeedback>
@@ -185,7 +178,7 @@ const SuggestionScreen = () => {
 const styles = StyleSheet.create({
   scrollContent: {
     width: "100%",
-    alignItems: "center", 
+    alignItems: "center",
   },
   container: {
     width: "100%",
@@ -203,13 +196,13 @@ const styles = StyleSheet.create({
   },
   response: {
     marginTop: 20,
-    fontSize: 20,           // Increase the font size
-    fontWeight: '500',      // Adjust the font weight
+    fontSize: 20, // Increase the font size
+    fontWeight: "500", // Adjust the font weight
     borderWidth: 1,
-    padding: 10,            // Add padding inside the border
-    borderRadius: 5,        // Optionally, add rounded corners to the border
+    padding: 10, // Add padding inside the border
+    borderRadius: 5, // Optionally, add rounded corners to the border
     backgroundColor: "#fff", // Set the background color, if needed
-},
+  },
 
   title: {
     fontSize: 18,
@@ -225,41 +218,44 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 30,
-    borderWidth: 1,         
-    borderColor: 'black',   
-    borderRadius: 5,        
-    padding: 10,            
-    alignItems: 'center',   
-    justifyContent: 'center', 
-    backgroundColor: 'black'  
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "black",
   },
   buttonText: {
-    color: 'white',         
-    fontSize: 16,          
-    fontWeight: 'bold',      
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
-},
-modalView: {
+    marginTop: 22,
+  },
+  modalView: {
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
+    height: "100%",
+    width: "100%",
+    justifyContent: "center",
+    alignContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
-        width: 0,
-        height: 2
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
-}
-  
+    elevation: 5,
+  },
 });
 
 export default SuggestionScreen;

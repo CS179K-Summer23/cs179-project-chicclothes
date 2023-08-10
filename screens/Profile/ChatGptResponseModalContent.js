@@ -1,3 +1,6 @@
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+
 const ChatGptResponseModalContent = ({ message }) => {
     return (
         <View>
@@ -5,3 +8,5 @@ const ChatGptResponseModalContent = ({ message }) => {
         </View>
     );
 }
+
+export default ChatGptResponseModalContent;
