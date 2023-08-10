@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useEffect } from "react";
 import {
   View,
   Text,
@@ -19,11 +19,15 @@ import OrdersModalsContent from "./OrdersModalsContent";
 import ViewMemIdModalContent from "./ViewMemIdModalContent";
 import PointsHistoryModalContent from "./PointsHistoryModalContent";
 
-const ProfileScreen = (navigation) => {
+const ProfileScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
   const sectionRef = useRef(null); //for setting range to show when press
+  //for signing out
+  const [signOut, setSignOut] = useState(false); 
+ 
+
 
   const offers = [
     {
@@ -63,14 +67,21 @@ const ProfileScreen = (navigation) => {
     { title: "Suggestion Bot", icon: "bulb1" },
   ];
 
+ 
+
   const OptionButton = ({ title, icon }) => {
+    const handlePress = () => {
+      if (title === "Sign out") {
+          navigation.navigate('Login'); // Navigate to Login screen
+      } else {
+          setActiveModal(title);
+          setModalVisible(true);
+      }
+  };
     return (
       <TouchableOpacity
         style={styles.optionButton}
-        onPress={() => {
-          setActiveModal(title);
-          setModalVisible(true);
-        }}
+        onPress={handlePress}
       >
         <View
           style={{
@@ -116,10 +127,10 @@ const ProfileScreen = (navigation) => {
         return (
           <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />
         );
-      case "Sign out":
-        navigation.navigate('Login');
       case "Suggestion Bot":
-        return <SuggestionScreen onClose={() => setModalVisible(false)} />;
+          return <SuggestionScreen onClose={() => setModalVisible(false)} />;
+      case "Sign out":
+          return null;
       default:
         return null;
     }
