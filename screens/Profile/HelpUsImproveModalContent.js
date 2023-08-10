@@ -53,7 +53,8 @@ const HelpUsImproveModalContent = ({ onClose }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <>
-        <Image source={require("./images/improve.jpg")} style={styles.image} />
+        <Text style={styles.title}>Help us Improve</Text>
+        <Image source={require("../images/improve.jpg")} style={styles.image} />
         <Text style={styles.rateText}>Rate your app experience</Text>
         <View style={styles.starsDesign}>{renderStars()}</View>
         <Text style={styles.description}>
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     flex: 1,
-    backgroundColor: "##6d6d6d",
+    backgroundColor: "#6d6d6d",
   },
   image: {
     width: "100%", // 100% of its parent's width
@@ -140,6 +141,13 @@ const styles = StyleSheet.create({
   Done: {
     marginBottom: 200,
     borderWidth: 1,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: 30,
+    padding: 10,
+    alignContent: "center",
   },
 });
 

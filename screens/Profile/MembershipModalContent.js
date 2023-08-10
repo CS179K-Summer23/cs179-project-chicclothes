@@ -39,39 +39,45 @@ const MembershipModalContent = ({ onClose }) => {
   };
 
   return (
-    <View style={styles.centeredView}>
-      <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
-        <View style={styles.container}>
-          <View style={styles.rewardContainer}>
-            <Text style={styles.membershipTitle}>It pays to be a member</Text>
-            <Text style={styles.membershipDescription}>
-              Enjoy exclusive discounts, $5 rewards, and 10% off your first
-              purchase. It’s fast and free to join.
-            </Text>
-            <TouchableOpacity
-              style={styles.readMoreButton}
-              onPress={handleSettingsPress}
-            >
-              <Text style={styles.readMoreText}>Read More</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.picContainer}>
-            <Image source={require("./images/ai.png")} style={styles.image} />
-          </View>
-          <View ref={sectionRef}>
-            <View style={styles.benefitsContainer}>
-              <Text style={styles.benefitsHeader}>All your benefits</Text>
+    <View>
+      <Text style={styles.title}>Membership</Text>
+      <View style={styles.centeredView}>
+        <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
+          <View style={styles.container}>
+            <View style={styles.rewardContainer}>
+              <Text style={styles.membershipTitle}>It pays to be a member</Text>
+              <Text style={styles.membershipDescription}>
+                Enjoy exclusive discounts, $5 rewards, and 10% off your first
+                purchase. It’s fast and free to join.
+              </Text>
+              <TouchableOpacity
+                style={styles.readMoreButton}
+                onPress={handleSettingsPress}
+              >
+                <Text style={styles.readMoreText}>Read More</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.picContainer}>
+              <Image
+                source={require("../images/ai.png")}
+                style={styles.image}
+              />
+            </View>
+            <View ref={sectionRef}>
+              <View style={styles.benefitsContainer}>
+                <Text style={styles.benefitsHeader}>All your benefits</Text>
 
-              {benefits.map((benefit, index) => (
-                <View key={index} style={styles.benefitRow}>
-                  <AntDesign name="gift" size={25} color="#000" />
-                  <Text style={styles.benefitItem}>{benefit}</Text>
-                </View>
-              ))}
+                {benefits.map((benefit, index) => (
+                  <View key={index} style={styles.benefitRow}>
+                    <AntDesign name="gift" size={25} color="#000" />
+                    <Text style={styles.benefitItem}>{benefit}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -81,6 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    
   },
   mainScrollView: {
     flex: 1,
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
     minHeight: 300,
     backgroundColor: "#f0ebdf",
     padding: 20,
-    marginBottom: "10",
+    marginBottom: 10,
   },
   membershipTitle: {
     fontSize: 30,
@@ -153,6 +160,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     //fontWeight: 'bold',
     fontSize: 15,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "700",
+    textAlign: "center",
+    marginTop: 30,
+    padding :10,
   },
 });
 

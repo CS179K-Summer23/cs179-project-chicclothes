@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./screens/HomeScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
 import ShoppingBagScreen from "./screens/ShoppingBagScreen";
-import ProfileScreen from "./screens/ProfileScreen";
+import ProfileScreen from "./screens/Profile/ProfileScreen";
 import SwipeMeScreen from "./screens/SwipeMeScreen";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 
