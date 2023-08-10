@@ -24,11 +24,7 @@ const ProfileScreen = ({navigation}) => {
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
   const sectionRef = useRef(null); //for setting range to show when press
-  //for signing out
-  const [signOut, setSignOut] = useState(false); 
  
-
-
   const offers = [
     {
       image: require("../images/offer1.png"),
