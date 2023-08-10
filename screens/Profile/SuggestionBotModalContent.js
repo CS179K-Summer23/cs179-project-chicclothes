@@ -84,60 +84,70 @@ const SuggestionScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Age"
+            placeholderTextColor="#999"
             value={age}
             onChangeText={setAge}
           />
           <TextInput
             style={styles.input}
             placeholder="Gender"
+            placeholderTextColor="#999"
             value={gender}
             onChangeText={setGender}
           />
           <TextInput
             style={styles.input}
             placeholder="Body Shape (Triangle, Rectangle, Oval, Hourglass)"
+            placeholderTextColor="#999"
             value={bodyType}
             onChangeText={setBodyType}
           />
           <TextInput
             style={styles.input}
             placeholder="Sizes (waist, chest, T-shirt/Dress)"
+            placeholderTextColor="#999"
             value={sizes}
             onChangeText={setSizes}
           />
           <TextInput
             style={styles.input}
             placeholder="Current Season/ Location"
+            placeholderTextColor="#999"
             value={location}
             onChangeText={setLocation}
           />
           <TextInput
             style={styles.input}
             placeholder="Occasion/Event"
+            placeholderTextColor="#999"
             value={occasion}
             onChangeText={setOccasion}
           />
           <TextInput
             style={styles.input}
             placeholder="Style Preference (Classic? Formal? Vintage? Stree? etc.)"
+            placeholderTextColor="#999"
             value={stylePreference}
             onChangeText={setStylePreference}
           />
           <TextInput
             style={styles.input}
             placeholder="Budget Range"
+            placeholderTextColor="#999"
             value={budget}
             onChangeText={setBudget}
           />
           <TextInput
             style={styles.input}
             placeholder="Brand Preference"
+            placeholderTextColor="#999"
             value={brandPreference}
             onChangeText={setBrandPreference}
           />
           <TextInput
             style={styles.input}
             placeholder="Considerations (Ex: Don't like it too tight)"
+            placeholderTextColor="#999"
             value={Considerations}
             onChangeText={setConsiderations}
           />
@@ -184,6 +194,8 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 20,
     backgroundColor: "#f0ebdf",
+    height: "100%",
+  
   },
   input: {
     height: 40,
