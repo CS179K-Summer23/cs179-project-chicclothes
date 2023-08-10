@@ -19,7 +19,7 @@ import OrdersModalsContent from "./OrdersModalsContent";
 import ViewMemIdModalContent from "./ViewMemIdModalContent";
 import PointsHistoryModalContent from "./PointsHistoryModalContent";
 
-const ProfileScreen = () => {
+const ProfileScreen = (navigation) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
@@ -117,7 +117,7 @@ const ProfileScreen = () => {
           <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />
         );
       case "Sign out":
-        return null; // ned to implement this method
+        navigation.navigate('Login');
       case "Suggestion Bot":
         return <SuggestionScreen onClose={() => setModalVisible(false)} />;
       default:
