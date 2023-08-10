@@ -170,13 +170,7 @@ const SuggestionScreen = () => {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <ChatGptResponseModalContent message={responseMessage} />
-              <TouchableOpacity
-                style={{ ...styles.buttonContainer, marginTop: 10 }}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.buttonText}>Close</Text>
-              </TouchableOpacity>
+              <ChatGptResponseModalContent message={responseMessage} setModalVisible={setModalVisible}/>
             </View>
           </View>
         </Modal>
@@ -250,10 +244,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
+    backgroundColor: "#f0ebdf",
     height: "100%",
     width: "100%",
     justifyContent: "center",
