@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback} from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback, ScrollView} from 'react-native';
 import { auth, db } from '../../configuration/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -59,52 +59,52 @@ const RegisterScreen = ({ navigation }) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-            <Text style={styles.text}>Register Now!</Text>
+            <ScrollView style={{flex: 1}} contentContainerStyle={styles.container} keyboardShouldPersistTaps='handled'>
+                <Text style={styles.text}>Register Now!</Text>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Name"
-                    value={name}
-                    onChangeText={setName}
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-
-                <View style={styles.passwordContainer}>
                     <TextInput
-                        style={styles.passwordInput}
-                        placeholder="Password"
-                        secureTextEntry={!isPasswordVisible}
-                        value={password}
-                        onChangeText={setPassword}
+                        style={styles.input}
+                        placeholder="Name"
+                        value={name}
+                        onChangeText={setName}
                     />
-                    <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
-                        <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
-                    </TouchableOpacity>
-                </View>
 
-                <TextInput 
-                    style={styles.input}
-                    placeholder="Repeat Password"
-                    secureTextEntry
-                    value={password2}
-                    onChangeText={setPassword2}
-                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
 
-            <TouchableOpacity 
-                style={[ styles.registerButton,
-                (name && email && password && password2) ? { backgroundColor: "#E4E4CD" } : { backgroundColor: "red" }
-            ]}
-            onPress={handleRegister}>
-                <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-        </View>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={styles.passwordInput}
+                            placeholder="Password"
+                            secureTextEntry={!isPasswordVisible}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+                        <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
+                            <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TextInput 
+                        style={styles.input}
+                        placeholder="Repeat Password"
+                        secureTextEntry
+                        value={password2}
+                        onChangeText={setPassword2}
+                    />
+
+                <TouchableOpacity 
+                    style={[ styles.registerButton,
+                    (name && email && password && password2) ? { backgroundColor: "#E4E4CD" } : { backgroundColor: "red" }
+                ]}
+                onPress={handleRegister}>
+                    <Text style={styles.buttonText}>Register</Text>
+                </TouchableOpacity>
+            </ScrollView>
         </TouchableWithoutFeedback>
     );
 }
