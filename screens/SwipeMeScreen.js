@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const RandomFeatureScreen = () => {
+const SwipeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to RandomFeatureScreen</Text>
+      <Text style={styles.text}>Welcome to SwipeScreen Please</Text>
     </View>
   );
 };
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RandomFeatureScreen;
+export default SwipeScreen;
