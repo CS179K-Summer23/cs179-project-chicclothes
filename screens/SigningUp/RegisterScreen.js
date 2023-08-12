@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback} from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback, ScrollView} from 'react-native';
 import { auth, db } from '../../configuration/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -10,7 +10,6 @@ const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // const [interests, setInterests] = useState('');
     const [password2, setPassword2] = useState('');
     const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
@@ -60,52 +59,52 @@ const RegisterScreen = ({ navigation }) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-            <Text style={styles.text}>Register Now!</Text>
+            <ScrollView style={{flex: 1}} contentContainerStyle={styles.container} keyboardShouldPersistTaps='handled'>
+                <Text style={styles.text}>Register Now!</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={name}
-                onChangeText={setName}
-            />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Name"
+                        value={name}
+                        onChangeText={setName}
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-            />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
 
-            <View style={styles.passwordContainer}>
-                <TextInput
-                    style={styles.passwordInput}
-                    placeholder="Password"
-                    secureTextEntry={!isPasswordVisible}
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
-                    <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={styles.passwordInput}
+                            placeholder="Password"
+                            secureTextEntry={!isPasswordVisible}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+                        <TouchableOpacity style={styles.showPasswordButton} onPress={() => setPasswordVisibility(!isPasswordVisible)}>
+                            <Text>{isPasswordVisible ? 'HIDE' : 'SHOW'}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TextInput 
+                        style={styles.input}
+                        placeholder="Repeat Password"
+                        secureTextEntry
+                        value={password2}
+                        onChangeText={setPassword2}
+                    />
+
+                <TouchableOpacity 
+                    style={[ styles.registerButton,
+                    (name && email && password && password2) ? { backgroundColor: "#E4E4CD" } : { backgroundColor: "red" }
+                ]}
+                onPress={handleRegister}>
+                    <Text style={styles.buttonText}>Register</Text>
                 </TouchableOpacity>
-            </View>
-
-            <TextInput 
-                style={styles.input}
-                placeholder="Repeat Password"
-                secureTextEntry
-                value={password2}
-                onChangeText={setPassword2}
-            />
-
-            <TouchableOpacity 
-                style={[ styles.registerButton,
-                (name && email && password && password2) ? { backgroundColor: "#E4E4CD" } : { backgroundColor: "red" }
-            ]}
-            onPress={handleRegister}>
-                <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-        </View>
+            </ScrollView>
         </TouchableWithoutFeedback>
     );
 }
@@ -134,9 +133,6 @@ const styles = StyleSheet.create(
         backgroundColor: '#fff',
     },
     text: {
-        // fontSize: 18,
-        // color: '#333',
-
         fontSize: 24,
         color: '#333',
         fontWeight: "bold",
@@ -163,12 +159,6 @@ const styles = StyleSheet.create(
         marginLeft: 20,
     },
     registerButton: {
-        // width: "100%",
-        // height: 50,
-        // backgroundColor: "#fff",
-        // justifyContent: "center",
-        // alignItems: "center",
-
         width: "80%",
         borderRadius: 25,
         height: 50,
