@@ -11,15 +11,16 @@ import {
   Dimensions,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { SliderBox } from "react-native-image-slider-box";
 
 const HomeScreen = (navigation) => {
   const [products, setProducts] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-//   const handleHome = () => {
-//       navigation.navigate("Profile");
-//   };
+  //   const handleHome = () => {
+  //       navigation.navigate("Profile");
+  //   };
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -39,6 +40,7 @@ const HomeScreen = (navigation) => {
     <View style={styles.container}>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome to Our Store!</Text>
+
         <ScrollView
           horizontal
           pagingEnabled
@@ -46,31 +48,21 @@ const HomeScreen = (navigation) => {
           style={styles.imageScrollView}
         >
           <View style={styles.carouselSlide}>
-            <Image
-              source={require("./images/Clique_logo.png")}
-              style={styles.carouselImage}
+            <SliderBox
+              images={pictures}
+              inactiveDotColor="#DDF0FF"
+              ImageComponentStyle={{
+                width: "100%",
+                marginTop: 15,
+              }}
+              autoplay
+              paginationBoxVerticalPadding={-30}
+              circleLoop
             />
-          </View>
-
-          <View style={styles.carouselSlide}>
-        {/* <TouchableOpacity onPress={handleHome}> */}
-              <Image
-                source={require("./images/group_picture.jpg")}
-                style={styles.carouselImage}
-              />
-            {/* </TouchableOpacity> */}
-            <Text style={styles.overlayText}>Join the Clique</Text>
-          </View>
-
-          <View style={styles.carouselSlide}>
-            <Image
-              source={require("./images/group_picture2.jpg")}
-              style={styles.carouselImage}
-            />
-            <Text style={styles.overlayText}>Checkout our Deals</Text>
           </View>
         </ScrollView>
       </View>
+
       <View style={styles.productContainer}>
         <View style={{ padding: 10 }}>
           <FlatList
@@ -141,6 +133,13 @@ const HomeScreen = (navigation) => {
     </View>
   );
 };
+
+const pictures = [
+  require("./images/Clique_logo.png"),
+  require("./images/group_picture.jpg"),
+  require("./images/group_picture2.jpg"),
+];
+
 const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
