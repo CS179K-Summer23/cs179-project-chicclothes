@@ -41,12 +41,6 @@ const HomeScreen = (navigation) => {
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome to Our Store!</Text>
 
-        {/* <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          style={styles.imageScrollView}
-        > */}
         <View style={styles.carouselSlide}>
           <SliderBox
             images={pictures}
@@ -60,7 +54,6 @@ const HomeScreen = (navigation) => {
             circleLoop
           />
         </View>
-        {/* </ScrollView> */}
       </View>
 
       <View style={styles.productContainer}>
