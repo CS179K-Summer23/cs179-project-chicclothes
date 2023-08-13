@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from "react-native";
 
-const ShoppingBagScreen = ({ navigation }) => {
+const SearchScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <View style={styles.searchContainer}>
@@ -20,7 +20,7 @@ const ShoppingBagScreen = ({ navigation }) => {
         <View style={styles.searchWrapper}>
           <TextInput
             style={styles.searchWrapper}
-            // value=""
+            value=""
             onPressIn={() => {}}
             placeholder="What are you looking for"
           />
@@ -72,5 +72,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
 });
-
-export default ShoppingBagScreen;
+export default SearchScreen;
