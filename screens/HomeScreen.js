@@ -41,26 +41,26 @@ const HomeScreen = (navigation) => {
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome to Our Store!</Text>
 
-        <ScrollView
+        {/* <ScrollView
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           style={styles.imageScrollView}
-        >
-          <View style={styles.carouselSlide}>
-            <SliderBox
-              images={pictures}
-              inactiveDotColor="#DDF0FF"
-              ImageComponentStyle={{
-                width: "100%",
-                marginTop: 15,
-              }}
-              autoplay
-              paginationBoxVerticalPadding={-30}
-              circleLoop
-            />
-          </View>
-        </ScrollView>
+        > */}
+        <View style={styles.carouselSlide}>
+          <SliderBox
+            images={pictures}
+            inactiveDotColor="#DDF0FF"
+            ImageComponentStyle={{
+              width: "100%",
+              marginTop: 15,
+            }}
+            autoplay
+            paginationBoxVerticalPadding={20}
+            circleLoop
+          />
+        </View>
+        {/* </ScrollView> */}
       </View>
 
       <View style={styles.productContainer}>
