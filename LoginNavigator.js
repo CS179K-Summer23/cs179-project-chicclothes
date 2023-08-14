@@ -8,7 +8,7 @@ function LoginNavigator() {
     const [user, setUser] = useState(null);
     // Logic to check Firebase user goes here...
   
-    if(!user) { //change the user if true or false so if its false it will go to loging but if its in then it 
+    if(user == true) { //change the user if true or false so if its false it will go to loging but if its in then it 
                 //will go straight to home pages etc... to test it just change it
         return <StackNavigator />;
     } else {
