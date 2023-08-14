@@ -1,38 +1,18 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   TextInput,
-  Image,
   ScrollView,
   SafeAreaView,
   TouchableHighlight,
 } from "react-native";
 
 const ShoppingBagScreen = ({ navigation }) => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
-  useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((response) => response.json())
-      .then((data) => {
-        const clothesProducts = data.filter(
-          (product) =>
-            // product.category === "men's clothing" ||
-            product.category === "women's clothing" ||
-            product.category === "Women's clothing"
-        );
-        setProducts(clothesProducts);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
-
   return (
     <SafeAreaView style={styles.containerShop}>
       <View style={styles.searchContainer}>
@@ -56,11 +36,18 @@ const ShoppingBagScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.genderSelectContainer}>
-        <View style={styles.genderSelected}>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.selectedGenderText}>Womens</Text>
+        <View style={styles.gender}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("ShoppingBag", {
+                screen: "ShoppingBagWomen",
+              })
+            }
+          >
+            <Text style={styles.GenderText}>Womens</Text>
           </TouchableOpacity>
         </View>
+
         <View style={styles.gender}>
           <TouchableOpacity
             onPress={() =>
@@ -72,15 +59,10 @@ const ShoppingBagScreen = ({ navigation }) => {
             <Text style={styles.GenderText}>Mens</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.gender}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ShoppingBag", {
-                screen: "ShoppingBagKid",
-              })
-            }
-          >
-            <Text style={styles.GenderText}>Kids</Text>
+
+        <View style={styles.genderSelected}>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={styles.selectedGenderText}>Kids</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -108,21 +90,6 @@ const ShoppingBagScreen = ({ navigation }) => {
         </View>
         <View style={styles.categories}>
           <TouchableOpacity>
-            <Text style={styles.TextCategories}>Swimwear</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.categories}>
-          <TouchableOpacity>
-            <Text style={styles.TextCategories}>Jeans</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.categories}>
-          <TouchableOpacity>
-            <Text style={styles.TextCategories}>Loungewear</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.categories}>
-          <TouchableOpacity>
             <Text style={styles.TextCategories}>Accessories</Text>
           </TouchableOpacity>
         </View>
@@ -130,32 +97,6 @@ const ShoppingBagScreen = ({ navigation }) => {
           <TouchableOpacity>
             <Text style={styles.TextCategories}>Shoes</Text>
           </TouchableOpacity>
-        </View>
-
-        <View style={styles.productsList}>
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedProduct(item);
-                    setModalVisible(true);
-                  }}
-                >
-                  <Image
-                    source={{ uri: item.image }}
-                    style={{ width: 90, height: 90 }}
-                  />
-                  <Text style={{ fontWeight: "bold", textAlign: "center" }}>
-                    {item.price} USD
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            numColumns={2}
-          />
         </View>
       </View>
     </SafeAreaView>
@@ -225,7 +166,7 @@ const styles = StyleSheet.create({
   selectedGenderText: {
     fontSize: 15,
     // justifyContent: "center",
-    paddingLeft: 20,
+    paddingLeft: "25%",
     fontWeight: "bold",
     color: "#000101",
     // paddingBottom: 20,
@@ -246,15 +187,6 @@ const styles = StyleSheet.create({
     paddingLeft: "25%",
     // fontWeight: "bold",
     color: "#000101",
-  },
-  productsList: {
-    flex: 1,
-    flexDirection: "row",
-    // backgroundColor: "black",
-    width: "64%",
-    marginLeft: 152,
-    justifyContent: "flex-start",
-    marginTop: -414,
   },
   leftColumnContainer: {
     flex: 1,
