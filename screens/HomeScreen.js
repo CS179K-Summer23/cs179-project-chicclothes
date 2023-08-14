@@ -43,8 +43,12 @@ const HomeScreen = (navigation) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.titleContainer}>
+					<View style={[styles.smallContentTitle]}>
+						<Text style={styles.title}>Welcome</Text>
+					</View>
+				</View>
       <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>Welcome to Our Store!</Text>
         <ScrollView
           horizontal
           pagingEnabled
@@ -77,13 +81,19 @@ const HomeScreen = (navigation) => {
           </View>
         </ScrollView>
       </View>
+      <View style={styles.title2Container}>
+					<View style={[styles.smallContentTitle]}>
+						<Text style={styles.title}>Latest Exculsives</Text>
+					</View>
+				</View>
       <View style={styles.productContainer}>
         <View style={{ padding: 10 }}>
           <FlatList
             data={products}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item, index }) => (
-              <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+              <View style={styles.productBox}>
+              <View style={{ marginBottom: 20, marginHorizontal: 10}}>
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedProduct({ item: item, index: index });
@@ -92,12 +102,13 @@ const HomeScreen = (navigation) => {
                 >
                   <Image
                     source={{ uri: item.image }}
-                    style={{ width: 125, height: 125 }}
+                    style={{ width: 115, height: 95 }}
                   />
-                  <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                    <Text style={{ fontWeight: "bold", textAlign: "center" , marginTop: 5}}>
                     {item.price} USD
                   </Text>
                 </TouchableOpacity>
+                </View>
               </View>
             )}
             numColumns={2}
@@ -127,7 +138,7 @@ const HomeScreen = (navigation) => {
                   style={styles.heartIcon}
                   onPress={() => favoritePress(selectedProduct.index)}
                 />
-                {selectedProduct && (
+                {selectedProduct.item && (
                   <>
                     <Image
                       source={{ uri: selectedProduct.item.image }}
@@ -158,9 +169,33 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
+    height: "auto",
+  },
+  smallContentTitle: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  titleContainer: {
+    height: "12%",
+    backgroundColor: "#e2ded3",
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    marginBottom: -40,
+  },
+  title2Container: {
+    height: "12%",
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    marginTop: -40,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "black",
+    marginLeft: 15,
+    top: 10,
   },
   welcomeContainer: {
     width: "100%",
@@ -169,22 +204,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 300,
-    position: "absolute",
-    top: 0,
   },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
+
   productContainer: {
     width: "100%",
     height: 350,
     backgroundColor: "#fff",
     padding: 20,
-    position: "absolute",
-    bottom: 0,
-    flexDirection: "row",
+    bottom: 35,
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -239,6 +266,7 @@ const styles = StyleSheet.create({
     width: width,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: -65,
   },
   overlayText: {
     position: "absolute",
@@ -255,6 +283,20 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     zIndex: 1,
+  },
+  productBox: {
+    borderColor: '#ccc',
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    marginBottom: 20,
+    marginHorizontal: 10, // Give space between boxes horizontally
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
