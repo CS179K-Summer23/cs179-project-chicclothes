@@ -40,7 +40,7 @@ const SuggestionScreen = () => {
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          "Bearer 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",
+          "Bearer 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",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 200 }),
     };
