@@ -14,7 +14,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-const ShoppingBagScreen = ({ navigation }) => {
+const ShoppingBagScreenMen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -25,8 +25,8 @@ const ShoppingBagScreen = ({ navigation }) => {
         const clothesProducts = data.filter(
           (product) =>
             // product.category === "men's clothing" ||
-            product.category === "women's clothing" ||
-            product.category === "Women's clothing"
+            product.category === "men's clothing" ||
+            product.category === "Men's clothing"
         );
         setProducts(clothesProducts);
       })
@@ -56,20 +56,20 @@ const ShoppingBagScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.genderSelectContainer}>
-        <View style={styles.genderSelected}>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.selectedGenderText}>Womens</Text>
-          </TouchableOpacity>
-        </View>
         <View style={styles.gender}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("ShoppingBag", {
-                screen: "ShoppingBagMen",
+                screen: "ShoppingBagWomen",
               })
             }
           >
-            <Text style={styles.GenderText}>Mens</Text>
+            <Text style={styles.GenderText}>Womens</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.genderSelected}>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={styles.selectedGenderText}>Mens</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.gender}>
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   selectedGenderText: {
     fontSize: 15,
     // justifyContent: "center",
-    paddingLeft: 20,
+    paddingLeft: "25%",
     fontWeight: "bold",
     color: "#000101",
     // paddingBottom: 20,
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
   GenderText: {
     fontSize: 15,
     justifyContent: "center",
+    paddingLeft: 20,
     paddingLeft: "25%",
     // fontWeight: "bold",
     color: "#000101",
@@ -292,4 +293,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShoppingBagScreen;
+export default ShoppingBagScreenMen;

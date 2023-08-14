@@ -17,9 +17,9 @@ const HomeScreen = (navigation) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-//   const handleHome = () => {
-//       navigation.navigate("Profile");
-//   };
+  //   const handleHome = () => {
+  //       navigation.navigate("Profile");
+  //   };
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -53,11 +53,11 @@ const HomeScreen = (navigation) => {
           </View>
 
           <View style={styles.carouselSlide}>
-        {/* <TouchableOpacity onPress={handleHome}> */}
-              <Image
-                source={require("./images/group_picture.jpg")}
-                style={styles.carouselImage}
-              />
+            {/* <TouchableOpacity onPress={handleHome}> */}
+            <Image
+              source={require("./images/group_picture.jpg")}
+              style={styles.carouselImage}
+            />
             {/* </TouchableOpacity> */}
             <Text style={styles.overlayText}>Join the Clique</Text>
           </View>
