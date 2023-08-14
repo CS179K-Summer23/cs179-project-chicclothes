@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, Image} from "react-native";
+import {View, Text, StyleSheet, Image} from "react-native";
 import {Favorites} from '../data';
-// import { AntDesign } from "@expo/vector-icons";
 
 const SwipeScreen = () => {
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  // const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -18,28 +16,11 @@ const SwipeScreen = () => {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  // const filterProductsByCategory = (category) => {
-  //   switch (category) {
-  //     case 'shirts':
-  //       return products.filter(product => product.title.toLowerCase().includes('shirt') || product.title.toLowerCase().includes('short sleeve'));
-  //     case 'pants':
-  //       return products.filter(product => product.title.toLowerCase().includes('pant') || product.title.toLowerCase().includes('jean'));
-  //     default:
-  //       return products.filter(product => 
-  //         !product.title.toLowerCase().includes('shirt') &&
-  //         !product.title.toLowerCase().includes('short sleeve') &&
-  //         !product.title.toLowerCase().includes('pant') &&
-  //         !product.title.toLowerCase().includes('jean')
-  //       );
-  //   }
-  // };
-
   const onSwipedRight = (index) => {
     Favorites.push(products[index]);
     let updatedProducts = [...products];
     updatedProducts.splice(index, 1);
     setProducts(updatedProducts);
-    // setFavorites(prevFavorites => [...prevFavorites, products[index]]);
   };
 
   const onSwipedLeft = (index) => {
@@ -48,17 +29,6 @@ const SwipeScreen = () => {
     updatedProducts.push(removedItem[0]);
     setProducts(updatedProducts);
   };
-
-  // const productsToDisplay = filterProductsByCategory(selectedCategory);
-
-  // const CategoryButton = ({ title, onPress }) => (
-  //   <TouchableOpacity style={styles.optionButton} onPress={onPress}>
-  //     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-  //       <Text style={styles.optionButtonText}>{title}</Text>
-  //       <AntDesign name="right" size={20} color="grey" />
-  //     </View>
-  //   </TouchableOpacity>
-  // );
 
   return (
     <View style={styles.container}>
@@ -77,7 +47,7 @@ const SwipeScreen = () => {
         }}
         onSwipedRight={onSwipedRight}
         onSwipedLeft={onSwipedLeft}
-        infinite={true}  // for an infinite loop
+        infinite={true}
       />
       )}
     </View>

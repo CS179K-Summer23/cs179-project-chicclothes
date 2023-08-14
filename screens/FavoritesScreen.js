@@ -20,7 +20,7 @@ const FavoritesScreen = () => {
       <FlatList 
         data={Favorites}
         renderItem={renderFavoriteItem}
-        keyExtractor={item => item.id.toString()}  // assuming each product has an id
+        keyExtractor={item => item.id.toString()}
       />
     </View>
   );
