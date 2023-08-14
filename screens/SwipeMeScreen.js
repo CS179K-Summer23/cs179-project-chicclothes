@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, Image} from "react-native";
+import {Favorites} from '../data';
 // import { AntDesign } from "@expo/vector-icons";
 
 const SwipeScreen = () => {
@@ -34,7 +35,11 @@ const SwipeScreen = () => {
   // };
 
   const onSwipedRight = (index) => {
-    setFavorites(prevFavorites => [...prevFavorites, products[index]]);
+    Favorites.push(products[index]);
+    let updatedProducts = [...products];
+    updatedProducts.splice(index, 1);
+    setProducts(updatedProducts);
+    // setFavorites(prevFavorites => [...prevFavorites, products[index]]);
   };
 
   const onSwipedLeft = (index) => {
