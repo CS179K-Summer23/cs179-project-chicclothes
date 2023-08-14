@@ -11,11 +11,12 @@ import {
   Dimensions,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { Favorites } from "../data";
 
 const HomeScreen = (navigation) => {
   const [products, setProducts] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState({ item: null, index: null });
 
 //   const handleHome = () => {
 //       navigation.navigate("Profile");
@@ -34,6 +35,11 @@ const HomeScreen = (navigation) => {
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
+  const favoritePress = (index) => {
+    Favorites.push(products[index]);
+    setModalVisible(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -76,11 +82,11 @@ const HomeScreen = (navigation) => {
           <FlatList
             data={products}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
                 <TouchableOpacity
                   onPress={() => {
-                    setSelectedProduct(item);
+                    setSelectedProduct({ item: item, index: index });
                     setModalVisible(true);
                   }}
                 >
@@ -114,17 +120,24 @@ const HomeScreen = (navigation) => {
                   left={10}
                   onPress={() => setModalVisible(false)}
                 />
+                 <AntDesign
+                  name="hearto"
+                  size={30}
+                  color="red"
+                  style={styles.heartIcon}
+                  onPress={() => favoritePress(selectedProduct.index)}
+                />
                 {selectedProduct && (
                   <>
                     <Image
-                      source={{ uri: selectedProduct.image }}
+                      source={{ uri: selectedProduct.item.image }}
                       style={{ width: 250, height: 250 }}
                     />
                     <Text style={{ textAlign: "center" }}>
-                      {selectedProduct.title}
+                      {selectedProduct.item.title}
                     </Text>
-                    <Text>{selectedProduct.description}</Text>
-                    <Text>{selectedProduct.price} USD</Text>
+                    <Text>{selectedProduct.item.description}</Text>
+                    <Text>{selectedProduct.item.price} USD</Text>
                   </>
                 )}
                 <TouchableOpacity
@@ -236,6 +249,12 @@ const styles = StyleSheet.create({
     textShadowColor: "black",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 1,
+  },
+  heartIcon: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
 });
 
