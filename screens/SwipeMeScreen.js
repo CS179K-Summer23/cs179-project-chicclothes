@@ -2,19 +2,12 @@ import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
 import {View, Text, StyleSheet, Image} from "react-native";
 import {Favorites} from '../data';
+import axios from 'axios';
+import productsData from './product.json';
 
 const SwipeScreen = () => {
-  const [products, setProducts] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+  const [products, setProducts] = useState(productsData);
 
-  useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
 
   const onSwipedRight = (index) => {
     Favorites.push(products[index]);
@@ -25,34 +18,38 @@ const SwipeScreen = () => {
 
   const onSwipedLeft = (index) => {
     let updatedProducts = [...products];
-    const removedItem = updatedProducts.splice(index, 1);
-    updatedProducts.push(removedItem[0]);
+    updatedProducts.splice(index, 1);
     setProducts(updatedProducts);
   };
 
   return (
     <View style={styles.container}>
-      {products.length > 0 && (
-      <Swiper
-        cards={products}
-        renderCard={(card) => {
-          console.log(card);
-          return (
-            <View style={styles.card}>
-              <Image source={{ uri: card.image }} style={styles.cardImage} />
-              <Text style={styles.cardTitle}>{card.title}</Text>
-              <Text style={styles.cardPrice}>${card.price}</Text>
-            </View>
-          );
-        }}
-        onSwipedRight={onSwipedRight}
-        onSwipedLeft={onSwipedLeft}
-        infinite={true}
-      />
+      {products?.length > 0 ? (
+        <Swiper
+          cards={products}
+          renderCard={(card) => {
+            return (
+              <View style={styles.card}>
+                <Image source={{ uri: card.Image }} style={styles.cardImage} />
+                <Text style={styles.cardTitle}>{card.Name}</Text>
+                <Text style={styles.cardPrice}>{card["Current Price"]}</Text>
+              </View>
+            );
+          }}
+          onSwipedRight={onSwipedRight}
+          onSwipedLeft={onSwipedLeft}
+          infinite={true}
+        />
+      ) : (
+        <Text>No products available.</Text>
       )}
     </View>
   );
 };
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {
