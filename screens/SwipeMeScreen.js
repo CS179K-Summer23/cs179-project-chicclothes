@@ -2,18 +2,17 @@ import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
 import {View, Text, StyleSheet, Image} from "react-native";
 import {Favorites} from '../data';
+import data from '../data.json';
 
 const SwipeScreen = () => {
+  const BASE_URL = "https://";
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+    // Flatten the products from all categories into a single array
+    const allProducts = data.flatMap(category => category.products);
+    setProducts(allProducts);
   }, []);
 
   const onSwipedRight = (index) => {
@@ -36,15 +35,17 @@ const SwipeScreen = () => {
       <Swiper
         cards={products}
         renderCard={(card) => {
-          console.log(card);
-          return (
-            <View style={styles.card}>
-              <Image source={{ uri: card.image }} style={styles.cardImage} />
-              <Text style={styles.cardTitle}>{card.title}</Text>
-              <Text style={styles.cardPrice}>${card.price}</Text>
-            </View>
-          );
-        }}
+            const imageUrl = `${BASE_URL}${card.imageUrl}`;
+          
+            return (
+              <View style={styles.card}>
+                <Image source={{ uri: imageUrl }} style={styles.cardImage} />
+                <Text style={styles.cardTitle}>{card.name}</Text>
+                <Text style={styles.cardPrice}>{card.price}</Text>
+              </View>
+            );
+          }}
+          
         onSwipedRight={onSwipedRight}
         onSwipedLeft={onSwipedLeft}
         infinite={true}
@@ -53,7 +54,6 @@ const SwipeScreen = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

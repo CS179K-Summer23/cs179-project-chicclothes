@@ -9,7 +9,7 @@ const FavoritesScreen = () => {
         <Image source={{ uri: item.image }} style={styles.productImage} />
         <View style={styles.textContainer}>
           <Text style={styles.productTitle}>{item.title}</Text>
-          <Text style={styles.productPrice}>${item.price}</Text>
+          <Text style={styles.productPrice}>{item.price}</Text>
         </View>
       </View>
     );
