@@ -1,3 +1,6 @@
+
+
+[
 {
     "categoryName":"Women Jackets & Coats",
     "products":[
@@ -338,7 +341,7 @@
           "url":"french-connection/french-connection-high-neck-padded-vest-in-chocolate/prd/202954027?clr=chocolate&colourWayId=202954028"
        }
     ]
-}
+},
  {
     "categoryName":"Shoes, Boots & Sneakers",
     "products":[
@@ -679,7 +682,7 @@
           "url":"nike/nike-air-max-systm-sneakers-in-white-and-gray/prd/203507842?clr=white&colourWayId=203507849"
        }
     ]
- }
+ },
  {
     "categoryName":"Accessories",
     "products":[
@@ -1020,7 +1023,7 @@
           "url":"nike/nike-brasilia-duffel-bag-in-black/prd/204040581?clr=black&colourWayId=204040593"
        }
     ]
- }
+ },
  {
     "categoryName":"Men Jeans",
     "products":[
@@ -1361,7 +1364,7 @@
           "url":"asos-design/asos-design-flare-jeans-with-flame-print-in-dark-wash-blue/prd/204988440?clr=mid-wash-blue&colourWayId=204988456"
        }
     ]
- }
+ },
  {
     "categoryName":"Spanx",
     "products":[
@@ -1702,7 +1705,7 @@
           "url":"spanx/spanx-higher-power-pant-in-chestnut-brown/prd/24540183?clr=chestnut-brown&colourWayId=60591513"
        }
     ]
- }
+ },
  {
    "categoryName":"Women Jeans",
    "products":[
@@ -2043,7 +2046,7 @@
          "url":"parisian/parisian-mom-jeans-with-turn-ups-in-gray-acid-wash/prd/23440027?clr=gray-acid&colourWayId=60483190"
       }
    ]
-}
+},
 {
    "categoryName":"Women Shirts",
    "products":[
@@ -2384,7 +2387,7 @@
          "url":"monki/monki-textured-shirt-in-black/prd/204948305?clr=black&colourWayId=204948319"
       }
    ]
-}
+},
 {
    "categoryName":"Women Hoodies & Sweatshirts",
    "products":[
@@ -2725,7 +2728,7 @@
          "url":"collusion/collusion-unisex-sweatshirt-with-logo-in-gray-heather/prd/204141865?clr=gray&colourWayId=204141866"
       }
    ]
-}
+},
 {
    "categoryName":"Dresses",
    "products":[
@@ -3066,7 +3069,7 @@
          "url":"asos-curve/asos-design-curve-satin-bandeau-off-shoulder-body-conscious-maxi-dress-with-exaggerated-sleeves-in-cream/prd/204663039?clr=cream&colourWayId=204663040"
       }
    ]
-}
+},
 {
    "categoryName":"Men Jackets & Coats",
    "products":[
@@ -3407,7 +3410,7 @@
          "url":"bolongaro-trevor/bolongaro-trevor-oversized-zip-biker-leather-jacket-with-belt-in-black/prd/204206472?clr=black&colourWayId=204206481"
       }
    ]
-}
+},
 {
    "categoryName":"Men Hoodies & Sweatshirts",
    "products":[
@@ -3748,7 +3751,7 @@
          "url":"le-breve/le-breve-lounge-stripe-sweatshirt-in-navy-and-white-part-of-a-set/prd/200338793?clr=navy&colourWayId=200338794"
       }
    ]
-}
+},
 {
    "categoryName":"Men Swim",
    "products":[
@@ -4089,7 +4092,7 @@
          "url":"reclaimed-vintage/reclaimed-vintage-swim-short-in-leopard-print/prd/204266221?clr=multi&colourWayId=204266222"
       }
    ]
-}
+},
 {
    "categoryName":"Women Swimwear & Beachwear",
    "products":[
@@ -4430,7 +4433,7 @@
          "url":"asyou/asyou-mix-match-triangle-bikini-top-with-tie-back-in-black/prd/204437457?clr=black&colourWayId=204437458"
       }
    ]
-}
+},
 {
    "categoryName":"Women Printed T-Shirts",
    "products":[
@@ -4771,7 +4774,7 @@
          "url":"gramicci/gramicci-unisex-summit-backprint-t-shirt-in-white/prd/204701845?clr=white&colourWayId=204701852"
       }
    ]
-}
+},
 {
    "categoryName":"Men Shirts",
    "products":[
@@ -5112,7 +5115,7 @@
          "url":"topman/topman-floral-print-relaxed-shirt-in-green/prd/204596622?clr=green&colourWayId=204596623"
       }
    ]
-}
+},
 {
    "categoryName":"Men Printed & Graphic T-Shirts",
    "products":[
@@ -5266,8 +5269,7 @@
       {
          "id":204713448,
          "imageUrl":"images.asos-media.com/products/collusion-long-sleeve-back-print-t-shirt-in-blue/204713448-1-blue",
-         "name":"COLLUSION long sleeve back print t-shirt 
-in blue",
+         "name":"COLLUSION long sleeve back print t-shirt in blue",
          "price":"$31.90",
          "url":"collusion/collusion-long-sleeve-back-print-t-shirt-in-blue/prd/204713448?clr=blue&colourWayId=204713449"
       },
@@ -5454,7 +5456,7 @@ in blue",
          "url":"dickies/dickies-raglan-long-sleeve-t-shirt-in-teal-and-white/prd/204435720?clr=deep-lake&colourWayId=204435753"
       }
    ]
-}
+},
 {
    "categoryName":"Women Shoes",
    "products":[
@@ -5795,7 +5797,7 @@ in blue",
          "url":"dune/dune-london-loopy-slip-on-flat-sandals-in-bright-green/prd/204172390?clr=green&colourWayId=204172396"
       }
    ]
-}
+},
 {
    "categoryName":"Women Jackets & Coats",
    "products":[
@@ -6136,7 +6138,7 @@ in blue",
          "url":"asos-design/asos-design-disc-sequin-festival-jacket-in-white/prd/204205729?clr=white&colourWayId=204205730"
       }
    ]
-}
+},
 {
    "categoryName":"Men Shorts",
    "products":[
@@ -6477,7 +6479,7 @@ in blue",
          "url":"bershka/bershka-textured-striped-shorts-in-orange-part-of-a-set/prd/205320297?clr=orange&colourWayId=205320299"
       }
    ]
-}
+},
 {
    "categoryName":"Women Shorts",
    "products":[
@@ -6819,4 +6821,5 @@ in blue",
       }
    ]
 }
+]
 
