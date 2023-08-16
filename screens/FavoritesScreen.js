@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import { Favorites } from '../data';
 
 const FavoritesScreen = () => {
@@ -11,6 +11,9 @@ const FavoritesScreen = () => {
           <Text style={styles.productTitle}>{item.title}</Text>
           <Text style={styles.productPrice}>${item.price}</Text>
         </View>
+        <TouchableOpacity style={styles.addToCartButton} onPress={() => { /* Add functionality */ }}>
+          <Text style={styles.addToCartText}>Add to Cart</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -43,6 +46,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   productImage: {
     width: 60,
@@ -51,7 +55,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   textContainer: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'column',
   },
   productTitle: {
@@ -62,6 +66,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#888',
     marginTop: 5,
+  },
+  addToCartButton: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'black', 
+  },
+  addToCartText: {
+    color: 'black',
+    fontWeight: 'bold',
   }
 });
 
