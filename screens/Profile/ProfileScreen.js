@@ -19,11 +19,15 @@ import OrdersModalsContent from "./OrdersModalsContent";
 import ViewMemIdModalContent from "./ViewMemIdModalContent";
 import PointsHistoryModalContent from "./PointsHistoryModalContent";
 
+import { auth } from "../../configuration/firebase";
+import { getUserDataFromFirestore } from "../../hook/databaseQueries";
+
 const ProfileScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
   const sectionRef = useRef(null); //for setting range to show when press
+  const [userName, setUserName] = useState('User'); // Default to 'User' will update it with the user name :) should be hehe 
  
   const offers = [
     {
@@ -138,11 +142,26 @@ const ProfileScreen = ({navigation}) => {
     });
   };
 
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    const uid = currentUser ? currentUser.uid : null;
+
+    if (uid) {
+        const fetchUserName = async () => {
+            const name = await getUserDataFromFirestore(uid);
+            if (name) {
+                setUserName(name);
+            }
+        }
+        fetchUserName();
+    }
+}, []);
+
   return (
     <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
       <View style={styles.container}>
         <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeUser}>Hi User!</Text>
+          <Text style={styles.welcomeUser}>Hi {userName}!</Text>
           <TouchableOpacity onPress={handleSettingsPress}>
             <AntDesign name="setting" size={35} color="black" />
           </TouchableOpacity>
