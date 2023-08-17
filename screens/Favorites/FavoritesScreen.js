@@ -7,19 +7,37 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { Favorites } from "../data";
+import { Favorites } from "../../data";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { getFavoritesForUser } from "../hook/databaseQueries";
-import { auth } from "../configuration/firebase";
-import { deleteFavoriteForUser } from "../hook/databaseQueries";
-import { useIsFocused } from '@react-navigation/native';//to render screen and update it with what is in the database realtime babyyy!
+import { getFavoritesForUser } from "../../hook/databaseQueries";
+import { auth } from "../../configuration/firebase";
+import { deleteFavoriteForUser } from "../../hook/databaseQueries";
+import { useIsFocused } from "@react-navigation/native";
 
+import ImageModal from './ImageModal'; 
+import SelectableCircle from "./SelectableCircle";
 
 const FavoritesScreen = () => {
   const [favorites, setFavorites] = useState([]);
-  const isFocused = useIsFocused(); // Hook to check if the screen is in focus
-  
+  const isFocused = useIsFocused();
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const toggleSelection = (itemId) => {
+    if (selectedItems.includes(itemId)) {
+      setSelectedItems((prevItems) => prevItems.filter((id) => id !== itemId));
+    } else {
+      setSelectedItems((prevItems) => [...prevItems, itemId]);
+    }
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalVisible(true);
+  };
+
   useEffect(() => {
     const fetchFavorites = async () => {
       const uid = auth.currentUser?.uid;
@@ -30,11 +48,12 @@ const FavoritesScreen = () => {
     };
 
     fetchFavorites();
-}, [isFocused]);
+  }, [isFocused]);
 
   const renderFavoriteItem = ({ item, index }) => {
     const BASE_URL = "https://";
     const imageUrl = `${BASE_URL}${item.imageUrl}`;
+    const isSelected = selectedItems.includes(item.id);
 
     const renderRightAction = () => {
       return (
@@ -50,7 +69,13 @@ const FavoritesScreen = () => {
     return (
       <Swipeable renderRightActions={renderRightAction}>
         <View style={styles.favoriteItem}>
-          <Image source={{ uri: imageUrl }} style={styles.productImage} />
+          <SelectableCircle 
+            isSelected={isSelected} 
+            toggleSelection={() => toggleSelection(item.id)}
+          />
+          <TouchableOpacity onPress={() => handleImageClick(imageUrl)}>
+            <Image source={{ uri: imageUrl }} style={styles.productImage} />
+          </TouchableOpacity>
           <View style={styles.textContainer}>
             <Text style={styles.productTitle}>{item.name}</Text>
             <Text style={styles.productPrice}>{item.price}</Text>
@@ -64,9 +89,8 @@ const FavoritesScreen = () => {
     const itemToDelete = favorites[index];
     const updatedFavorites = [...favorites];
     updatedFavorites.splice(index, 1);
-    setFavorites(updatedFavorites); // Update the state here
+    setFavorites(updatedFavorites);
 
-    // Delete the item from the Firestore database
     const uid = auth.currentUser?.uid;
     if (uid) {
       await deleteFavoriteForUser(uid, itemToDelete);
@@ -76,9 +100,14 @@ const FavoritesScreen = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <FlatList
-        data={favorites} // Use the local state here
+        data={favorites}
         renderItem={renderFavoriteItem}
         keyExtractor={(item) => item.id.toString()}
+      />
+      <ImageModal 
+        isVisible={isModalVisible} 
+        imageUrl={selectedImage} 
+        onClose={() => setModalVisible(false)} 
       />
     </GestureHandlerRootView>
   );
@@ -89,18 +118,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    margin: 20,
-  },
   favoriteItem: {
     flexDirection: "row",
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     alignItems: "center",
+    backgroundColor: "#f0ebdf",
   },
   productImage: {
     width: 60,

@@ -10,8 +10,10 @@ import { storeFavoriteForUser } from "../hook/databaseQueries";
 const SwipeScreen = () => {
   const BASE_URL = "https://";
   const [products, setProducts] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const [uid, setUid] = useState(null); // Added state for uid
+
 
   useEffect(() => {
     // Flatten the products from all categories into a single array
@@ -34,33 +36,28 @@ const SwipeScreen = () => {
 ;
 
 
-  const onSwipedRight = async (index) => {
-    if (!uid) {
-      console.warn("User is not logged in!");
-      return;
-    }
-  
-    const selectedItem = products[index];
-    const user = auth.currentUser;
-    Favorites.push(products[index]);
-  
-    // Store the favorite item along with the user's email and name
-    await storeFavoriteForUser(uid, selectedItem, user.email, user.displayName);
-  
-    let updatedProducts = [...products];
-    updatedProducts.splice(index, 1);
-    setProducts(updatedProducts);
-  };
+const onSwipedRight = async (index) => {
+  if (!uid) {
+    console.warn("User is not logged in!");
+    return;
+  }
+
+  const selectedItem = products[index];
+  const user = auth.currentUser;
+  Favorites.push(products[index]);
+
+  // Store the favorite item along with the user's email and name
+  await storeFavoriteForUser(uid, selectedItem, user.email, user.displayName);
+
+  setCurrentIndex(currentIndex + 1);
+};
+
+const onSwipedLeft = (index) => {
+  setCurrentIndex(currentIndex + 1);
+};
 
 
 
-
-  const onSwipedLeft = (index) => {
-    let updatedProducts = [...products];
-    const removedItem = updatedProducts.splice(index, 1);
-    updatedProducts.push(removedItem[0]);
-    setProducts(updatedProducts);
-  };
 
   return (
     <View style={styles.container}>
