@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,9 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { auth } from "../configuration/firebase";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -16,13 +19,37 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = () => {
     // Check if username and password are filled
     if (username.trim() && password.trim()) {
-      // Navigate to the HomeScreen inside the BottomTabNavigator
-      navigation.navigate("MainTabs", { screen: "Home" });
+        // Use Firebase Authentication to sign in the user
+        signInWithEmailAndPassword(auth, username, password)
+            .then((userCredential) => {
+                // Signed in successfully, navigate to the HomeScreen
+                navigation.navigate("MainTabs", { screen: "Home" });
+            })
+            .catch((error) => {
+                // Error occurred during sign in, show an alert with the error message
+                Alert.alert("Error", error.message);
+            });
     } else {
-      // Alert the user to fill both fields
-      Alert.alert("Error", "Please fill both username and password");
+        // Alert the user to fill both fields
+        Alert.alert("Error", "Please fill both username and password");
     }
-  };
+};
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, navigate to the HomeScreen
+        navigation.navigate("MainTabs", { screen: "Home" });
+      }
+      // If there's no user, stay on the LoginScreen
+    });
+
+    // Cleanup the listener on component unmount
+    return () => unsubscribe();
+  }, []);
+
+
+  
 
   return (
     <View style={styles.container}>
