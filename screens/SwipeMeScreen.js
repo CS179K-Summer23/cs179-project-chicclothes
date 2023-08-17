@@ -4,6 +4,9 @@ import {View, Text, StyleSheet, Image} from "react-native";
 import {Favorites} from '../data';
 import data from '../data.json';
 
+import { auth } from "../configuration/firebase";
+import { storeFavoriteForUser  } from "../hook/databaseQueries";
+
 const SwipeScreen = () => {
   const BASE_URL = "https://";
   const [products, setProducts] = useState([]);
@@ -16,6 +19,8 @@ const SwipeScreen = () => {
   }, []);
 
   const onSwipedRight = (index) => {
+    const selectedItem = products[index];
+    storeFavoriteForUser(uid, selectedItem);
     Favorites.push(products[index]);
     let updatedProducts = [...products];
     updatedProducts.splice(index, 1);
@@ -54,48 +59,51 @@ const SwipeScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5DC',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card: {
-    marginTop: 20,
-    marginBottom: 20,
-    width: '90%',
-    height: '60%',
-    borderRadius: 20,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    container: {
+      flex: 1,
+      backgroundColor: '#A52A2A', // Brown background color
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cardImage: {
-    width: '100%',
-    height: '80%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    resizeMode: 'cover',
-  },
-  cardTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    margin: 10,
-  },
-  cardPrice: {
-    fontSize: 20,
-    marginBottom: 10,
-  }
-}
-);
+    card: {
+      marginTop: 20,
+      marginBottom: 20,
+      width: '90%',
+      height: '70%', 
+      borderRadius: 20,
+      backgroundColor: 'white',
+      alignItems: 'center',
+      justifyContent: 'center', // Centered content within the card
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      padding: 10, 
+    },
+    cardImage: {
+      width: '100%',
+      height: '70%', 
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      resizeMode: 'cover',
+    },
+    cardTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginVertical: 10, 
+    },
+    cardPrice: {
+      fontSize: 20,
+      marginBottom: 10,
+      color: '#2E8B57', 
+    }
+  });
+  
 
 export default SwipeScreen;
