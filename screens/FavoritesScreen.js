@@ -10,11 +10,23 @@ import {
 import { Favorites } from "../data";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { getFavoritesForUser } from "../hook/databaseQueries";
+import { auth } from "../configuration/firebase";
+
+
 
 const FavoritesScreen = () => {
   const [favorites, setFavorites] = useState([]);
   useEffect(() => {
-    setFavorites(Favorites);
+    const fetchFavorites = async () => {
+      const uid = auth.currentUser?.uid;
+      if (uid) {
+        const fetchedFavorites = await getFavoritesForUser(uid);
+        setFavorites(fetchedFavorites);
+      }
+    };
+
+    fetchFavorites();
   }, []);
 
   const renderFavoriteItem = ({ item, index }) => {

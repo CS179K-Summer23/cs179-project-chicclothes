@@ -31,19 +31,29 @@ const SwipeScreen = () => {
     return () => unsubscribe();
   }, []);
 
-  const onSwipedRight = (index) => {
+;
+
+
+  const onSwipedRight = async (index) => {
     if (!uid) {
       console.warn("User is not logged in!");
       return;
     }
-
+  
     const selectedItem = products[index];
-    storeFavoriteForUser(uid, selectedItem);
+    const user = auth.currentUser;
     Favorites.push(products[index]);
+  
+    // Store the favorite item along with the user's email and name
+    await storeFavoriteForUser(uid, selectedItem, user.email, user.displayName);
+  
     let updatedProducts = [...products];
     updatedProducts.splice(index, 1);
     setProducts(updatedProducts);
   };
+
+
+
 
   const onSwipedLeft = (index) => {
     let updatedProducts = [...products];

@@ -1,11 +1,16 @@
 import { db } from '../configuration/firebase';
 import { doc, setDoc, collection, addDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
-// Store user data in Firestore
+// Store user data in Firestore with an empty favorites array
 export const storeUserDataInFirestore = async (uid, data) => {
     const userRef = doc(db, "users", uid);
-    await setDoc(userRef, data);
+    const userDataWithFavorites = {
+        ...data,
+        favorites: []
+    };
+    await setDoc(userRef, userDataWithFavorites);
 }
+
 
 // Get user data from Firestore
 export const getUserDataFromFirestore = async (uid) => {
@@ -22,9 +27,16 @@ export const getUserDataFromFirestore = async (uid) => {
 
 // Store a favorite item for a user in Firestore
 export const storeFavoriteForUser = async (uid, item) => {
-    const userFavoritesCollection = collection(db, "users", uid, "favorites");
+    const userRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userRef);
     
-    await addDoc(userFavoritesCollection, item);
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const updatedFavorites = [...(userData.favorites || []), item];
+        await setDoc(userRef, { ...userData, favorites: updatedFavorites }, { merge: true });
+    } else {
+        console.log("User document doesn't exist!");
+    }
 }
 
 // Delete a favorite item for a user in Firestore
@@ -35,13 +47,14 @@ export const deleteFavoriteForUser = async (uid, favoriteDocId) => {
 
 // Fetch all favorite items for a user from Firestore
 export const getFavoritesForUser = async (uid) => {
-    const userFavoritesCollection = collection(db, "users", uid, "favorites");
-    const favoritesSnapshot = await getDocs(userFavoritesCollection);
-    const favorites = [];
-    favoritesSnapshot.forEach(doc => {
-        const favoriteData = doc.data();
-        favoriteData.firestoreId = doc.id; // Store the Firestore document ID
-        favorites.push(favoriteData);
-    });
-    return favorites;
+    const userRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userRef);
+    
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData.favorites || [];
+    } else {
+        console.log("User document doesn't exist!");
+        return [];
+    }
 }
