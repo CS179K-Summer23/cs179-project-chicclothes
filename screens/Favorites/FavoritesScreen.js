@@ -15,8 +15,9 @@ import { auth } from "../../configuration/firebase";
 import { deleteFavoriteForUser } from "../../hook/databaseQueries";
 import { useIsFocused } from "@react-navigation/native";
 
-import ImageModal from './ImageModal'; 
+import ImageModal from "./ImageModal";
 import SelectableCircle from "./SelectableCircle";
+import CheckoutContainer from "./CheckoutContainer";
 
 const FavoritesScreen = () => {
   const [favorites, setFavorites] = useState([]);
@@ -69,8 +70,8 @@ const FavoritesScreen = () => {
     return (
       <Swipeable renderRightActions={renderRightAction}>
         <View style={styles.favoriteItem}>
-          <SelectableCircle 
-            isSelected={isSelected} 
+          <SelectableCircle
+            isSelected={isSelected}
             toggleSelection={() => toggleSelection(item.id)}
           />
           <TouchableOpacity onPress={() => handleImageClick(imageUrl)}>
@@ -97,17 +98,39 @@ const FavoritesScreen = () => {
     }
   };
 
+  const toggleAllSelection = () => {
+    if (selectedItems.length === favorites.length) {
+      // If all items are already selected, deselect all
+      setSelectedItems([]);
+    } else {
+      // Otherwise, select all items
+      setSelectedItems(favorites.map((item) => item.id));
+    }
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
+      <View style={styles.shippingContainer}>
+        <Text style={styles.centeredText}>Free Shopping and Free Returns</Text>
+      </View>
+
+      <View style={styles.Cart}>
+        <Text style={styles.CartText}>Cart({favorites.length})</Text>
+      </View>
       <FlatList
         data={favorites}
         renderItem={renderFavoriteItem}
         keyExtractor={(item) => item.id.toString()}
       />
-      <ImageModal 
-        isVisible={isModalVisible} 
-        imageUrl={selectedImage} 
-        onClose={() => setModalVisible(false)} 
+      <CheckoutContainer
+        favorites={favorites}
+        selectedItems={selectedItems}
+        toggleAllSelection={toggleAllSelection}
+      />
+      <ImageModal
+        isVisible={isModalVisible}
+        imageUrl={selectedImage}
+        onClose={() => setModalVisible(false)}
       />
     </GestureHandlerRootView>
   );
@@ -117,6 +140,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+  },
+  shippingContainer: {
+    height: 20,
+    width: "100%",
+    backgroundColor: "#f0ebdf",
+    justifyContent: "center",
+    alignContent: "center",
+    textAlign: "center",
+  },
+  centeredText: {
+    textAlign: "center",
+    fontFamily: "Helvetica",
+    fontWeight: "300",
+  },
+  Cart: {
+    height: 30,
+    width: "100%",
+    backgroundColor: "#f0ebdf",
+  },
+  CartText: {
+    fontSize: 20,
+    fontWeight: "900",
+    marginLeft: 10,
   },
   favoriteItem: {
     flexDirection: "row",
@@ -156,6 +202,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  checkoutContainer: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "red",
+  },
+  checkoutText: {},
 });
 
 export default FavoritesScreen;
