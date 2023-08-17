@@ -3,12 +3,24 @@ import { View, Text, StyleSheet } from 'react-native';
 import SelectableCircle from "./SelectableCircle";
 
 const CheckoutContainer = ({ favorites, selectedItems, toggleAllSelection }) => {
-  const calculateTotal = () => {
-    return selectedItems.reduce((acc, itemId) => {
-      const item = favorites.find(fav => fav.id === itemId);
-      return acc + (item ? parseFloat(item.price) : 0);
-    }, 0).toFixed(2);
-  };
+    const calculateTotal = () => {
+        return selectedItems.reduce((acc, itemId) => {
+          const item = favorites.find(fav => fav.id === itemId);
+          if (!item) {
+            console.warn(`Item with ID ${itemId} not found in favorites.`);
+            return acc;
+          }
+          // Remove the dollar sign and then parse the string to a float, tricky but goods now 
+          const price = parseFloat(item.price.replace('$', ''));
+          if (isNaN(price)) {
+            console.warn(`Price for item with ID ${itemId} is not a valid number after removing the dollar sign: ${item.price}`);
+            return acc;
+          }
+          return acc + price;
+        }, 0).toFixed(2);
+    };
+    
+    
 
   return (
     <View style={styles.container}>
