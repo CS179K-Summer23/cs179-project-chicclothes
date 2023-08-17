@@ -62,6 +62,8 @@ const onSwipedLeft = (index) => {
   return (
     <View style={styles.container}>
       {products.length > 0 && (
+        <View style={styles.swiperContainer}>
+          <View style={styles.swiperWrapper}>
       <Swiper
         cards={products}
         renderCard={(card) => {
@@ -80,6 +82,8 @@ const onSwipedLeft = (index) => {
         onSwipedLeft={onSwipedLeft}
         infinite={true}
       />
+      </View>
+      </View>
       )}
     </View>
   );
@@ -88,9 +92,22 @@ const onSwipedLeft = (index) => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#A52A2A', // Brown background color
+      backgroundColor: 'red',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    swiperContainer: {
+      flex: 1, 
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: "#f9f9f9", // to change the whole background color you just change this but i think this color is good 
+    },
+    swiperWrapper: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 700,
+      marginRight: 330,
     },
     card: {
       marginTop: 20,
@@ -98,9 +115,9 @@ const styles = StyleSheet.create({
       width: '90%',
       height: '70%', 
       borderRadius: 20,
-      backgroundColor: 'white',
+      backgroundColor: '#f0ebdf', // if u do not feel this color plz just change this one 
       alignItems: 'center',
-      justifyContent: 'center', // Centered content within the card
+      justifyContent: 'center', 
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
