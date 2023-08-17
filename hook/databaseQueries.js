@@ -1,5 +1,5 @@
 import { db } from '../configuration/firebase';
-import { doc, setDoc, collection, addDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayRemove, getDoc } from 'firebase/firestore';
 
 // Store user data in Firestore with an empty favorites array
 export const storeUserDataInFirestore = async (uid, data) => {
@@ -32,17 +32,31 @@ export const storeFavoriteForUser = async (uid, item) => {
     
     if (userDoc.exists()) {
         const userData = userDoc.data();
-        const updatedFavorites = [...(userData.favorites || []), item];
-        await setDoc(userRef, { ...userData, favorites: updatedFavorites }, { merge: true });
+        const existingFavorites = userData.favorites || [];
+
+        // Check if the item already exists in the favorites
+        const itemExists = existingFavorites.some(favorite => favorite.id === item.id);
+
+        if (!itemExists) {
+            const updatedFavorites = [...existingFavorites, item];
+            await setDoc(userRef, { ...userData, favorites: updatedFavorites }, { merge: true });
+        } else {
+            console.log("Item already exists in favorites!");
+        }
     } else {
         console.log("User document doesn't exist!");
     }
 }
 
+
 // Delete a favorite item for a user in Firestore
-export const deleteFavoriteForUser = async (uid, favoriteDocId) => {
-    const favoriteDocRef = doc(db, "users", uid, "favorites", favoriteDocId);
-    await deleteDoc(favoriteDocRef);
+export const deleteFavoriteForUser = async (uid, item) => {
+    const userRef = doc(db, "users", uid);
+
+    // Use the arrayRemove method to remove the item from the favorites array
+    await updateDoc(userRef, {
+        favorites: arrayRemove(item)
+    });
 }
 
 // Fetch all favorite items for a user from Firestore

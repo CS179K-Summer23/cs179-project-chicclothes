@@ -12,8 +12,7 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { getFavoritesForUser } from "../hook/databaseQueries";
 import { auth } from "../configuration/firebase";
-
-
+import { deleteFavoriteForUser } from "../hook/databaseQueries";
 
 const FavoritesScreen = () => {
   const [favorites, setFavorites] = useState([]);
@@ -57,10 +56,17 @@ const FavoritesScreen = () => {
     );
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
+    const itemToDelete = favorites[index];
     const updatedFavorites = [...favorites];
     updatedFavorites.splice(index, 1);
     setFavorites(updatedFavorites); // Update the state here
+
+    // Delete the item from the Firestore database
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      await deleteFavoriteForUser(uid, itemToDelete);
+    }
   };
 
   return (
