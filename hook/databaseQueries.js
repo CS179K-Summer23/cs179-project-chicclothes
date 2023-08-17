@@ -1,5 +1,5 @@
 import { db } from '../configuration/firebase';
-import { doc, setDoc, collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 // Store user data in Firestore
 export const storeUserDataInFirestore = async (uid, data) => {
@@ -23,6 +23,7 @@ export const getUserDataFromFirestore = async (uid) => {
 // Store a favorite item for a user in Firestore
 export const storeFavoriteForUser = async (uid, item) => {
     const userFavoritesCollection = collection(db, "users", uid, "favorites");
+    
     await addDoc(userFavoritesCollection, item);
 }
 

@@ -5,20 +5,38 @@ import {Favorites} from '../data';
 import data from '../data.json';
 
 import { auth } from "../configuration/firebase";
-import { storeFavoriteForUser  } from "../hook/databaseQueries";
+import { storeFavoriteForUser } from "../hook/databaseQueries";
 
 const SwipeScreen = () => {
   const BASE_URL = "https://";
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [uid, setUid] = useState(null); // Added state for uid
 
   useEffect(() => {
     // Flatten the products from all categories into a single array
     const allProducts = data.flatMap(category => category.products);
     setProducts(allProducts);
+
+    // Listen to authentication state changes
+    const unsubscribe = auth.onAuthStateChanged(user => {
+        if (user) {
+            setUid(user.uid);
+        } else {
+            setUid(null);
+        }
+    });
+
+    // Cleanup the listener when the component is unmounted
+    return () => unsubscribe();
   }, []);
 
   const onSwipedRight = (index) => {
+    if (!uid) {
+      console.warn("User is not logged in!");
+      return;
+    }
+
     const selectedItem = products[index];
     storeFavoriteForUser(uid, selectedItem);
     Favorites.push(products[index]);
