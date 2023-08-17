@@ -14,7 +14,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-const ShoppingBagScreen = ({ navigation }) => {
+const ShoppingBagScreenMen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -25,8 +25,8 @@ const ShoppingBagScreen = ({ navigation }) => {
         const clothesProducts = data.filter(
           (product) =>
             // product.category === "men's clothing" ||
-            product.category === "women's clothing" ||
-            product.category === "Women's clothing"
+            product.category === "men's clothing" ||
+            product.category === "Men's clothing"
         );
         setProducts(clothesProducts);
       })
@@ -56,20 +56,20 @@ const ShoppingBagScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.genderSelectContainer}>
-        <View style={styles.genderSelected}>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.selectedGenderText}>Womens</Text>
-          </TouchableOpacity>
-        </View>
         <View style={styles.gender}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("ShoppingBag", {
-                screen: "ShoppingBagMen",
+                screen: "ShoppingBagWomen",
               })
             }
           >
-            <Text style={styles.GenderText}>Mens</Text>
+            <Text style={styles.GenderText}>Womens</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.genderSelected}>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={styles.selectedGenderText}>Mens</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.gender}>
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   selectedGenderText: {
     fontSize: 15,
     // justifyContent: "center",
-    paddingLeft: 20,
+    paddingLeft: "25%",
     fontWeight: "bold",
     color: "#000101",
     // paddingBottom: 20,
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
   GenderText: {
     fontSize: 15,
     justifyContent: "center",
+    paddingLeft: 20,
     paddingLeft: "25%",
     // fontWeight: "bold",
     color: "#000101",
@@ -292,123 +293,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShoppingBagScreen;
-// import React, { useState, useEffect } from "react";
-// import { View, Text, StyleSheet, Image, FlatList } from "react-native";
-
-
-// const ShoppingBagScreen = () => {
-//   const [data, setData] = useState(null);
-//   const [error, setError] = useState(null);
-
-//   const fetchASOSData = async (query) => {
-//     const url = `https://asos2.p.rapidapi.com/products/v2/list?store=US&offset=0&categoryId=27417&limit=48&country=US&sort=freshness&currency=USD&sizeSchema=US&lang=en-US`;
-//     const options = {
-//       method: 'GET',
-//       headers: {
-//         'X-RapidAPI-Key': 'dc4c7a6c90msh735308c29f72d3fp12d5c6jsn8b868bcc1b36',  // Remember to secure this later!
-//         'X-RapidAPI-Host': 'asos2.p.rapidapi.com'
-//       }
-//     };
-
-//     try {
-//       const response = await fetch(url, options);
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! Status: ${response.status}`);
-//       }
-//       const result = await response.json();
-//       const simplifiedData = {
-//         categoryName: result.categoryName,
-//         products: result.products.map(product => ({
-//           id: product.id,
-//           name: product.name,
-//           price: product.price.current.text,
-//           url: product.url,
-//           imageUrl: product.imageUrl
-//         }))
-//       };
-      
-//       console.log(simplifiedData);  // Logs the simplified data
-//       setData(simplifiedData);
-//       setData(result);
-//     } catch (err) {
-//       setError(err);
-//     }
-//   };
-//   const renderProduct = ({ item: product }) => (
-//     <View key={product.id} style={styles.product}>
-//       <Image
-//         style={styles.productImage}
-//         source={{ uri: `https://${product.imageUrl}` }}
-//       />
-//       <Text style={styles.productName}>{product.name}</Text>
-      
-//       {product.price && product.price.current && product.price.current.text ? (
-//         <Text style={styles.productPrice}>{product.price.current.text}</Text>
-//       ) : (
-//         <Text style={styles.productPrice}>N/A</Text>
-//       )}
-//     </View>
-//   );
-
-//   useEffect(() => {
-//     fetchASOSData('bikini top');
-//   }, []);
-//   return (
-//     <View style={styles.container}>
-//       {error ? (
-//         <Text style={styles.text}>Error: {error.message}</Text>
-//       ) : data ? (
-//         <FlatList
-//           style={styles.productsContainer}
-//           data={data.products}
-//           renderItem={renderProduct}
-//           keyExtractor={(product) => product.id.toString()}
-//         />
-//       ) : (
-//         <Text style={styles.text}>Loading...</Text>
-//       )}
-//     </View>
-//   );
-// };
-
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "#f5f5f5",
-//   },
-//   productsContainer: {
-//     flex: 1,
-//     width: "100%",
-//   },
-//   product: {
-//     padding: 10,
-//     borderBottomWidth: 1,
-//     borderBottomColor: "#e0e0e0",
-//     alignItems: "center",
-//   },
-//   productImage: {
-//     width: 150,
-//     height: 150,
-//     resizeMode: "contain",
-//   },
-//   productName: {
-//     marginTop: 10,
-//     fontSize: 16,
-//     color: "#333",
-//   },
-//   text: {
-//     fontSize: 18,
-//     color: "#333",
-//   },
-//   productPrice: {
-//     marginTop: 5,
-//     fontSize: 18,
-//     color: "#000",
-//   },
-// });
-
-// export default ShoppingBagScreen;
+export default ShoppingBagScreenMen;

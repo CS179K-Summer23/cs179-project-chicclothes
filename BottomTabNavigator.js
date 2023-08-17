@@ -1,14 +1,13 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./screens/HomeScreen";
-import FavoritesScreen from "./screens/FavoritesScreen";
+import FavoritesScreen from "./screens/Favorites/FavoritesScreen";
 import ShoppingBagScreen from "./screens/ShoppingBagScreen";
+import ShoppingBagStackNavigator from "./screens/ShoppingBag/ShoppingBagStackNavigator";
 import ProfileScreen from "./screens/Profile/ProfileScreen";
 import SwipeMeScreen from "./screens/SwipeMeScreen";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 
-
 const Tab = createBottomTabNavigator();
-
 
 const BottomTabNavigator = () => {
   return (
@@ -60,7 +59,7 @@ const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="ShoppingBag"
-        component={ShoppingBagScreen}
+        component={ShoppingBagStackNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="database" color={color} size={size} /> //giving me fucking error for a bag or cart: https://github.com/ant-design/ant-design-icons/issues/227
@@ -80,7 +79,4 @@ const BottomTabNavigator = () => {
   );
 };
 
-
 export default BottomTabNavigator;
-
-
