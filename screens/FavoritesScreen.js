@@ -13,9 +13,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { getFavoritesForUser } from "../hook/databaseQueries";
 import { auth } from "../configuration/firebase";
 import { deleteFavoriteForUser } from "../hook/databaseQueries";
+import { useIsFocused } from '@react-navigation/native';//to render screen and update it with what is in the database realtime babyyy!
+
 
 const FavoritesScreen = () => {
   const [favorites, setFavorites] = useState([]);
+  const isFocused = useIsFocused(); // Hook to check if the screen is in focus
+  
   useEffect(() => {
     const fetchFavorites = async () => {
       const uid = auth.currentUser?.uid;
@@ -26,7 +30,7 @@ const FavoritesScreen = () => {
     };
 
     fetchFavorites();
-  }, []);
+}, [isFocused]);
 
   const renderFavoriteItem = ({ item, index }) => {
     const BASE_URL = "https://";
