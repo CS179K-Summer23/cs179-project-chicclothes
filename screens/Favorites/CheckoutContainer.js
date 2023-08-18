@@ -40,16 +40,19 @@ const CheckoutContainer = ({favorites,selectedItems,toggleAllSelection,}) => {
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
       </View>
-      <View style={styles.CheckoutContainer}>
-        <TouchableOpacity style={styles.chekoutButton} 
-         onPress={() => setModalVisible(true)} >
-          <Text style={styles.checkoutText}>Checkout</Text>
-        </TouchableOpacity>
-        <OrderConfirmationModal
-          isVisible={modalVisible}
-          onClose={() => setModalVisible(false)}
-        />
-      </View>
+
+      {/* Only render the Checkout button and modal if at least one item is selected */}
+      {selectedItems.length > 0 && (
+        <View style={styles.CheckoutContainer}>
+          <TouchableOpacity style={styles.checkoutButton} onPress={() => setModalVisible(true)}>
+            <Text style={styles.checkoutText}>Checkout</Text>
+          </TouchableOpacity>
+          <OrderConfirmationModal
+            isVisible={modalVisible}
+            onClose={() => setModalVisible(false)}
+          />
+        </View>
+      )}
     </View>
   );
 };
