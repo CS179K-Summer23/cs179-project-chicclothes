@@ -1,63 +1,66 @@
 import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
 import {View, Text, StyleSheet, Image} from "react-native";
-import {Favorites} from '../data';
 import data from '../data.json';
-
+import {getLastSwipedIndexForUser,getFavoritesForUser, storeFavoriteForUser} from "../hook/databaseQueries";
 import { auth } from "../configuration/firebase";
-import { storeFavoriteForUser } from "../hook/databaseQueries";
 
 const SwipeScreen = () => {
   const BASE_URL = "https://";
   const [products, setProducts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const [uid, setUid] = useState(null); // Added state for uid
-
+  const [uid, setUid] = useState(null);
 
   useEffect(() => {
-    // Flatten the products from all categories into a single array
     const allProducts = data.flatMap(category => category.products);
-    setProducts(allProducts);
 
-    // Listen to authentication state changes
-    const unsubscribe = auth.onAuthStateChanged(user => {
-        if (user) {
-            setUid(user.uid);
-        } else {
-            setUid(null);
-        }
+    const fetchAndSetProducts = async () => {
+      if (uid) {
+        const favorites = await getFavoritesForUser(uid);
+        const filteredProducts = allProducts.filter(product => 
+            !favorites.some(favorite => favorite.id === product.id)
+        );
+        setProducts(filteredProducts);
+      } else {
+        setProducts(allProducts);
+      }
+    };
+
+    fetchAndSetProducts();
+
+    const unsubscribe = auth.onAuthStateChanged(async user => {
+      if (user) {
+        setUid(user.uid);
+        const index = await getLastSwipedIndexForUser(user.uid);
+        setCurrentIndex(index);
+      } else {
+        setUid(null);
+        setProducts(allProducts);
+      }
     });
 
-    // Cleanup the listener when the component is unmounted
     return () => unsubscribe();
-  }, []);
 
-;
+  }, [uid]);
 
+  const handleSwipe = async (index, isRightSwipe) => {
+    if (!uid) {
+      console.warn("User is not logged in!");
+      return;
+    }
 
-const onSwipedRight = async (index) => {
-  if (!uid) {
-    console.warn("User is not logged in!");
-    return;
-  }
+    const selectedItem = products[index];
+    if (isRightSwipe) {
+      await storeFavoriteForUser(uid, selectedItem, index + 1);
+    } else {
+      await storeFavoriteForUser(uid, null, index + 1);
+    }
 
-  const selectedItem = products[index];
-  const user = auth.currentUser;
-  Favorites.push(products[index]);
+    setCurrentIndex(currentIndex + 1);
+  };
 
-  // Store the favorite item along with the user's email and name
-  await storeFavoriteForUser(uid, selectedItem, user.email, user.displayName);
-
-  setCurrentIndex(currentIndex + 1);
-};
-
-const onSwipedLeft = (index) => {
-  setCurrentIndex(currentIndex + 1);
-};
-
-
-
+  const onSwipedRight = (index) => handleSwipe(index, true);
+  const onSwipedLeft = (index) => handleSwipe(index, false);
 
   return (
     <View style={styles.container}>
@@ -81,6 +84,7 @@ const onSwipedLeft = (index) => {
         onSwipedRight={onSwipedRight}
         onSwipedLeft={onSwipedLeft}
         infinite={true}
+        currentIndex={currentIndex}
       />
       </View>
       </View>

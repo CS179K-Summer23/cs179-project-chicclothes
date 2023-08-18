@@ -26,7 +26,7 @@ export const getUserDataFromFirestore = async (uid) => {
 }
 
 // Store a favorite item for a user in Firestore
-export const storeFavoriteForUser = async (uid, item) => {
+export const storeFavoriteForUser = async (uid, item, index = null) => {
     const userRef = doc(db, "users", uid);
     const userDoc = await getDoc(userRef);
     
@@ -34,20 +34,39 @@ export const storeFavoriteForUser = async (uid, item) => {
         const userData = userDoc.data();
         const existingFavorites = userData.favorites || [];
 
-        // Check if the item already exists in the favorites
-        const itemExists = existingFavorites.some(favorite => favorite.id === item.id);
+        // Update the userData with potentially new index
+        const updatedUserData = index !== null ? { ...userData, lastSwipedIndex: index } : userData;
 
-        if (!itemExists) {
-            const updatedFavorites = [...existingFavorites, item];
-            await setDoc(userRef, { ...userData, favorites: updatedFavorites }, { merge: true });
-        } else {
-            console.log("Item already exists in favorites!");
+        if (item) {
+            const itemExists = existingFavorites.some(favorite => favorite.id === item.id);
+
+            if (!itemExists) {
+                const updatedFavorites = [...existingFavorites, item];
+                await setDoc(userRef, { ...updatedUserData, favorites: updatedFavorites }, { merge: true });
+            } else {
+                console.log("Item already exists in favorites!");
+            }
+        } else if (index !== null) {
+            // If only index is updated, without any new favorite item
+            await setDoc(userRef, updatedUserData, { merge: true });
         }
     } else {
         console.log("User document doesn't exist!");
     }
 }
 
+export const getLastSwipedIndexForUser = async (uid) => {
+    const userRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userRef);
+    
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData.lastSwipedIndex || 0;
+    } else {
+        console.log("User document doesn't exist!");
+        return 0;
+    }
+};
 
 // Delete a favorite item for a user in Firestore
 export const deleteFavoriteForUser = async (uid, item) => {
