@@ -144,6 +144,14 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
           </View>
         </View>
 
+        <View style={styles.infoContainer}>
+          <Text style = {styles.bottomText}>By continuing, you agree to Clique Closet's Term and General Conditions</Text>
+          <Text style = {styles.bottomText2}>We will process your personal data in accordance with Clique Closet's Privacy Notes</Text>
+          <TouchableOpacity style={styles.checkoutButton} onPress={onClose}>
+    <Text style={styles.checkoutButtonText}>Checkout</Text>
+  </TouchableOpacity>
+          </View>
+
         <UserInformation
           isVisible={isUserModalVisible}
           onClose={() => setUserModalVisible(false)}
@@ -259,6 +267,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10, // Adds some space below each row
+  },
+  bottomText:{
+    color : "grey", 
+    fontSize: 12,
+  },
+  bottomText2:{
+    marginTop: 10,
+    color : "grey", 
+    fontSize: 12,
+  },
+  checkoutButton: {
+    marginTop: 20, 
+    padding: 10, 
+    backgroundColor: '#000', 
+    borderRadius: 5, 
+    alignItems: 'center', 
+    marginBottom: 30,
+  },
+
+  checkoutButtonText: {
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: 'bold',
   },
 });
 
