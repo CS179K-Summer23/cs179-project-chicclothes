@@ -18,7 +18,10 @@ export const getUserDataFromFirestore = async (uid) => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
         const userData = userDoc.data();
-        return userData.name; // Return only the name
+        return {
+            name: userData.name,
+            email: userData.email
+          };
     } else {
         console.log("No such document!");
         return null;

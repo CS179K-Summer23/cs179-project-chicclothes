@@ -9,16 +9,20 @@ import {
   ScrollView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import UserInformation from "./UserInformation";
 import UserBilling from "./UserBilling";
 import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
+import useUser from './UserInfoDataBase';
+
+
+
 
 const OrderConfirmationModal = ({ isVisible, onClose }) => {
-  const [isUserModalVisible, setUserModalVisible] = useState(false);
+  //const [isUserModalVisible, setUserModalVisible] = useState(false);
   const [isUserModalVisible2, setUserModalVisible2] = useState(false);
   const [isUserModalVisible3, setUserModalVisible3] = useState(false);
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
+  const { userName, userEmail } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
 
   const handleEditInfo = () => {
     setUserModalVisible(true);
@@ -50,14 +54,8 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
           <Text style={styles.CheckoutText}>Checkout</Text>
           <View style={styles.infoContainer}>
             <Text style={styles.titleInfo}>My Information</Text>
-            <Text style={styles.infoText}>Name</Text>
-            <Text style={styles.infoText2}>Email</Text>
-            <TouchableOpacity
-              onPress={handleEditInfo}
-              style={styles.rightArrow}
-            >
-              <AntDesign name="right" size={35} color="black" />
-            </TouchableOpacity>
+            <Text style={styles.infoText}>{userName}</Text>
+            <Text style={styles.infoText2}>{userEmail}</Text>
           </View>
 
           <View style={styles.infoContainer}>
@@ -152,10 +150,6 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
   </TouchableOpacity>
           </View>
 
-        <UserInformation
-          isVisible={isUserModalVisible}
-          onClose={() => setUserModalVisible(false)}
-        />
 
         <UserBilling
           isVisible={isUserModalVisible2}
@@ -215,11 +209,6 @@ const styles = StyleSheet.create({
     top: 55,
     left: 10,
     zIndex: 10,
-  },
-  rightArrow: {
-    position: "absolute",
-    right: 10,
-    marginTop: 30,
   },
   right2Arrow: {
     position: "absolute",
