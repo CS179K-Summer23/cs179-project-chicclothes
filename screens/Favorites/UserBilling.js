@@ -7,11 +7,19 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import useUser from './UserInfoDataBase';
 
 const UserBilling = ({ isVisible, onClose }) => {
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [state, setState] = useState("");
+// databaseinfos
+  const { userName } = useUser();
 
   return (
     <Modal
@@ -26,65 +34,89 @@ const UserBilling = ({ isVisible, onClose }) => {
         </TouchableOpacity>
 
         <Text style={styles.title}>Billing Address</Text>
-        <View style={styles.container2}>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Name</Text>
-            <Text style={styles.name}>NAME</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>
-              Address<Text style={styles.asterisk}>*</Text>
-            </Text>
-            <TextInput
-              style={[styles.input, address ? styles.filled : styles.notFilled]} //if filled green else red :P
-              placeholder="Enter your billing address"
-              onChangeText={(text) => setAddress(text)}
-              value={address}
-            />
-            <Text style={styles.instructions}>
-              Street address, P.O box or military address
-            </Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>C/O or Company</Text>
-            <TextInput
-              style={styles.input}
-              //placeholder="Enter Your C/O or Company if you have"
-            />
-            <Text style={styles.instructions}>Name or Company</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Address Line 2 </Text>
-            <TextInput style={styles.input} />
-            <Text style={styles.instructions}>
-              Building, floor, apt, Suite, Unit, etc.
-            </Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>
-              City/Town <Text style={styles.asterisk}>*</Text>
-            </Text>
-            <TextInput
-              style={[styles.input, address ? styles.filled : styles.notFilled]}
-              placeholder="Enter your City/Town"
-              onChangeText={(text) => setAddress(text)}
-              value={address}
-            />
-            <Text style={styles.instructions}>City/Town</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>
-              Zipcode <Text style={styles.asterisk}>*</Text>
-            </Text>
-            <TextInput
-              placeholder="Enter your Zipcode"
-              style={[styles.input, address ? styles.filled : styles.notFilled]}
-              onChangeText={(text) => setAddress(text)}
-              value={address}
-            />
-            <Text style={styles.instructions}>Zipcode</Text>
-          </View>
-        </View>
+        <KeyboardAvoidingView behavior="padding" style={styles.container2}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>Name</Text>
+              <Text style={styles.name}>{userName}</Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>
+                Address<Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  address ? styles.filled : styles.notFilled,
+                ]} //if filled green else red :P
+                placeholder="Enter your billing address"
+                onChangeText={(text) => setAddress(text)}
+                value={address}
+              />
+              <Text style={styles.instructions}>
+                Street address, P.O box or military address
+              </Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>C/O or Company</Text>
+              <TextInput
+                style={styles.input}
+                //placeholder="Enter Your C/O or Company if you have"
+              />
+              <Text style={styles.instructions}>Name or Company</Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>Address Line 2 </Text>
+              <TextInput style={styles.input} />
+              <Text style={styles.instructions}>
+                Building, floor, apt, Suite, Unit, etc.
+              </Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>
+                City/Town <Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TextInput
+                style={[styles.input, city ? styles.filled : styles.notFilled]}
+                placeholder="Enter your City/Town"
+                onChangeText={(text) => setCity(text)}
+                value={city}
+              />
+              {/* <Text style={styles.instructions}>City/Town</Text> */}
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>
+                Zipcode <Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TextInput
+                keyboardType="numeric"
+                placeholder="Enter your Zipcode"
+                style={[
+                  styles.input,
+                  zipcode ? styles.filled : styles.notFilled,
+                ]}
+                onChangeText={(text) => setZipcode(text)}
+                value={zipcode}
+              />
+              {/*<Text style={styles.instructions}>Zipcode</Text>*/}
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>
+                State <Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TextInput
+                placeholder="Enter your State"
+                style={[styles.input, state ? styles.filled : styles.notFilled]}
+                onChangeText={(text) => setState(text)}
+                value={state}
+              />
+              {/*<Text style={styles.instructions}>State</Text>*/}
+            </View>
+            <TouchableOpacity style={styles.checkoutButton} onPress={onClose}>
+    <Text style={styles.checkoutButtonText}>Save</Text>
+  </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Modal>
   );
@@ -145,6 +177,20 @@ const styles = StyleSheet.create({
   instructions: {
     color: "grey",
     fontSize: 12,
+  },
+  checkoutButton: {
+    marginTop: 20, 
+    padding: 10, 
+    backgroundColor: '#000', 
+    borderRadius: 5, 
+    alignItems: 'center', 
+    marginBottom: 30,
+  },
+
+  checkoutButtonText: {
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: 'bold',
   },
 });
 
