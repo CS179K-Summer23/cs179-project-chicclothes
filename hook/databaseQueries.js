@@ -94,3 +94,11 @@ export const getFavoritesForUser = async (uid) => {
         return [];
     }
 }
+
+// Store user billing details in Firestore
+export const storeUserBillingDetailsInFirestore = async (uid, billingData) => {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        billingDetails: billingData
+    });
+};

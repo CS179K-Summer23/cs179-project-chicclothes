@@ -11,15 +11,43 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import useUser from './UserInfoDataBase';
+import useUser from "./UserInfoDataBase";
+import { auth } from "../../configuration/firebase";
+import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
+
 
 const UserBilling = ({ isVisible, onClose }) => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [state, setState] = useState("");
-// databaseinfos
+  const [company, setCompany] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  // databaseinfos
   const { userName } = useUser();
+
+  //to make sure user can press button if some field is not filled
+  const isDisabled = !address || !city || !zipcode || !state;
+
+  const saveUserData = async () => {
+    const currentUser = auth.currentUser;
+    const uid = currentUser ? currentUser.uid : null;
+    if (uid) {
+        const billingData = {
+            address,
+            company,
+            addressLine2,
+            city,
+            zipcode,
+            state,
+        };
+        await storeUserBillingDetailsInFirestore(uid, billingData);
+        onClose(); // after it saves, close the modal
+    } else {
+        console.error("No user is logged in.");
+    }
+};
+
 
   return (
     <Modal
@@ -33,7 +61,7 @@ const UserBilling = ({ isVisible, onClose }) => {
           <AntDesign name="arrowleft" size={40} color="black" />
         </TouchableOpacity>
 
-        <Text style={styles.title}>Billing Address</Text>
+        <Text style={styles.title}>Edit Billing Address</Text>
         <KeyboardAvoidingView behavior="padding" style={styles.container2}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.infoContainer}>
@@ -62,12 +90,18 @@ const UserBilling = ({ isVisible, onClose }) => {
               <TextInput
                 style={styles.input}
                 //placeholder="Enter Your C/O or Company if you have"
+                onChangeText={(text) => setCompany(text)}
+                value={company}
               />
               <Text style={styles.instructions}>Name or Company</Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.infoTitle}>Address Line 2 </Text>
-              <TextInput style={styles.input} />
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setAddressLine2(text)}
+                value={addressLine2}
+              />
               <Text style={styles.instructions}>
                 Building, floor, apt, Suite, Unit, etc.
               </Text>
@@ -112,9 +146,15 @@ const UserBilling = ({ isVisible, onClose }) => {
               />
               {/*<Text style={styles.instructions}>State</Text>*/}
             </View>
-            <TouchableOpacity style={styles.checkoutButton} onPress={onClose}>
-    <Text style={styles.checkoutButtonText}>Save</Text>
-  </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.checkoutButton,
+                isDisabled ? styles.disabledButton : styles.enabledButton,
+              ]}
+              onPress={isDisabled ? null : saveUserData}
+            >
+              <Text style={styles.checkoutButtonText}>Save</Text>
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -179,18 +219,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   checkoutButton: {
-    marginTop: 20, 
-    padding: 10, 
-    backgroundColor: '#000', 
-    borderRadius: 5, 
-    alignItems: 'center', 
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
     marginBottom: 30,
   },
-
+  disabledButton: {
+    backgroundColor: "grey",
+  },
+  enabledButton: {
+    backgroundColor: "#000",
+  },
   checkoutButtonText: {
-    color: '#fff', 
-    fontSize: 16, 
-    fontWeight: 'bold',
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

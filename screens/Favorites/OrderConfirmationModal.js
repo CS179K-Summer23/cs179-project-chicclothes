@@ -24,9 +24,9 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   const { userName, userEmail } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
 
-  const handleEditInfo = () => {
-    setUserModalVisible(true);
-  };
+  // const handleEditInfo = () => {
+  //   setUserModalVisible(true);
+  // };
 
   const handleBillingInfo = () => {
     setUserModalVisible2(true);
