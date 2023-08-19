@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     length: "100%",
-    backgroundColor: "white",
+    backgroundColor: "#f9f9f9",
     alignContent: "center",
     padding: 10,
   },
@@ -193,8 +193,9 @@ const styles = StyleSheet.create({
   infoContainer: {
     padding: 20,
     width: "100%",
-    borderWidth: 1,
+    //borderWidth: 1,
     marginTop: 20,
+    backgroundColor: "#fff"
   },
   titleInfo: {
     fontSize: 16,
@@ -217,22 +218,22 @@ const styles = StyleSheet.create({
   },
   rightArrow: {
     position: "absolute",
-    right: 15,
+    right: 10,
     marginTop: 30,
   },
   right2Arrow: {
     position: "absolute",
-    right: 15,
+    right: 10,
     marginTop: 60,
   },
   right3Arrow: {
     position: "absolute",
-    right: 15,
+    right: 10,
     marginTop: 30,
   },
   right4Arrow: {
     position: "absolute",
-    right: 15,
+    right: 10,
     marginTop: 30,
   },
 
@@ -242,6 +243,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderWidth: 1,
     marginTop: 20,
+    backgroundColor: "#fff"
   },
   titlepackageContainer: {
     marginTop: 20,
@@ -257,18 +259,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   separator: {
-    height: 2, // This determines the thickness of the line
-    backgroundColor: "black", // This is the color of the line
-    marginVertical: 10, // This adds some space above and below the line
-    width: "100%", // This ensures the line stretches across the container
+    height: 2, 
+    backgroundColor: "black", 
+    marginVertical: 10, 
+    width: "100%", 
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10, // Adds some space below each row
+    marginBottom: 10, 
   },
   bottomText:{
+    marginTop: -20,
     color : "grey", 
     fontSize: 12,
   },
