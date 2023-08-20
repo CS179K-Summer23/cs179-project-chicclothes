@@ -17,6 +17,7 @@ import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
 
 
 const UserBilling = ({ isVisible, onClose }) => {
+  const [name,setName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [zipcode, setZipcode] = useState("");
@@ -24,16 +25,17 @@ const UserBilling = ({ isVisible, onClose }) => {
   const [company, setCompany] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   // databaseinfos
-  const { userName } = useUser();
+  //const { userName } = useUser();
 
   //to make sure user can press button if some field is not filled
-  const isDisabled = !address || !city || !zipcode || !state;
+  const isDisabled = !name ||!address || !city || !zipcode || !state;
 
   const saveUserData = async () => {
     const currentUser = auth.currentUser;
     const uid = currentUser ? currentUser.uid : null;
     if (uid) {
         const billingData = {
+            name,
             address,
             company,
             addressLine2,
@@ -65,8 +67,16 @@ const UserBilling = ({ isVisible, onClose }) => {
         <KeyboardAvoidingView behavior="padding" style={styles.container2}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.infoContainer}>
-              <Text style={styles.infoTitle}>Name</Text>
-              <Text style={styles.name}>{userName}</Text>
+              <Text style={styles.infoTitle}>Name<Text style={styles.asterisk}>*</Text></Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  name ? styles.filled : styles.notFilled,
+                ]} //if filled green else red :P
+                placeholder="Enter your billing Name"
+                onChangeText={(text) => setName(text)}
+                value={name}
+              />
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.infoTitle}>

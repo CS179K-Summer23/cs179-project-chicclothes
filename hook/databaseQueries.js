@@ -20,7 +20,8 @@ export const getUserDataFromFirestore = async (uid) => {
         const userData = userDoc.data();
         return {
             name: userData.name,
-            email: userData.email
+            email: userData.email,
+            billingDetails: userData.billingDetails || {},
           };
     } else {
         console.log("No such document!");
