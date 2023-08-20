@@ -12,6 +12,13 @@ const useUser = (refreshKey) => {
         zipcode: '',
         state: '',
     });
+    const [shippingDetails, setShippingDetails] = useState({
+        name: '',
+        address: '',
+        city: '',
+        zipcode: '',
+        state: '',
+    });
 
     useEffect(() => {
         const currentUser = auth.currentUser;
@@ -26,13 +33,16 @@ const useUser = (refreshKey) => {
                     if (userData.billingDetails) {
                         setBillingDetails(userData.billingDetails);
                     }
+                    if (userData.shippingDetails) {
+                        setShippingDetails(userData.shippingDetails);
+                    }
                 }
             }
             fetchUserData();
         }
     }, [refreshKey]); // Added refreshKey to the dependency array
 
-    return { userName, userEmail, billingDetails };
+    return { userName, userEmail, billingDetails,shippingDetails};
 }
 
 export default useUser;

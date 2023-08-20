@@ -21,7 +21,7 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0);// for re-rendering
-  const { userName, userEmail, billingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
+  const { userName, userEmail, billingDetails, shippingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
 
   useEffect(() => {
     if (isVisible) {
@@ -43,11 +43,11 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
     setUserModalVisible2(true);
   };
   const handleShippingInfo = () => {
-    setUserModalVisible(true);
+    setUserModalVisible3(true);
   };
 
   const handlePaymentInfo = () => {
-    setUserModalVisible2(true);
+    setUserModalVisible4(true);
   };
 
   return (
@@ -92,8 +92,20 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
 
           <View style={styles.infoContainer}>
             <Text style={styles.titleInfo}>Shipping</Text>
-            <Text style={styles.infoText}>Name </Text>
-            <Text style={styles.infoText2}>Phone number ### </Text>
+            <Text style={styles.infoText}>{shippingDetails.name || "Name"}</Text>
+            <Text style={styles.infoText2}>
+              {shippingDetails.address || "Street Address"}
+            </Text>
+            <Text style={styles.infoText2}>
+              {shippingDetails.city || "City"}
+            </Text>
+            <Text style={styles.infoText2}>
+              {shippingDetails.zipcode || "Zipcode"}
+            </Text>
+            <Text style={styles.infoText2}>United States</Text>
+            <Text style={styles.infoText2}>
+              {shippingDetails.phoneNum|| "Phone Number"}
+            </Text>
             <TouchableOpacity
               onPress={handleShippingInfo}
               style={styles.right3Arrow}
@@ -181,11 +193,13 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
         <UserShipping
           isVisible={isUserModalVisible3}
           onClose={() => setUserModalVisible3(false)}
+          onShippingUpdated={() => setRefreshKey(prevKey => prevKey + 1)} 
         />
 
         <UserPayment
           isVisible={isUserModalVisible4}
           onClose={() => setUserModalVisible4(false)}
+          onPaymentUpdated={() => setRefreshKey(prevKey => prevKey + 1)}
         />
       </ScrollView>
     </Modal>
