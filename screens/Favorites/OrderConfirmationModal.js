@@ -14,7 +14,7 @@ import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
 import useUser from "./UserInfoDataBase";
 
-const OrderConfirmationModal = ({ isVisible, onClose }) => {
+const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
   //const [isUserModalVisible, setUserModalVisible] = useState(false);
   const [isUserModalVisible2, setUserModalVisible2] = useState(false);
   const [isUserModalVisible3, setUserModalVisible3] = useState(false);
@@ -150,7 +150,7 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
 
             <View style={styles.row}>
               <Text style={styles.FeesText}>Order Value</Text>
-              <Text style={styles.valueText}>$79.99</Text>
+              <Text style={styles.valueText}>${totalValue}</Text>
             </View>
 
             <View style={styles.row}>
@@ -160,13 +160,13 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
 
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
-              <Text style={styles.valueText}>$9.99</Text>
+              <Text style={styles.valueText}>${totalValue* 0.095}</Text>
             </View>
             <View style={styles.separator} />
 
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
-              <Text style={styles.valueText}>$ 999.99</Text>
+              <Text style={styles.valueText}>${parseFloat(totalValue) + parseFloat(totalValue * 0.095)} </Text> 
             </View>
           </View>
         </View>
