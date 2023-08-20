@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { auth } from "../../configuration/firebase";
 import { getUserDataFromFirestore } from "../../hook/databaseQueries";
 
-const useUser = () => {
+const useUser = (refreshKey) => {
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [billingDetails, setBillingDetails] = useState({
@@ -10,8 +10,7 @@ const useUser = () => {
         address: '',
         city: '',
         zipcode: '',
-        state: '', // Added state as you mentioned it earlier
-        // Add any other fields if necessary
+        state: '',
     });
 
     useEffect(() => {
@@ -24,19 +23,14 @@ const useUser = () => {
                 if (userData) {
                     setUserName(userData.name);
                     setUserEmail(userData.email);
-                    setBillingDetails({
-                        name: userData.name, // Assuming the name for billing is the same as the user's name
-                        address: userData.address || '',
-                        city: userData.city || '',
-                        zipcode: userData.zipcode || '',
-                        state: userData.state || '',
-                        // Populate other fields if necessary
-                    });
+                    if (userData.billingDetails) {
+                        setBillingDetails(userData.billingDetails);
+                    }
                 }
             }
             fetchUserData();
         }
-    }, []);
+    }, [refreshKey]); // Added refreshKey to the dependency array
 
     return { userName, userEmail, billingDetails };
 }

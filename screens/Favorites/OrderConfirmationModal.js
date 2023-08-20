@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -19,7 +19,21 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
   const [isUserModalVisible2, setUserModalVisible2] = useState(false);
   const [isUserModalVisible3, setUserModalVisible3] = useState(false);
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
-  const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
+  //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
+  const [refreshKey, setRefreshKey] = useState(0);// for re-rendering
+  const { userName, userEmail, billingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
+
+  useEffect(() => {
+    if (isVisible) {
+      setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to trigger re-fetch
+    }
+  }, [isVisible]);
+
+
+  useEffect(() => {
+    console.log("refreshKey changed:", refreshKey);
+  }, [refreshKey]);
+  
 
   // const handleEditInfo = () => {
   //   setUserModalVisible(true);
@@ -162,6 +176,7 @@ const OrderConfirmationModal = ({ isVisible, onClose }) => {
         <UserBilling
           isVisible={isUserModalVisible2}
           onClose={() => setUserModalVisible2(false)}
+          onBillingUpdated={() => setRefreshKey(prevKey => prevKey + 1)} // Trigger re-fetch of user data
         />
         <UserShipping
           isVisible={isUserModalVisible3}

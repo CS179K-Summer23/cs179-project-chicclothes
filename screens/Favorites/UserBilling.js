@@ -16,7 +16,7 @@ import { auth } from "../../configuration/firebase";
 import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
 
 
-const UserBilling = ({ isVisible, onClose }) => {
+const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {   
   const [name,setName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -45,6 +45,11 @@ const UserBilling = ({ isVisible, onClose }) => {
         };
         await storeUserBillingDetailsInFirestore(uid, billingData);
         onClose(); // after it saves, close the modal
+
+        //refresh
+        if (onBillingUpdated) { /// Notify the parent component that billing details were updated 
+            onBillingUpdated();
+        }
     } else {
         console.error("No user is logged in.");
     }
