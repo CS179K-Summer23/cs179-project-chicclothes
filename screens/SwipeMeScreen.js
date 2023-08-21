@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
-import {View, Text, StyleSheet, Image, Button} from "react-native";
+import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 import data from '../data.json';
-import {getLastSwipedIndexForUser,getFavoritesForUser, storeFavoriteForUser} from "../hook/databaseQueries";
+import {getLastSwipedIndexForUser, storeFavoriteForUser} from "../hook/databaseQueries";
 import { auth } from "../configuration/firebase";
 
 const SwipeScreen = () => {
@@ -10,7 +10,6 @@ const SwipeScreen = () => {
   const [products, setProducts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [uid, setUid] = useState(null);
-  const [categories, setCategories] = useState(data.map(cat => cat.categoryName));
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -111,9 +110,15 @@ return (
           )}
       </View>
       <View style={styles.categoryContainer}>
-          <Button title="Men" onPress={() => handleCategorySelection('Men')} />
-          <Button title="Women" onPress={() => handleCategorySelection('Women')} />
-          <Button title="Accessories" onPress={() => handleCategorySelection('Accessories')} />
+        <TouchableOpacity style={styles.button} onPress={() => handleCategorySelection('Men')}>
+            <Text style={styles.buttonText}>Men</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleCategorySelection('Women')}>
+            <Text style={styles.buttonText}>Women</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleCategorySelection('Accessories')}>
+            <Text style={styles.buttonText}>Accessories</Text>
+        </TouchableOpacity>
       </View>
   </View>
 );
@@ -176,11 +181,22 @@ const styles = StyleSheet.create({
     },
     categoryContainer: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'space-around',
       width: '100%',
       marginBottom: 12,
       padding: 10,
-    }
+    },
+    button: {
+      borderWidth: 1,
+      borderColor: 'black',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+    },
+    buttonText: {
+      color: 'black',
+      fontWeight: 'bold',
+  }
   });
   
 
