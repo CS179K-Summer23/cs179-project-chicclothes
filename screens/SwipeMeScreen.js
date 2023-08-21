@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swiper from 'react-native-deck-swiper';
-import {View, Text, StyleSheet, Image} from "react-native";
+import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 import data from '../data.json';
-import {getLastSwipedIndexForUser,getFavoritesForUser, storeFavoriteForUser} from "../hook/databaseQueries";
+import {getLastSwipedIndexForUser, storeFavoriteForUser} from "../hook/databaseQueries";
 import { auth } from "../configuration/firebase";
 
 const SwipeScreen = () => {
@@ -11,22 +11,16 @@ const SwipeScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [uid, setUid] = useState(null);
 
-  useEffect(() => {
-    const allProducts = data.flatMap(category => category.products);
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
-    const fetchAndSetProducts = async () => {
-      if (uid) {
-        const favorites = await getFavoritesForUser(uid);
-        const filteredProducts = allProducts.filter(product => 
-            !favorites.some(favorite => favorite.id === product.id)
-        );
-        setProducts(filteredProducts);
-      } else {
-        setProducts(allProducts);
-      }
-    };
-
-    fetchAndSetProducts();
+useEffect(() => {
+    setProducts(shuffleArray(data.flatMap(category => category.products)));
 
     const unsubscribe = auth.onAuthStateChanged(async user => {
       if (user) {
@@ -35,7 +29,6 @@ const SwipeScreen = () => {
         setCurrentIndex(index);
       } else {
         setUid(null);
-        setProducts(allProducts);
       }
     });
 
@@ -43,74 +36,112 @@ const SwipeScreen = () => {
 
   }, [uid]);
 
-  const handleSwipe = async (index, isRightSwipe) => {
+  const handleCategorySelection = (majorCategoryName) => {
+    console.log(`Handling category selection for: ${majorCategoryName}`);
+
+    const selectedMajorCategory = data.find(major => 
+        major.majorCategory && major.majorCategory.toLowerCase() === majorCategoryName.toLowerCase()
+    );
+
+    if (selectedMajorCategory) {
+        console.log('Found major category:', selectedMajorCategory.majorCategory);
+        
+        if (majorCategoryName === 'Accessories') {
+            setProducts(shuffleArray(selectedMajorCategory.products || []));
+        } else if (selectedMajorCategory.subCategories) {
+            const matchedProducts = selectedMajorCategory.subCategories.flatMap(sub => sub.products || []);
+            setProducts(shuffleArray(matchedProducts));
+        } else {
+            console.log('No subCategories or direct products found for:', majorCategoryName);
+        }
+    } else {
+        console.log(`No major category found for: ${majorCategoryName}`);
+    }
+};
+
+const handleSwipe = async (index, isRightSwipe) => {
     if (!uid) {
-      console.warn("User is not logged in!");
-      return;
+        console.warn("User is not logged in!");
+        return;
     }
 
     const selectedItem = products[index];
     if (isRightSwipe) {
-      await storeFavoriteForUser(uid, selectedItem, index + 1);
+        await storeFavoriteForUser(uid, selectedItem, index + 1);
     } else {
-      await storeFavoriteForUser(uid, null, index + 1);
+        await storeFavoriteForUser(uid, null, index + 1);
     }
 
     setCurrentIndex(currentIndex + 1);
-  };
+};
 
-  const onSwipedRight = (index) => handleSwipe(index, true);
-  const onSwipedLeft = (index) => handleSwipe(index, false);
+const onSwipedRight = (index) => handleSwipe(index, true);
+const onSwipedLeft = (index) => handleSwipe(index, false);
 
-  return (
-    <View style={styles.container}>
-      {products.length > 0 && (
-        <View style={styles.swiperContainer}>
-          <View style={styles.swiperWrapper}>
-      <Swiper
-        cards={products}
-        renderCard={(card) => {
-            const imageUrl = `${BASE_URL}${card.imageUrl}`;
-          
-            return (
-              <View style={styles.card}>
-                <Image source={{ uri: imageUrl }} style={styles.cardImage} />
-                <Text style={styles.cardTitle}>{card.name}</Text>
-                <Text style={styles.cardPrice}>{card.price}</Text>
+return (
+  <View style={styles.container}>
+      <View style={styles.swiperContainer}>
+          {products.some(product => product && product.imageUrl) && (
+              <View style={styles.swiperContainer}>
+                  <View style={styles.swiperWrapper}>
+                      <Swiper
+                          key={products.length} 
+                          cards={products}
+                          renderCard={(card) => {
+                            if(card && card.imageUrl) {
+                                const imageUrl = `${BASE_URL}${card.imageUrl}`;
+                                return (
+                                    <View style={styles.card}>
+                                        <Image source={{ uri: imageUrl }} style={styles.cardImage} />
+                                        <Text style={styles.cardTitle}>{card.name}</Text>
+                                        <Text style={styles.cardPrice}>{card.price}</Text>
+                                    </View>
+                                );
+                            }
+                            return null; 
+                          }}
+                          onSwipedRight={onSwipedRight}
+                          onSwipedLeft={onSwipedLeft}
+                          infinite={false}
+                          currentIndex={currentIndex}
+                      />
+                  </View>
               </View>
-            );
-          }}
-          
-        onSwipedRight={onSwipedRight}
-        onSwipedLeft={onSwipedLeft}
-        infinite={true}
-        currentIndex={currentIndex}
-      />
+          )}
       </View>
+      <View style={styles.categoryContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => handleCategorySelection('Men')}>
+            <Text style={styles.buttonText}>Men</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleCategorySelection('Women')}>
+            <Text style={styles.buttonText}>Women</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleCategorySelection('Accessories')}>
+            <Text style={styles.buttonText}>Accessories</Text>
+        </TouchableOpacity>
       </View>
-      )}
-    </View>
-  );
+  </View>
+);
 };
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'red',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
+      padding: 10,
     },
     swiperContainer: {
       flex: 1, 
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: "#f9f9f9", // to change the whole background color you just change this but i think this color is good 
+      backgroundColor: "#f9f9f9",
     },
     swiperWrapper: {
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: 700,
+      marginBottom: 530,
       marginRight: 330,
     },
     card: {
@@ -119,7 +150,7 @@ const styles = StyleSheet.create({
       width: '90%',
       height: '70%', 
       borderRadius: 20,
-      backgroundColor: '#f0ebdf', // if u do not feel this color plz just change this one 
+      backgroundColor: '#f0ebdf', 
       alignItems: 'center',
       justifyContent: 'center', 
       shadowColor: "#000",
@@ -130,7 +161,6 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       elevation: 5,
-      padding: 10, 
     },
     cardImage: {
       width: '100%',
@@ -148,7 +178,25 @@ const styles = StyleSheet.create({
       fontSize: 20,
       marginBottom: 10,
       color: '#2E8B57', 
-    }
+    },
+    categoryContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      width: '100%',
+      marginBottom: 12,
+      padding: 10,
+    },
+    button: {
+      borderWidth: 1,
+      borderColor: 'black',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+    },
+    buttonText: {
+      color: 'black',
+      fontWeight: 'bold',
+  }
   });
   
 
