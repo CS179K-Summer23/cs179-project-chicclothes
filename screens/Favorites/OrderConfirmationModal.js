@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import UserBilling from "./UserBilling";
@@ -14,14 +15,20 @@ import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
 import useUser from "./UserInfoDataBase";
 
-const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
+const OrderConfirmationModal = ({
+  isVisible,
+  onClose,
+  totalValue,
+  selectedItemsData,
+}) => {
   //const [isUserModalVisible, setUserModalVisible] = useState(false);
   const [isUserModalVisible2, setUserModalVisible2] = useState(false);
   const [isUserModalVisible3, setUserModalVisible3] = useState(false);
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
-  const [refreshKey, setRefreshKey] = useState(0);// for re-rendering
-  const { userName, userEmail, billingDetails, shippingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
+  const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
+  const { userName, userEmail, billingDetails, shippingDetails } =
+    useUser(refreshKey); // Pass refreshKey as dependency
 
   useEffect(() => {
     if (isVisible) {
@@ -29,11 +36,9 @@ const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
     }
   }, [isVisible]);
 
-
   useEffect(() => {
     console.log("refreshKey changed:", refreshKey);
   }, [refreshKey]);
-  
 
   // const handleEditInfo = () => {
   //   setUserModalVisible(true);
@@ -92,7 +97,9 @@ const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
 
           <View style={styles.infoContainer}>
             <Text style={styles.titleInfo}>Shipping</Text>
-            <Text style={styles.infoText}>{shippingDetails.name || "Name"}</Text>
+            <Text style={styles.infoText}>
+              {shippingDetails.name || "Name"}
+            </Text>
             <Text style={styles.infoText2}>
               {shippingDetails.address || "Street Address"}
             </Text>
@@ -104,7 +111,7 @@ const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
             </Text>
             <Text style={styles.infoText2}>United States</Text>
             <Text style={styles.infoText2}>
-              {shippingDetails.phoneNum|| "Phone Number"}
+              {shippingDetails.phoneNum || "Phone Number"}
             </Text>
             <TouchableOpacity
               onPress={handleShippingInfo}
@@ -130,10 +137,22 @@ const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
           <View style={styles.infoContainer}>
             <View style={styles.packageContainer}>
               <Text style={styles.titleInfo}>Package</Text>
-            </View>
-
-            <View style={styles.picturesContainer}>
-              <Text style={styles.titleInfo}>PICTURE HOLDER</Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {selectedItemsData.map((item) =>
+                  item.imageUrl ? (
+                    <View key={item.id} style={styles.imageContainer}>
+                      <Image
+                        source={{ uri: "https://" + item.imageUrl }}
+                        style={styles.itemImage}
+                      />
+                      {/* <Text>{"https://" + item.imageUrl}</Text> */}
+                    </View>
+                  ) : null
+                )}
+              </ScrollView>
             </View>
 
             <View style={styles.deliveryFreeContainer}>
@@ -160,13 +179,15 @@ const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
 
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
-              <Text style={styles.valueText}>${totalValue* 0.095}</Text>
+              <Text style={styles.valueText}>${totalValue * 0.095}</Text>
             </View>
             <View style={styles.separator} />
 
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
-              <Text style={styles.valueText}>${parseFloat(totalValue) + parseFloat(totalValue * 0.095)} </Text> 
+              <Text style={styles.valueText}>
+                ${parseFloat(totalValue) + parseFloat(totalValue * 0.095)}{" "}
+              </Text>
             </View>
           </View>
         </View>
@@ -188,18 +209,18 @@ const OrderConfirmationModal = ({ isVisible, onClose,totalValue }) => {
         <UserBilling
           isVisible={isUserModalVisible2}
           onClose={() => setUserModalVisible2(false)}
-          onBillingUpdated={() => setRefreshKey(prevKey => prevKey + 1)} // Trigger re-fetch of user data
+          onBillingUpdated={() => setRefreshKey((prevKey) => prevKey + 1)} // Trigger re-fetch of user data
         />
         <UserShipping
           isVisible={isUserModalVisible3}
           onClose={() => setUserModalVisible3(false)}
-          onShippingUpdated={() => setRefreshKey(prevKey => prevKey + 1)} 
+          onShippingUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
         />
 
         <UserPayment
           isVisible={isUserModalVisible4}
           onClose={() => setUserModalVisible4(false)}
-          onPaymentUpdated={() => setRefreshKey(prevKey => prevKey + 1)}
+          onPaymentUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
         />
       </ScrollView>
     </Modal>
@@ -319,6 +340,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  imageContainer: {
+    marginRight: 10, // Add some spacing between images
+  },
+  itemImage: {
+    width: 100, // Or any desired width
+    height: 130, // Or any desired height
+    resizeMode: "cover",
   },
 });
 
