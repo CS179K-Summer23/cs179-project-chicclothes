@@ -18,7 +18,12 @@ export const getUserDataFromFirestore = async (uid) => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
         const userData = userDoc.data();
-        return userData.name; // Return only the name
+        return {
+            name: userData.name,
+            email: userData.email,
+            billingDetails: userData.billingDetails || {},
+            shippingDetails: userData.shippingDetails || {},
+          };
     } else {
         console.log("No such document!");
         return null;
@@ -91,3 +96,19 @@ export const getFavoritesForUser = async (uid) => {
         return [];
     }
 }
+
+// Store user billing details in Firestore
+export const storeUserBillingDetailsInFirestore = async (uid, billingData) => {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        billingDetails: billingData
+    });
+};
+
+
+export const storeUserShippingDetailsInFirestore = async (uid, shippingData) => {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        shippingDetails: shippingData
+    });
+};

@@ -50,6 +50,8 @@ const CheckoutContainer = ({favorites,selectedItems,toggleAllSelection,}) => {
           <OrderConfirmationModal
             isVisible={modalVisible}
             onClose={() => setModalVisible(false)}
+            totalValue={calculateTotal()}
+            selectedItemsData={favorites.filter(fav => selectedItems.includes(fav.id))}
           />
         </View>
       )}

@@ -31,7 +31,7 @@ const ImageModal = ({ isVisible, imageUrl, onClose }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f9f9f9",
   },
   arrow: {
     position: "absolute",
