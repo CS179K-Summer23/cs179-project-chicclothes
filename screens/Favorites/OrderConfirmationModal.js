@@ -14,6 +14,7 @@ import UserBilling from "./UserBilling";
 import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
 import useUser from "./UserInfoDataBase";
+import DiscountCode from "./DiscountCode";
 
 const OrderConfirmationModal = ({
   isVisible,
@@ -27,8 +28,9 @@ const OrderConfirmationModal = ({
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
-  const { userName, userEmail, billingDetails, shippingDetails } =
-    useUser(refreshKey); // Pass refreshKey as dependency
+  const { userName, userEmail, billingDetails, shippingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
+  const [isDiscountModalVisible, setDiscountModalVisible] = useState(false); // for discount code
+
 
   useEffect(() => {
     if (isVisible) {
@@ -136,7 +138,7 @@ const OrderConfirmationModal = ({
 
           <View style={styles.infoContainer}>
             <View style={styles.packageContainer}>
-              <Text style={styles.titleInfo}>Package</Text>
+              <Text style={styles.titleInfo}>Package Items</Text>
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -156,14 +158,22 @@ const OrderConfirmationModal = ({
             </View>
 
             <View style={styles.deliveryFreeContainer}>
-              <Text style={styles.titleInfo}>FREE 3-5 day shipping</Text>
+              {/* <Text style={styles.titleInfo}>FREE 3-5 day shipping</Text> */}
             </View>
           </View>
 
           <View style={styles.infoContainer}>
             <View style={styles.row}>
               <Text style={styles.FeesText}>Discounts</Text>
-              <Text style={styles.valueText}>Apply Discount</Text>
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                onPress={() => {
+                  setDiscountModalVisible(true);
+                }}
+              >
+                <Text style={styles.buttonText}>Apply Discount</Text>
+                <DiscountCode isVisible={isDiscountModalVisible} onClose={() => setDiscountModalVisible(false)} />
+              </TouchableOpacity>
             </View>
             <View style={styles.separator} />
 
@@ -342,11 +352,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   imageContainer: {
-    marginRight: 10, // Add some spacing between images
+    marginTop: 10,
+    marginRight: 10,
   },
   itemImage: {
-    width: 100, // Or any desired width
-    height: 130, // Or any desired height
+    width: 100,
+    height: 130,
     resizeMode: "cover",
   },
 });
