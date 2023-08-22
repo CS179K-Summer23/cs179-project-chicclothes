@@ -9,24 +9,48 @@ import {
   TextInput,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { auth } from "../../configuration/firebase";
+import { storeUserPaymentDetailsInFirestore } from "../../hook/databaseQueries";
 
-const UserPayment = ({ isVisible, onClose }) => {
+const UserPayment = ({ isVisible, onClose, onPaymentUpdated }) => {
   const [cardNumber, setCardNumber] = useState("");
   const [nameOnCard, setNameOnCard] = useState("");
   const [expiry, setExpiry] = useState("");
   const [ccv, setCcv] = useState("");
   const [cardError, setCardError] = useState("");
   const [expiryError, setExpiryError] = useState("");
+  const [ccvError, setCcvError] = useState("");
 
   const isDisabled = !cardNumber || !nameOnCard || !expiry || !ccv;
-
-  const [ccvError, setCcvError] = useState("");
 
   const formatCardNumber = (text) => {
     return text
       .replace(/\s?/g, "")
       .replace(/(\d{4})/g, "$1 ")
       .trim();
+  };
+
+  const savePaymentDetails = async () => {
+    const currentUser = auth.currentUser;
+    const uid = currentUser ? currentUser.uid : null;
+    if (uid) {
+      const paymentData = {
+        cardNumber,
+        nameOnCard,
+        expiry,
+        ccv
+      };
+      await storeUserPaymentDetailsInFirestore(uid, paymentData);
+      onClose(); // after it saves, close the modal
+
+      //refresh
+      if (onPaymentUpdated) {
+        /// Notify the parent component that payment details were updated
+        onPaymentUpdated();
+      }
+    } else {
+      console.error("No user is logged in.");
+    }
   };
 
   return (
@@ -41,7 +65,7 @@ const UserPayment = ({ isVisible, onClose }) => {
           <AntDesign name="arrowleft" size={40} color="black" />
         </TouchableOpacity>
 
-        <Text style={styles.title}>Payment Method</Text>
+        <Text style={styles.title}>Edit Payment Method</Text>
 
         <View style={styles.container}>
           {/* Display Card */}
@@ -137,6 +161,7 @@ const UserPayment = ({ isVisible, onClose }) => {
               styles.checkoutButton,
               isDisabled ? styles.disabledButton : styles.enabledButton,
             ]}
+            onPress={savePaymentDetails}
           >
             <Text style={styles.checkoutButtonText}>Save</Text>
           </TouchableOpacity>

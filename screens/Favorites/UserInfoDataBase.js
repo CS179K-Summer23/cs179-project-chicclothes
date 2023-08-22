@@ -23,6 +23,12 @@ const useUser = (refreshKey) => {
         zipcode: '',
         state: '',
     });
+    const [paymentDetails, setPaymentDetails] = useState({
+        cardNumber: '',
+        nameOnCard: '',
+        expiry: '',
+        ccv: '',
+    });
 
     useEffect(() => {
         const currentUser = auth.currentUser;
@@ -40,13 +46,16 @@ const useUser = (refreshKey) => {
                     if (userData.shippingDetails) {
                         setShippingDetails(userData.shippingDetails);
                     }
+                    if (userData.paymentDetails) {
+                        setPaymentDetails(userData.paymentDetails);
+                    }
                 }
             }
             fetchUserData();
         }
     }, [refreshKey]); // Added refreshKey to the dependency array
 
-    return { userName, userEmail, billingDetails,shippingDetails};
+    return { userName, userEmail, billingDetails, shippingDetails, paymentDetails };
 }
 
 export default useUser;

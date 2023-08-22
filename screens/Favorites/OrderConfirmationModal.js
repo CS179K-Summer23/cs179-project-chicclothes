@@ -28,8 +28,13 @@ const OrderConfirmationModal = ({
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
-  const { userName, userEmail, billingDetails, shippingDetails } =
-    useUser(refreshKey); // Pass refreshKey as dependency
+  const {
+    userName,
+    userEmail,
+    billingDetails,
+    shippingDetails,
+    paymentDetails,
+  } = useUser(refreshKey); // Pass refreshKey as dependency
   const [isDiscountModalVisible, setDiscountModalVisible] = useState(false); // for discount code
 
   useEffect(() => {
@@ -82,8 +87,14 @@ const OrderConfirmationModal = ({
             <Text style={styles.infoText2}>
               {billingDetails.address || "Street Address"}
             </Text>
-            {billingDetails.addressLine2 && <Text style={styles.infoText2}>{billingDetails.addressLine2}</Text>}
-            {billingDetails.company && <Text style={styles.infoText2}> {billingDetails.company} </Text>}
+            {billingDetails.addressLine2 && (
+              <Text style={styles.infoText2}>
+                {billingDetails.addressLine2}
+              </Text>
+            )}
+            {billingDetails.company && (
+              <Text style={styles.infoText2}> {billingDetails.company} </Text>
+            )}
             <Text style={styles.infoText2}>
               {billingDetails.city && billingDetails.state
                 ? `${billingDetails.city}, ${billingDetails.state}`
@@ -135,8 +146,14 @@ const OrderConfirmationModal = ({
 
           <View style={styles.infoContainer}>
             <Text style={styles.titleInfo}>Payment</Text>
-            <Text style={styles.infoText}>PamentcardOption </Text>
-            <Text style={styles.infoText2}>PamentcardOption </Text>
+
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <AntDesign name="creditcard" size={24} color="black" style ={styles.creditCard} />
+              <Text style={styles.infoText}>
+                Card Information: **** **** ****{" "}
+                {paymentDetails.cardNumber?.slice(-4) || "XXXX"}
+              </Text>
+            </View>
 
             <TouchableOpacity
               onPress={handlePaymentInfo}
@@ -373,6 +390,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 130,
     resizeMode: "cover",
+  },
+  creditCard:{
+    marginTop: 15,
+    marginRight: 10,
   },
 });
 
