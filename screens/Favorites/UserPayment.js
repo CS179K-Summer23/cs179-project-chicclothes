@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { auth } from "../../configuration/firebase";
@@ -38,7 +40,7 @@ const UserPayment = ({ isVisible, onClose, onPaymentUpdated }) => {
         cardNumber,
         nameOnCard,
         expiry,
-        ccv
+        ccv,
       };
       await storeUserPaymentDetailsInFirestore(uid, paymentData);
       onClose(); // after it saves, close the modal
@@ -66,106 +68,112 @@ const UserPayment = ({ isVisible, onClose, onPaymentUpdated }) => {
         </TouchableOpacity>
 
         <Text style={styles.title}>Edit Payment Method</Text>
-
-        <View style={styles.container}>
-          {/* Display Card */}
-          <View style={styles.card}>
-            <Text style={styles.cardNumber}>{cardNumber || "Card Number"}</Text>
-            <View style={styles.cardDetailsRow}>
-              <Text style={styles.cardName}>
-                {nameOnCard || "Name on Card"}
+        <KeyboardAvoidingView behavior="padding" style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Display Card */}
+            <View style={styles.card}>
+              <Text style={styles.cardNumber}>
+                {cardNumber || "Card Number"}
               </Text>
-              <Text style={styles.cardExp}>{expiry || "Expiry"}</Text>
+              <View style={styles.cardDetailsRow}>
+                <Text style={styles.cardName}>
+                  {nameOnCard || "Name on Card"}
+                </Text>
+                <Text style={styles.cardExp}>{expiry || "Expiry"}</Text>
+              </View>
             </View>
-          </View>
 
-          {/* Input Fields */}
-          <Text style={styles.cardTitle}>Card Number</Text>
-          <TextInput
-            style={[
-              styles.input,
-              cardNumber.replace(/\s/g, "").length !== 16 && styles.errorInput,
-            ]}
-            value={cardNumber}
-            onChangeText={(text) => {
-              const formattedText = formatCardNumber(text);
-              if (formattedText.length <= 19) {
-                setCardNumber(formattedText);
-                if (formattedText.replace(/\s/g, "").length !== 16) {
-                  setCardError("Number input is invalid, 16 digits required");
-                } else {
-                  setCardError(""); // Clear the error message
+            {/* Input Fields */}
+            <Text style={styles.cardTitle}>Card Number</Text>
+            <TextInput
+              style={[
+                styles.input,
+                cardNumber.replace(/\s/g, "").length !== 16 &&
+                  styles.errorInput,
+              ]}
+              value={cardNumber}
+              onChangeText={(text) => {
+                const formattedText = formatCardNumber(text);
+                if (formattedText.length <= 19) {
+                  setCardNumber(formattedText);
+                  if (formattedText.replace(/\s/g, "").length !== 16) {
+                    setCardError("Number input is invalid, 16 digits required");
+                  } else {
+                    setCardError(""); // Clear the error message
+                  }
                 }
-              }
-            }}
-            maxLength={19}
-            keyboardType="number-pad"
-          />
-          {cardError ? <Text style={styles.errorText}>{cardError}</Text> : null}
+              }}
+              maxLength={19}
+              keyboardType="number-pad"
+            />
+            {cardError ? (
+              <Text style={styles.errorText}>{cardError}</Text>
+            ) : null}
 
-          <Text style={styles.cardTitle}>Card Holder Name</Text>
-          <TextInput
-            style={[styles.input, !nameOnCard && styles.errorInput]}
-            value={nameOnCard}
-            onChangeText={setNameOnCard}
-          />
+            <Text style={styles.cardTitle}>Card Holder Name</Text>
+            <TextInput
+              style={[styles.input, !nameOnCard && styles.errorInput]}
+              value={nameOnCard}
+              onChangeText={setNameOnCard}
+            />
 
-          <Text style={styles.cardTitle}>Expiration Date</Text>
-          <TextInput
-            style={[
-              styles.input,
-              (!expiry || !/^(\d{2}\/\d{2})$/.test(expiry)) &&
-                styles.errorInput,
-            ]}
-            value={expiry}
-            onChangeText={(text) => {
-              if (/^\d{0,2}\/?\d{0,2}$/.test(text)) {
-                setExpiry(text);
-                if (!/^(\d{2}\/\d{2})$/.test(text)) {
-                  setExpiryError("Invalid format. Use MM/YY");
-                } else {
-                  setExpiryError("");
+            <Text style={styles.cardTitle}>Expiration Date</Text>
+            <TextInput
+              style={[
+                styles.input,
+                (!expiry || !/^(\d{2}\/\d{2})$/.test(expiry)) &&
+                  styles.errorInput,
+              ]}
+              value={expiry}
+              onChangeText={(text) => {
+                if (/^\d{0,2}\/?\d{0,2}$/.test(text)) {
+                  setExpiry(text);
+                  if (!/^(\d{2}\/\d{2})$/.test(text)) {
+                    setExpiryError("Invalid format. Use MM/YY");
+                  } else {
+                    setExpiryError("");
+                  }
                 }
-              }
-            }}
-            maxLength={5}
-          />
+              }}
+              maxLength={5}
+            />
 
-          {expiryError ? (
-            <Text style={styles.errorText}>{expiryError}</Text>
-          ) : null}
+            {expiryError ? (
+              <Text style={styles.errorText}>{expiryError}</Text>
+            ) : null}
 
-          <Text style={styles.cardTitle}>CVC/CVC</Text>
-          <TextInput
-            style={[styles.input, ccv.length !== 3 && styles.errorInput]}
-            value={ccv}
-            onChangeText={(text) => {
-              // Ensure that only numbers are entered
-              if (/^\d*$/.test(text)) {
-                setCcv(text);
-                if (text.length < 3) {
-                  setCcvError("Number input is invalid. 3 digits required.");
-                } else {
-                  setCcvError("");
+            <Text style={styles.cardTitle}>CVC/CVC</Text>
+            <TextInput
+              style={[styles.input, ccv.length !== 3 && styles.errorInput]}
+              value={ccv}
+              onChangeText={(text) => {
+                // Ensure that only numbers are entered
+                if (/^\d*$/.test(text)) {
+                  setCcv(text);
+                  if (text.length < 3) {
+                    setCcvError("Number input is invalid. 3 digits required.");
+                  } else {
+                    setCcvError("");
+                  }
                 }
-              }
-            }}
-            secureTextEntry={true}
-            keyboardType="numeric"
-            maxLength={3}
-          />
-          {ccvError ? <Text style={styles.errorText}>{ccvError}</Text> : null}
+              }}
+              secureTextEntry={true}
+              keyboardType="numeric"
+              maxLength={3}
+            />
+            {ccvError ? <Text style={styles.errorText}>{ccvError}</Text> : null}
 
-          <TouchableOpacity
-            style={[
-              styles.checkoutButton,
-              isDisabled ? styles.disabledButton : styles.enabledButton,
-            ]}
-            onPress={savePaymentDetails}
-          >
-            <Text style={styles.checkoutButtonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={[
+                styles.checkoutButton,
+                isDisabled ? styles.disabledButton : styles.enabledButton,
+              ]}
+              onPress={savePaymentDetails}
+            >
+              <Text style={styles.checkoutButtonText}>Save</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Modal>
   );
