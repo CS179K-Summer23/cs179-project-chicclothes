@@ -219,14 +219,14 @@ const OrderConfirmationModal = ({
 
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
-              <Text style={styles.valueText}>${totalValue * 0.095}</Text>
+              <Text style={styles.valueText}>${(totalValue * 0.075).toFixed(2)}</Text>
             </View>
             <View style={styles.separator} />
 
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
               <Text style={styles.valueText}>
-                ${parseFloat(totalValue) + parseFloat(totalValue * 0.095)}{" "}
+                ${(parseFloat(totalValue) + parseFloat(totalValue * 0.075)).toFixed(2)}{" "}
               </Text>
             </View>
           </View>
