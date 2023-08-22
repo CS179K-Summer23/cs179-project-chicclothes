@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Swiper from "react-native-deck-swiper";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import data from "../data.json";
@@ -14,6 +14,7 @@ const SwipeScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [uid, setUid] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const swiperRef = useRef(null);
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -89,6 +90,18 @@ const SwipeScreen = () => {
   const onSwipedRight = (index) => handleSwipe(index, true);
   const onSwipedLeft = (index) => handleSwipe(index, false);
 
+  const handleLeftButtonPress = () => {
+    if (swiperRef.current) {
+        swiperRef.current.swipeLeft();
+    }
+  };
+
+  const handleRightButtonPress = () => {
+    if (swiperRef.current) {
+        swiperRef.current.swipeRight();
+      }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.swiperContainer}>
@@ -96,6 +109,7 @@ const SwipeScreen = () => {
           <View style={styles.swiperContainer}>
             <View style={styles.swiperWrapper}>
               <Swiper
+                ref={swiperRef}
                 key={products.length}
                 cards={products}
                 renderCard={(card) => {
@@ -123,6 +137,18 @@ const SwipeScreen = () => {
           </View>
         )}
       </View>
+
+      <View style={styles.actionButtonsContainer}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleLeftButtonPress}>
+              <Text style={styles.actionButtonText}>X</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionButton} onPress={handleRightButtonPress}>
+              <Text style={styles.actionButtonText}>❤️</Text>
+          </TouchableOpacity>
+        </View>
+
+
       <View style={styles.categoryContainer}>
         <TouchableOpacity
           style={[
@@ -162,17 +188,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     padding: 10,
   },
   swiperContainer: {
-    flex: 1,
+    flex: 4,
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f9f9f9",
   },
   swiperWrapper: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 650,
@@ -233,7 +260,26 @@ const styles = StyleSheet.create({
   },
   selectedButton: {
     backgroundColor: "#f0ebdf",
-}
+  },
+  actionButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '70%',
+    marginVertical: 10,
+  },
+  actionButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#333'
+  },
+  actionButtonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  }
 
 });
 
