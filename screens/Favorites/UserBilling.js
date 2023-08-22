@@ -16,49 +16,61 @@ import { auth } from "../../configuration/firebase";
 import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
 import { Picker } from "@react-native-picker/picker";
 import StateWithTaxList from "./StateWithTaxList";
+import { validateZipcode } from "./AddressRegex";
 
-
-const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {   
-  const [name,setName] = useState("");
+const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
+  const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [state, setState] = useState("");
   const [company, setCompany] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
 
   const [isPickerVisible, setPickerVisible] = useState(false);
+
+  //for zipcode regex
+  const [zipcodeError, setZipcodeError] = useState("");
+
+  const handleZipcodeChange = (text) => {
+    setZipcode(text); // setting text to zipvocde value
+
+    const error = validateZipcode(text);
+    setZipcodeError(error);
+  };
   // databaseinfos
   //const { userName } = useUser();
 
   //to make sure user can press button if some field is not filled
-  const isDisabled = !name ||!address || !city || !zipcode || !state;
+  const isDisabled = !name || !address || !city || !zipcode || !state;
 
   const saveUserData = async () => {
     const currentUser = auth.currentUser;
     const uid = currentUser ? currentUser.uid : null;
     if (uid) {
-        const billingData = {
-            name,
-            address,
-            company,
-            addressLine2,
-            city,
-            zipcode,
-            state,
-        };
-        await storeUserBillingDetailsInFirestore(uid, billingData);
-        onClose(); // after it saves, close the modal
+      const billingData = {
+        name,
+        address,
+        company,
+        addressLine2,
+        city,
+        zipcode,
+        state,
+        phoneNum
+      };
+      await storeUserBillingDetailsInFirestore(uid, billingData);
+      onClose(); // after it saves, close the modal
 
-        //refresh
-        if (onBillingUpdated) { /// Notify the parent component that billing details were updated 
-            onBillingUpdated();
-        }
+      //refresh
+      if (onBillingUpdated) {
+        /// Notify the parent component that billing details were updated
+        onBillingUpdated();
+      }
     } else {
-        console.error("No user is logged in.");
+      console.error("No user is logged in.");
     }
-};
-
+  };
 
   return (
     <Modal
@@ -76,12 +88,11 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
         <KeyboardAvoidingView behavior="padding" style={styles.container2}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.infoContainer}>
-              <Text style={styles.infoTitle}>Name<Text style={styles.asterisk}>*</Text></Text>
+              <Text style={styles.infoTitle}>
+                Name<Text style={styles.asterisk}>*</Text>
+              </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  name ? styles.filled : styles.notFilled,
-                ]} //if filled green else red :P
+                style={[styles.input, name ? styles.filled : styles.notFilled]} //if filled green else red :P
                 placeholder="Enter your billing Name"
                 onChangeText={(text) => setName(text)}
                 value={name}
@@ -147,46 +158,65 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
                 style={[
                   styles.input,
                   zipcode ? styles.filled : styles.notFilled,
+                  zipcodeError ? styles.error : null,
                 ]}
-                onChangeText={(text) => setZipcode(text)}
+                onChangeText={handleZipcodeChange}
                 value={zipcode}
               />
+              {zipcodeError ? (
+                <Text style={styles.errorText}>{zipcodeError}</Text>
+              ) : null}
               {/*<Text style={styles.instructions}>Zipcode</Text>*/}
             </View>
             <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>
-              State <Text style={styles.asterisk}>*</Text>
-            </Text>
-            <TouchableOpacity 
-              style={[styles.input, state ? styles.filled : styles.notFilled]}
-              onPress={() => setPickerVisible(!isPickerVisible)}
-              hitSlop={{top: 10, bottom: 10, left: 10, right: 10, }}
-            >
-              <TextInput 
-                value={state} 
-                placeholder="Enter your State"
-                editable={false} //so user cant type anything after selecting one!! 
-              />
-            </TouchableOpacity>
-            {isPickerVisible && (
-              <Picker
-                selectedValue={state}
-                onValueChange={(itemValue) => {
-                  setState(itemValue);
-                  setPickerVisible(false); // Hide the picker after selection
-                }}
-                style={styles.picker}
+              <Text style={styles.infoTitle}>
+                State <Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TouchableOpacity
+                style={[styles.input, state ? styles.filled : styles.notFilled]}
+                onPress={() => setPickerVisible(!isPickerVisible)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                {StateWithTaxList.map((stateInfo, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={stateInfo.name}
-                    value={stateInfo.name}
-                  />
-                ))}
-              </Picker>
-            )}
-          </View>
+                <TextInput
+                  value={state}
+                  placeholder="Enter your State"
+                  editable={false} //so user cant type anything after selecting one!!
+                />
+              </TouchableOpacity>
+              {isPickerVisible && (
+                <Picker
+                  selectedValue={state}
+                  onValueChange={(itemValue) => {
+                    setState(itemValue);
+                    setPickerVisible(false); // Hide the picker after selection
+                  }}
+                  style={styles.picker}
+                >
+                  {StateWithTaxList.map((stateInfo, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={stateInfo.name}
+                      value={stateInfo.name}
+                    />
+                  ))}
+                </Picker>
+              )}
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>
+                Phone Number <Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TextInput
+                placeholder="Enter your Phone Number"
+                keyboardType="numeric"
+                style={[
+                  styles.input,
+                  phoneNum ? styles.filled : styles.notFilled,
+                ]}
+                onChangeText={(text) => setPhoneNum(text)}
+                value={phoneNum}
+              />
+            </View>
             <TouchableOpacity
               style={[
                 styles.checkoutButton,
@@ -279,8 +309,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  picker:{
+  picker: {
     marginTop: -70,
+  },
+  error: {
+    borderColor: "red",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 2,
   },
 });
 

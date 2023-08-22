@@ -8,6 +8,8 @@ const useUser = (refreshKey) => {
     const [billingDetails, setBillingDetails] = useState({
         name: '',
         address: '',
+        company: '',
+        addressLine2: '',
         city: '',
         zipcode: '',
         state: '',
@@ -15,6 +17,8 @@ const useUser = (refreshKey) => {
     const [shippingDetails, setShippingDetails] = useState({
         name: '',
         address: '',
+        company: '',
+        addressLine2: '',
         city: '',
         zipcode: '',
         state: '',

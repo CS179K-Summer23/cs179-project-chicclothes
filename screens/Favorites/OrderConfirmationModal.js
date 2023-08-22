@@ -82,6 +82,8 @@ const OrderConfirmationModal = ({
             <Text style={styles.infoText2}>
               {billingDetails.address || "Street Address"}
             </Text>
+            {billingDetails.addressLine2 && <Text style={styles.infoText2}>{billingDetails.addressLine2}</Text>}
+            {billingDetails.company && <Text style={styles.infoText2}> {billingDetails.company} </Text>}
             <Text style={styles.infoText2}>
               {billingDetails.city && billingDetails.state
                 ? `${billingDetails.city}, ${billingDetails.state}`
@@ -92,6 +94,9 @@ const OrderConfirmationModal = ({
               {billingDetails.zipcode || "Zipcode"}
             </Text>
             <Text style={styles.infoText2}>United States</Text>
+            <Text style={styles.infoText2}>
+              {billingDetails.phoneNum || "Phone Number"}
+            </Text>
             <TouchableOpacity
               onPress={handleBillingInfo}
               style={styles.right2Arrow}

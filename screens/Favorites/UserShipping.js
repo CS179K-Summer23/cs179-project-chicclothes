@@ -16,6 +16,7 @@ import { auth } from "../../configuration/firebase";
 import { storeUserShippingDetailsInFirestore } from "../../hook/databaseQueries";
 import { Picker } from "@react-native-picker/picker";
 import StateWithTaxList from "./StateWithTaxList";
+import { validateZipcode } from "./AddressRegex";
 
 const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
   const [name, setName] = useState("");
@@ -28,6 +29,16 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
   const [phoneNum, setPhoneNum] = useState("");
 
   const [isPickerVisible2, setPickerVisible2] = useState(false);
+  
+  //for zipcode regex
+  const [zipcodeError, setZipcodeError] = useState("");
+
+  const handleZipcodeChange = (text) => {
+    setZipcode(text); // setting text to zipvocde value
+
+    const error = validateZipcode(text);
+    setZipcodeError(error);
+  };
   // databaseinfos
   // databaseinfos
   //const { userName } = useUser();
@@ -149,10 +160,14 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
                 style={[
                   styles.input,
                   zipcode ? styles.filled : styles.notFilled,
+                  zipcodeError ? styles.error : null,
                 ]}
-                onChangeText={(text) => setZipcode(text)}
+                onChangeText={handleZipcodeChange}
                 value={zipcode}
               />
+              {zipcodeError ? (
+                <Text style={styles.errorText}>{zipcodeError}</Text>
+              ) : null}
               {/*<Text style={styles.instructions}>Zipcode</Text>*/}
             </View>
             <View style={styles.infoContainer}>
