@@ -16,9 +16,14 @@ import { auth } from "../../configuration/firebase";
 import { storeUserShippingDetailsInFirestore } from "../../hook/databaseQueries";
 import { Picker } from "@react-native-picker/picker";
 import StateWithTaxList from "./StateWithTaxList";
-import { validateZipcode,validatePhoneNumber,} from "./AddressRegex";
+import { validateZipcode, validatePhoneNumber } from "./AddressRegex";
 
-const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
+const UserShipping = ({
+  isVisible,
+  onClose,
+  onShippingUpdated,
+  billingDetails,
+}) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -29,11 +34,10 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
   const [phoneNum, setPhoneNum] = useState("");
 
   const [isPickerVisible2, setPickerVisible2] = useState(false);
-  
+
   //for zipcode regex
   const [zipcodeError, setZipcodeError] = useState("");
   const [phoneNumError, setPhoneNumError] = useState("");
-
 
   const handleZipcodeChange = (text) => {
     setZipcode(text); // setting text to zipvocde value
@@ -46,6 +50,20 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
     setPhoneNum(number);
     const error = validatePhoneNumber(number);
     setPhoneNumError(error);
+  };
+
+  //tocopy billing
+  const copyBillingToShipping = () => {
+    if (billingDetails) {
+      setName(billingDetails.name);
+      setAddress(billingDetails.address);
+      setCity(billingDetails.city);
+      setZipcode(billingDetails.zipcode);
+      setState(billingDetails.state);
+      setCompany(billingDetails.company);
+      setAddressLine2(billingDetails.addressLine2);
+      setPhoneNum(billingDetails.phoneNum);
+    }
   };
   // databaseinfos
   //const { userName } = useUser();
@@ -96,6 +114,19 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
         <Text style={styles.title}>Edit Shipping Address</Text>
         <KeyboardAvoidingView behavior="padding" style={styles.container2}>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <TouchableOpacity
+              onPress={copyBillingToShipping}
+              style={{
+                margin: 10,
+                padding: 10,
+                backgroundColor: "#e0e0e0",
+                borderRadius: 5,
+              }}
+            >
+              <Text style={{ textAlign: "center" }}>
+                Same as Billing Address
+              </Text>
+            </TouchableOpacity>
             <View style={styles.infoContainer}>
               <Text style={styles.infoTitle}>
                 Name<Text style={styles.asterisk}>*</Text>
@@ -184,7 +215,7 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
               <TouchableOpacity
                 style={[styles.input, state ? styles.filled : styles.notFilled]}
                 onPress={() => setPickerVisible2(!isPickerVisible2)}
-                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <TextInput
                   value={state}
@@ -221,12 +252,12 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
                 style={[
                   styles.input,
                   phoneNum ? styles.filled : styles.notFilled,
-                  phoneNumError ? styles.error : null
+                  phoneNumError ? styles.error : null,
                 ]}
                 onChangeText={handlePhoneNumberChange}
                 value={phoneNum}
               />
-               {phoneNumError ? (
+              {phoneNumError ? (
                 <Text style={styles.errorText}>{phoneNumError}</Text>
               ) : null}
             </View>
@@ -332,4 +363,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserBilling;
+export default UserShipping;

@@ -238,6 +238,7 @@ const OrderConfirmationModal = ({
           isVisible={isUserModalVisible3}
           onClose={() => setUserModalVisible3(false)}
           onShippingUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
+          billingDetails={billingDetails}
         />
 
         <UserPayment

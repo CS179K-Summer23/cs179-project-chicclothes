@@ -33,7 +33,7 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
   //for regex
   const [zipcodeError, setZipcodeError] = useState("");
   const [phoneNumError, setPhoneNumError] = useState("");
-  const [addressError, setAddressError] = useState("");
+
 
   const handleZipcodeChange = (text) => {
     setZipcode(text); // setting text to zipvocde value
