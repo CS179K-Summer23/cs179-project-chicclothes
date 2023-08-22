@@ -15,6 +15,7 @@ import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
 import useUser from "./UserInfoDataBase";
 import DiscountCode from "./DiscountCode";
+import statesWithTaxList from "./StateWithTaxList";
 
 const OrderConfirmationModal = ({
   isVisible,
@@ -36,6 +37,14 @@ const OrderConfirmationModal = ({
     paymentDetails,
   } = useUser(refreshKey); // Pass refreshKey as dependency
   const [isDiscountModalVisible, setDiscountModalVisible] = useState(false); // for discount code
+
+  //for tax purposes
+  const getTaxRateForState = (stateName) => {
+    const stateTax = statesWithTaxList.find(state => state.name === stateName);
+    return stateTax ? stateTax.taxRate : 0; // default to 0 if state not found
+  };
+  const taxRate = getTaxRateForState(shippingDetails.state);
+
 
   useEffect(() => {
     if (isVisible) {
@@ -148,7 +157,12 @@ const OrderConfirmationModal = ({
             <Text style={styles.titleInfo}>Payment</Text>
 
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <AntDesign name="creditcard" size={24} color="black" style ={styles.creditCard} />
+              <AntDesign
+                name="creditcard"
+                size={24}
+                color="black"
+                style={styles.creditCard}
+              />
               <Text style={styles.infoText}>
                 Card Information: **** **** ****{" "}
                 {paymentDetails.cardNumber?.slice(-4) || "XXXX"}
@@ -219,14 +233,18 @@ const OrderConfirmationModal = ({
 
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
-              <Text style={styles.valueText}>${(totalValue * 0.075).toFixed(2)}</Text>
+              <Text style={styles.valueText}>
+                ${(totalValue * taxRate).toFixed(2)}
+              </Text>
             </View>
             <View style={styles.separator} />
-
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
               <Text style={styles.valueText}>
-                ${(parseFloat(totalValue) + parseFloat(totalValue * 0.075)).toFixed(2)}{" "}
+                $
+                {(
+                  parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+                ).toFixed(2)}{" "}
               </Text>
             </View>
           </View>
@@ -391,7 +409,7 @@ const styles = StyleSheet.create({
     height: 130,
     resizeMode: "cover",
   },
-  creditCard:{
+  creditCard: {
     marginTop: 15,
     marginRight: 10,
   },
