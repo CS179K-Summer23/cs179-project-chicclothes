@@ -16,7 +16,7 @@ import { auth } from "../../configuration/firebase";
 import { storeUserShippingDetailsInFirestore } from "../../hook/databaseQueries";
 import { Picker } from "@react-native-picker/picker";
 import StateWithTaxList from "./StateWithTaxList";
-import { validateZipcode } from "./AddressRegex";
+import { validateZipcode,validatePhoneNumber,} from "./AddressRegex";
 
 const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
   const [name, setName] = useState("");
@@ -32,6 +32,8 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
   
   //for zipcode regex
   const [zipcodeError, setZipcodeError] = useState("");
+  const [phoneNumError, setPhoneNumError] = useState("");
+
 
   const handleZipcodeChange = (text) => {
     setZipcode(text); // setting text to zipvocde value
@@ -39,7 +41,12 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
     const error = validateZipcode(text);
     setZipcodeError(error);
   };
-  // databaseinfos
+
+  const handlePhoneNumberChange = (number) => {
+    setPhoneNum(number);
+    const error = validatePhoneNumber(number);
+    setPhoneNumError(error);
+  };
   // databaseinfos
   //const { userName } = useUser();
 
@@ -214,10 +221,14 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
                 style={[
                   styles.input,
                   phoneNum ? styles.filled : styles.notFilled,
+                  phoneNumError ? styles.error : null
                 ]}
-                onChangeText={(text) => setPhoneNum(text)}
+                onChangeText={handlePhoneNumberChange}
                 value={phoneNum}
               />
+               {phoneNumError ? (
+                <Text style={styles.errorText}>{phoneNumError}</Text>
+              ) : null}
             </View>
             <TouchableOpacity
               style={[
@@ -310,6 +321,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  error: {
+    borderColor: "red",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 2,
   },
 });
 

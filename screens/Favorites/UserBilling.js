@@ -16,7 +16,7 @@ import { auth } from "../../configuration/firebase";
 import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
 import { Picker } from "@react-native-picker/picker";
 import StateWithTaxList from "./StateWithTaxList";
-import { validateZipcode } from "./AddressRegex";
+import { validateZipcode,validatePhoneNumber,} from "./AddressRegex";
 
 const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
   const [name, setName] = useState("");
@@ -30,8 +30,10 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
 
   const [isPickerVisible, setPickerVisible] = useState(false);
 
-  //for zipcode regex
+  //for regex
   const [zipcodeError, setZipcodeError] = useState("");
+  const [phoneNumError, setPhoneNumError] = useState("");
+  const [addressError, setAddressError] = useState("");
 
   const handleZipcodeChange = (text) => {
     setZipcode(text); // setting text to zipvocde value
@@ -39,11 +41,20 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
     const error = validateZipcode(text);
     setZipcodeError(error);
   };
+
+  const handlePhoneNumberChange = (number) => {
+    setPhoneNum(number);
+    const error = validatePhoneNumber(number);
+    setPhoneNumError(error);
+};
+
+  // const handleAddressChange 
+
   // databaseinfos
   //const { userName } = useUser();
 
   //to make sure user can press button if some field is not filled
-  const isDisabled = !name || !address || !city || !zipcode || !state;
+  const isDisabled = !name || !address || !city || !zipcode || !state || !phoneNum ;
 
   const saveUserData = async () => {
     const currentUser = auth.currentUser;
@@ -212,10 +223,14 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
                 style={[
                   styles.input,
                   phoneNum ? styles.filled : styles.notFilled,
+                  phoneNumError ? styles.error : null
                 ]}
-                onChangeText={(text) => setPhoneNum(text)}
+                onChangeText={handlePhoneNumberChange}
                 value={phoneNum}
               />
+               {phoneNumError ? (
+                <Text style={styles.errorText}>{phoneNumError}</Text>
+              ) : null}
             </View>
             <TouchableOpacity
               style={[

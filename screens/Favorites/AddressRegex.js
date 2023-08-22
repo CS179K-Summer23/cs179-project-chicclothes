@@ -5,3 +5,12 @@ export const validateZipcode = (zip) => {
     }
     return "";
   };
+
+
+  export const validatePhoneNumber = (number) => {
+    const regex = /^\d{10}$/;
+    if (!regex.test(number)) {
+        return "Only 10 digits are allowed for phone number.";
+    }
+    return "";
+}
