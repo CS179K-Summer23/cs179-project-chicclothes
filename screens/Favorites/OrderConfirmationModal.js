@@ -28,9 +28,9 @@ const OrderConfirmationModal = ({
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
-  const { userName, userEmail, billingDetails, shippingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
+  const { userName, userEmail, billingDetails, shippingDetails } =
+    useUser(refreshKey); // Pass refreshKey as dependency
   const [isDiscountModalVisible, setDiscountModalVisible] = useState(false); // for discount code
-
 
   useEffect(() => {
     if (isVisible) {
@@ -83,8 +83,11 @@ const OrderConfirmationModal = ({
               {billingDetails.address || "Street Address"}
             </Text>
             <Text style={styles.infoText2}>
-              {billingDetails.city || "City"}
+              {billingDetails.city && billingDetails.state
+                ? `${billingDetails.city}, ${billingDetails.state}`
+                : "City, State"}
             </Text>
+
             <Text style={styles.infoText2}>
               {billingDetails.zipcode || "Zipcode"}
             </Text>
@@ -106,7 +109,9 @@ const OrderConfirmationModal = ({
               {shippingDetails.address || "Street Address"}
             </Text>
             <Text style={styles.infoText2}>
-              {shippingDetails.city || "City"}
+              {shippingDetails.city && shippingDetails.state
+                ? `${shippingDetails.city}, ${shippingDetails.state}`
+                : "City, State"}
             </Text>
             <Text style={styles.infoText2}>
               {shippingDetails.zipcode || "Zipcode"}
@@ -172,7 +177,10 @@ const OrderConfirmationModal = ({
                 }}
               >
                 <Text style={styles.buttonText}>Apply Discount</Text>
-                <DiscountCode isVisible={isDiscountModalVisible} onClose={() => setDiscountModalVisible(false)} />
+                <DiscountCode
+                  isVisible={isDiscountModalVisible}
+                  onClose={() => setDiscountModalVisible(false)}
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.separator} />

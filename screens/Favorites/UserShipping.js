@@ -14,10 +14,11 @@ import { AntDesign } from "@expo/vector-icons";
 import useUser from "./UserInfoDataBase";
 import { auth } from "../../configuration/firebase";
 import { storeUserShippingDetailsInFirestore } from "../../hook/databaseQueries";
+import { Picker } from "@react-native-picker/picker";
+import StateWithTaxList from "./StateWithTaxList";
 
-
-const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {   
-  const [name,setName] = useState("");
+const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
+  const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [zipcode, setZipcode] = useState("");
@@ -25,40 +26,42 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
   const [company, setCompany] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
+
+  const [isPickerVisible2, setPickerVisible2] = useState(false);
+  // databaseinfos
   // databaseinfos
   //const { userName } = useUser();
 
   //to make sure user can press button if some field is not filled
-  const isDisabled = !name ||!address || !city || !zipcode || !state || !phoneNum;
+  const isDisabled =
+    !name || !address || !city || !zipcode || !state || !phoneNum;
 
   const saveUserData = async () => {
     const currentUser = auth.currentUser;
     const uid = currentUser ? currentUser.uid : null;
     if (uid) {
-        const shippingData = {
-            name,
-            address,
-            company,
-            addressLine2,
-            city,
-            zipcode,
-            state,
-            phoneNum,
-        };
-        await storeUserShippingDetailsInFirestore(uid, shippingData);
-        onClose(); // after it saves, close the modal
+      const shippingData = {
+        name,
+        address,
+        company,
+        addressLine2,
+        city,
+        zipcode,
+        state,
+        phoneNum,
+      };
+      await storeUserShippingDetailsInFirestore(uid, shippingData);
+      onClose(); // after it saves, close the modal
 
-        //refresh
-        if (onShippingUpdated) { /// Notify the parent component that billing details were updated 
-            onShippingUpdated();
-        }
-        
-        
+      //refresh
+      if (onShippingUpdated) {
+        /// Notify the parent component that billing details were updated
+        onShippingUpdated();
+      }
     } else {
-        console.error("No user is logged in.");
+      console.error("No user is logged in.");
     }
-};
-
+  };
 
   return (
     <Modal
@@ -76,12 +79,11 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
         <KeyboardAvoidingView behavior="padding" style={styles.container2}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.infoContainer}>
-              <Text style={styles.infoTitle}>Name<Text style={styles.asterisk}>*</Text></Text>
+              <Text style={styles.infoTitle}>
+                Name<Text style={styles.asterisk}>*</Text>
+              </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  name ? styles.filled : styles.notFilled,
-                ]} //if filled green else red :P
+                style={[styles.input, name ? styles.filled : styles.notFilled]} //if filled green else red :P
                 placeholder="Enter your shipping Name"
                 onChangeText={(text) => setName(text)}
                 value={name}
@@ -157,13 +159,35 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
               <Text style={styles.infoTitle}>
                 State <Text style={styles.asterisk}>*</Text>
               </Text>
-              <TextInput
-                placeholder="Enter your State"
+              <TouchableOpacity
                 style={[styles.input, state ? styles.filled : styles.notFilled]}
-                onChangeText={(text) => setState(text)}
-                value={state}
-              />
-              {/*<Text style={styles.instructions}>State</Text>*/}
+                onPress={() => setPickerVisible2(!isPickerVisible2)}
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+              >
+                <TextInput
+                  value={state}
+                  placeholder="Enter your State"
+                  editable={false} //so user cant type anything after selecting one!!
+                />
+              </TouchableOpacity>
+              {isPickerVisible2 && (
+                <Picker
+                  selectedValue={state}
+                  onValueChange={(itemValue) => {
+                    setState(itemValue);
+                    setPickerVisible2(false); // Hide the picker after selection
+                  }}
+                  style={styles.picker}
+                >
+                  {StateWithTaxList.map((stateInfo, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={stateInfo.name}
+                      value={stateInfo.name}
+                    />
+                  ))}
+                </Picker>
+              )}
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.infoTitle}>
@@ -172,11 +196,14 @@ const UserBilling = ({ isVisible, onClose, onShippingUpdated }) => {
               <TextInput
                 placeholder="Enter your Phone Number"
                 keyboardType="numeric"
-                style={[styles.input, phoneNum ? styles.filled : styles.notFilled]}
+                style={[
+                  styles.input,
+                  phoneNum ? styles.filled : styles.notFilled,
+                ]}
                 onChangeText={(text) => setPhoneNum(text)}
                 value={phoneNum}
               />
-              </View>
+            </View>
             <TouchableOpacity
               style={[
                 styles.checkoutButton,
@@ -227,12 +254,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   input: {
+    paddingVertical: 10,
     marginTop: 5,
     borderWidth: 1,
     height: 40,
     borderColor: "grey",
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    zIndex: 10,
   },
   asterisk: {
     color: "#8B0000",

@@ -14,6 +14,8 @@ import { AntDesign } from "@expo/vector-icons";
 import useUser from "./UserInfoDataBase";
 import { auth } from "../../configuration/firebase";
 import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
+import { Picker } from "@react-native-picker/picker";
+import StateWithTaxList from "./StateWithTaxList";
 
 
 const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {   
@@ -24,6 +26,8 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
   const [state, setState] = useState("");
   const [company, setCompany] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
+
+  const [isPickerVisible, setPickerVisible] = useState(false);
   // databaseinfos
   //const { userName } = useUser();
 
@@ -150,17 +154,39 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
               {/*<Text style={styles.instructions}>Zipcode</Text>*/}
             </View>
             <View style={styles.infoContainer}>
-              <Text style={styles.infoTitle}>
-                State <Text style={styles.asterisk}>*</Text>
-              </Text>
-              <TextInput
+            <Text style={styles.infoTitle}>
+              State <Text style={styles.asterisk}>*</Text>
+            </Text>
+            <TouchableOpacity 
+              style={[styles.input, state ? styles.filled : styles.notFilled]}
+              onPress={() => setPickerVisible(!isPickerVisible)}
+              hitSlop={{top: 10, bottom: 10, left: 10, right: 10, }}
+            >
+              <TextInput 
+                value={state} 
                 placeholder="Enter your State"
-                style={[styles.input, state ? styles.filled : styles.notFilled]}
-                onChangeText={(text) => setState(text)}
-                value={state}
+                editable={false} //so user cant type anything after selecting one!! 
               />
-              {/*<Text style={styles.instructions}>State</Text>*/}
-            </View>
+            </TouchableOpacity>
+            {isPickerVisible && (
+              <Picker
+                selectedValue={state}
+                onValueChange={(itemValue) => {
+                  setState(itemValue);
+                  setPickerVisible(false); // Hide the picker after selection
+                }}
+                style={styles.picker}
+              >
+                {StateWithTaxList.map((stateInfo, index) => (
+                  <Picker.Item
+                    key={index}
+                    label={stateInfo.name}
+                    value={stateInfo.name}
+                  />
+                ))}
+              </Picker>
+            )}
+          </View>
             <TouchableOpacity
               style={[
                 styles.checkoutButton,
@@ -211,12 +237,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   input: {
+    paddingVertical: 10,
     marginTop: 5,
     borderWidth: 1,
     height: 40,
     borderColor: "grey",
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    zIndex: 10,
   },
   asterisk: {
     color: "#8B0000",
@@ -234,7 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   checkoutButton: {
-    marginTop: 20,
+    marginTop: 50,
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -250,6 +278,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  picker:{
+    marginTop: -70,
   },
 });
 
