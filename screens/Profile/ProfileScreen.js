@@ -148,14 +148,15 @@ const ProfileScreen = ({navigation}) => {
 
     if (uid) {
         const fetchUserName = async () => {
-            const name = await getUserDataFromFirestore(uid);
-            if (name) {
-                setUserName(name);
+            const userData = await getUserDataFromFirestore(uid);
+            if (userData && userData.name) {
+                setUserName(userData.name);
             }
         }
         fetchUserName();
     }
 }, []);
+
 
   return (
     <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
