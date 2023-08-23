@@ -72,17 +72,6 @@ const ShoppingBagScreenMen = ({ navigation }) => {
             <Text style={styles.selectedGenderText}>Mens</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.gender}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ShoppingBag", {
-                screen: "ShoppingBagKid",
-              })
-            }
-          >
-            <Text style={styles.GenderText}>Kids</Text>
-          </TouchableOpacity>
-        </View>
       </View>
 
       <View style={styles.leftColumnContainer}>
@@ -211,13 +200,15 @@ const styles = StyleSheet.create({
     // alignItems: "flex-start", // if you want to fill rows left to right
   },
   genderSelected: {
+    flex: 1,
     height: "8%",
     width: "33.3%",
     paddingTop: 14,
     paddingBottom: 14,
-    paddingLeft: 18,
+    // paddingLeft: "15%",
     borderBottomWidth: 2,
     borderBottomColor: "black",
+    justifyContent: "flex-start",
     // borderLeftColor:  "white",
     // backgroundColor: "#eeeeef",
     // backgroundColor: "black",
@@ -231,11 +222,13 @@ const styles = StyleSheet.create({
     // paddingBottom: 20,
   },
   gender: {
+    flex: 1,
     height: "8%",
     width: "33.3%",
     paddingTop: 14,
     paddingBottom: 14,
-    paddingLeft: 18,
+    // paddingLeft: 18,
+    justifyContent: "flex-start",
 
     // backgroundColor: "#eeeeef",
     // backgroundColor: "black",

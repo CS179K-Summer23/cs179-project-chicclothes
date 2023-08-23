@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   FlatList,
   View,
+  TouchableHighlight,
   Pressable,
   Image,
 } from "react-native";
@@ -27,87 +28,24 @@ function getButtonState() {
   return buttonState;
 }
 
-const FirstRoute = () => (
-  // <View style={{ flex: 1 }} />
-
-  // <Text>Hello</Text>
-
-  <View style={styles.leftColumnContainer}>
-    <View style={styles.categories}>
-      <Pressable>
-        <Text style={styles.TextCategories}>Tops</Text>
-      </Pressable>
-    </View>
-
-    <View>
-      <Pressable style={styles.categoriesSelected}>
-        <Text style={styles.selectedTextCategories}>Outerwear</Text>
-      </Pressable>
-    </View>
-  </View>
-);
-
-const SecondRoute = () => (
-  // <View style={{ flex: 1 }} />;
-
-  <View style={styles.leftColumnContainer}>
-    <View style={styles.categoriesSelected}>
-      <Pressable>
-        <Text style={styles.selectedTextCategories}>Tops</Text>
-      </Pressable>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Bottoms</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Dresses</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Outerwear</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Swimwear</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Jeans</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Loungewear</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Accessories</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.categories}>
-      <TouchableOpacity>
-        <Text style={styles.TextCategories}>Shoes</Text>
-      </TouchableOpacity>
-    </View>
-
-    <View style={styles.productsList}></View>
-  </View>
-);
-
-const renderScene = SceneMap({
-  Men: FirstRoute,
-  Women: SecondRoute,
-});
-
 const ShoppingBagTest = ({ navigation }) => {
   const layout = useWindowDimensions();
+
+  var [categoryState, setcategoryState] = React.useState(0);
+
+  const mensClothes = [
+    "men's clothing",
+    "women's clothing",
+    "men's clothing",
+    "women's clothing",
+  ];
+
+  const womensClothes = [
+    "women's clothing",
+    "men's clothing",
+    "women's clothing",
+    "men's clothing",
+  ];
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -115,28 +53,241 @@ const ShoppingBagTest = ({ navigation }) => {
     { key: "Women", title: "Women" },
   ]);
 
-  // const renderTabBar = (props) => {
-  //   return (
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  //       <TabBar
-  //         {...props}
-  //         renderLabel={({ focused, route }) => {
-  //           return (
-  //             <TextView
-  //               size={20}
-  //               category="Medium"
-  //               color={focused ? "BLACK" : "GRAY3"}
-  //             >
-  //               {route.title}
-  //             </TextView>
-  //           );
-  //         }}
-  //         indicatorStyle={styles.indicatorStyle}
-  //         style={styles.tabBar}
-  //       />
-  //     </SafeAreaView>
-  //   );
-  // };
+  useEffect(() => {
+    if (index == 1) {
+      fetch("https://fakestoreapi.com/products")
+        .then((response) => response.json())
+        .then((data) => {
+          const clothesProducts = data.filter(
+            (product) =>
+              // product.category === "men's clothing" |
+              product.category === womensClothes[categoryState].toString()
+          );
+          setProducts(clothesProducts);
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+    } else if (index == 0) {
+      fetch("https://fakestoreapi.com/products")
+        .then((response) => response.json())
+        .then((data) => {
+          const clothesProducts = data.filter(
+            (product) =>
+              // product.category === "men's clothing" |
+              product.category === mensClothes[categoryState].toString()
+          );
+          setProducts(clothesProducts);
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+    }
+  }, [categoryState, index]);
+
+  var touchProps = {
+    opacity: 0,
+    // style: categoryState == 0 ? styles.categoriesSelected : styles.categories, // <-- but you can still apply other style changes
+    // onHideUnderlay: () => setcategoryState(0),
+    // onShowUnderlay: () => setcategoryState(2),
+    // onPress: () => setcategoryState(true), // <-- "onPress" is apparently required
+    onPress: () => renderClothes(),
+  };
+
+  var touchProps2 = {
+    opacity: 0,
+    style: categoryState == 2 ? styles.categoriesSelected : styles.categories, // <-- but you can still apply other style changes
+    // onHideUnderlay: () => setcategoryState(0),
+    // onShowUnderlay: () => setcategoryState(2),
+    // onPress: () => setcategoryState(true), // <-- "onPress" is apparently required
+    onPress: () => console.log(categoryState),
+  };
+  //routes
+
+  const FirstRoute = () => (
+    // <View style={{ flex: 1 }} />
+
+    // <Text>Hello</Text>
+    <SafeAreaView style={styles.ye}>
+      <View style={styles.leftColumnContainer}>
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(0)}
+            {...touchProps}
+            style={
+              categoryState == 0 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Shirts</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(1)}
+            {...touchProps}
+            style={
+              categoryState == 1 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Graphics</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(2)}
+            {...touchProps}
+            style={
+              categoryState == 2 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Outerwear</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(3)}
+            {...touchProps}
+            style={
+              categoryState == 3 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Shorts</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+
+      <View style={styles.productsList}>
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedProduct(item);
+                  setModalVisible(true);
+                }}
+              >
+                <Image
+                  source={{ uri: item.image }}
+                  style={{ width: 90, height: 90 }}
+                />
+                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                  {item.price} USD
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          numColumns={2}
+        />
+      </View>
+    </SafeAreaView>
+  );
+
+  const SecondRoute = () => (
+    // <View style={{ flex: 1 }} />;
+
+    <SafeAreaView style={styles.ye}>
+      <View style={styles.leftColumnContainer}>
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(0)}
+            {...touchProps}
+            style={
+              categoryState == 0 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Shirts</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(1)}
+            {...touchProps}
+            style={
+              categoryState == 1 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Graphics</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(2)}
+            {...touchProps}
+            style={
+              categoryState == 2 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Jackets & Coats</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(3)}
+            {...touchProps}
+            style={
+              categoryState == 3 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Jeans</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+
+      <View style={styles.productsList}>
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedProduct(item);
+                  setModalVisible(true);
+                }}
+              >
+                <Image
+                  source={{ uri: item.image }}
+                  style={{ width: 90, height: 90 }}
+                />
+                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                  {item.price} USD
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          numColumns={2}
+        />
+      </View>
+    </SafeAreaView>
+  );
+
+  const renderScene = SceneMap({
+    Men: FirstRoute,
+    Women: SecondRoute,
+  });
 
   return (
     <SafeAreaView style={styles.containerShop}>
@@ -185,6 +336,9 @@ const ShoppingBagTest = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  ye: {
+    flex: 1,
+  },
   containerShop: {
     flex: 1,
     backgroundColor: "white",
@@ -261,6 +415,15 @@ const styles = StyleSheet.create({
   TextCategories: {
     fontSize: 15,
     color: "#000101",
+  },
+  productsList: {
+    flex: 1,
+    flexDirection: "row",
+    // backgroundColor: "black",
+    width: "64%",
+    marginLeft: 152,
+    justifyContent: "flex-start",
+    marginTop: -414,
   },
 });
 

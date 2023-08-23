@@ -72,17 +72,6 @@ const ShoppingBagScreen = ({ navigation }) => {
             <Text style={styles.GenderText}>Mens</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.gender}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ShoppingBag", {
-                screen: "ShoppingBagKid",
-              })
-            }
-          >
-            <Text style={styles.GenderText}>Kids</Text>
-          </TouchableOpacity>
-        </View>
       </View>
 
       <View style={styles.leftColumnContainer}>
@@ -211,13 +200,15 @@ const styles = StyleSheet.create({
     // alignItems: "flex-start", // if you want to fill rows left to right
   },
   genderSelected: {
+    flex: 1,
     height: "8%",
     width: "33.3%",
     paddingTop: 14,
     paddingBottom: 14,
-    paddingLeft: 18,
+    // paddingLeft: "15%",
     borderBottomWidth: 2,
     borderBottomColor: "black",
+    justifyContent: "flex-start",
     // borderLeftColor:  "white",
     // backgroundColor: "#eeeeef",
     // backgroundColor: "black",
@@ -231,11 +222,13 @@ const styles = StyleSheet.create({
     // paddingBottom: 20,
   },
   gender: {
+    flex: 1,
     height: "8%",
     width: "33.3%",
     paddingTop: 14,
     paddingBottom: 14,
-    paddingLeft: 18,
+    // paddingLeft: 18,
+    justifyContent: "flex-start",
 
     // backgroundColor: "#eeeeef",
     // backgroundColor: "black",
@@ -296,7 +289,6 @@ export default ShoppingBagScreen;
 // import React, { useState, useEffect } from "react";
 // import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 
-
 // const ShoppingBagScreen = () => {
 //   const [data, setData] = useState(null);
 //   const [error, setError] = useState(null);
@@ -327,7 +319,7 @@ export default ShoppingBagScreen;
 //           imageUrl: product.imageUrl
 //         }))
 //       };
-      
+
 //       console.log(simplifiedData);  // Logs the simplified data
 //       setData(simplifiedData);
 //       setData(result);
@@ -342,7 +334,7 @@ export default ShoppingBagScreen;
 //         source={{ uri: `https://${product.imageUrl}` }}
 //       />
 //       <Text style={styles.productName}>{product.name}</Text>
-      
+
 //       {product.price && product.price.current && product.price.current.text ? (
 //         <Text style={styles.productPrice}>{product.price.current.text}</Text>
 //       ) : (
@@ -371,7 +363,6 @@ export default ShoppingBagScreen;
 //     </View>
 //   );
 // };
-
 
 // const styles = StyleSheet.create({
 //   container: {
