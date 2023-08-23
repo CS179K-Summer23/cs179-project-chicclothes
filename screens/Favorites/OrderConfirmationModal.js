@@ -18,6 +18,8 @@ import DiscountCodeInput from "./DiscountCodeInput";
 import statesWithTaxList from "./StateWithTaxList";
 import { applyDiscount } from "./DiscountLogic";
 
+import Checkbox from "expo-checkbox";
+
 const OrderConfirmationModal = ({
   isVisible,
   onClose,
@@ -41,8 +43,8 @@ const OrderConfirmationModal = ({
 
   //for fucking discounts
   const [discountDetails, setDiscountDetails] = useState(null);
- 
 
+  const [isChecked, setChecked] = useState(false);
 
   const handleDiscountApplied = (details) => {
     setDiscountDetails(details);
@@ -251,24 +253,23 @@ const OrderConfirmationModal = ({
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
               <Text style={styles.valueText}>
-                 ${(totalValue * taxRate).toFixed(2)}
+                ${(totalValue * taxRate).toFixed(2)}
               </Text>
             </View>
             <View style={styles.separator} />
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
-              <Text style={styles.valueText}>
-                ${totalWithTax}{" "}
-              </Text>
+              <Text style={styles.valueText}>${totalWithTax} </Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.FeesText}>Total After Discount</Text>
               <Text style={styles.valueText}>
-                ${discountDetails
+                $
+                {discountDetails
                   ? discountDetails.discountedTotal.toFixed(2)
                   : (
-                    parseFloat(totalValue) + parseFloat(totalValue * taxRate)
-                  ).toFixed(2)}
+                      parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+                    ).toFixed(2)}
               </Text>
             </View>
           </View>
@@ -283,7 +284,27 @@ const OrderConfirmationModal = ({
             We will process your personal data in accordance with Clique
             Closet's Privacy Notes
           </Text>
-          <TouchableOpacity style={styles.checkoutButton} onPress={onClose}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <Checkbox
+              style={[styles.checkbox, { marginBottom: 10 }]}
+              value={isChecked}
+              onValueChange={setChecked}
+              color={isChecked ? "#4630EB" : undefined}
+            />
+            <Text>Are you sure you want to check it?</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={onClose}
+            disabled={!isChecked} // Disable the button if checkbox is not checked
+          >
             <Text style={styles.checkoutButtonText}>Checkout</Text>
           </TouchableOpacity>
         </View>
@@ -305,8 +326,6 @@ const OrderConfirmationModal = ({
           onClose={() => setUserModalVisible4(false)}
           onPaymentUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
         />
-
-        
       </ScrollView>
     </Modal>
   );
@@ -439,11 +458,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginRight: 10,
   },
-  buttonTextApply:{
+  buttonTextApply: {
     color: "#000",
     fontSize: 14,
-    textDecorationLine: 'underline',
-    
+    textDecorationLine: "underline",
   },
 });
 
