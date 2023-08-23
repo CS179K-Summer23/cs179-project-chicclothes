@@ -292,18 +292,24 @@ const OrderConfirmationModal = ({
             }}
           >
             <Checkbox
-              style={[styles.checkbox, { marginBottom: 10 }]}
+              style={styles.checkbox}
               value={isChecked}
               onValueChange={setChecked}
-              color={isChecked ? "#4630EB" : undefined}
+              color={isChecked ? "#f0ebdf" : undefined}
             />
-            <Text>Are you sure you want to check it?</Text>
+            <Text style={styles.bottomText3}>
+              I have agreed that I have check all my information above. I also
+              agree that any mistake on my behave will not be reimbursed by
+              Clique Closet.
+            </Text>
           </View>
 
           <TouchableOpacity
-            style={styles.checkoutButton}
+            style={
+              isChecked ? styles.checkoutButton : styles.checkoutButtonDisabled
+            }
             onPress={onClose}
-            disabled={!isChecked} // Disable the button if checkbox is not checked
+            disabled={!isChecked}
           >
             <Text style={styles.checkoutButtonText}>Checkout</Text>
           </TouchableOpacity>
@@ -432,9 +438,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   checkoutButton: {
-    marginTop: 20,
+    marginTop: 5,
     padding: 10,
     backgroundColor: "#000",
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  checkoutButtonDisabled: {
+    marginTop: 5,
+    padding: 10,
+    backgroundColor: "grey",
     borderRadius: 5,
     alignItems: "center",
     marginBottom: 30,
@@ -463,6 +477,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textDecorationLine: "underline",
   },
+  checkbox: {
+    marginTop: 10,
+    backgroundColor: "white",
+  },
+  bottomText3: {
+    marginTop: 10,
+    color: "grey",
+    fontSize: 12,
+    padding: 10,
+  },
+  
 });
 
 export default OrderConfirmationModal;
