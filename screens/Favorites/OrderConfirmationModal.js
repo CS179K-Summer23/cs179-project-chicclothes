@@ -17,6 +17,8 @@ import useUser from "./UserInfoDataBase";
 import DiscountCodeInput from "./DiscountCodeInput";
 import statesWithTaxList from "./StateWithTaxList";
 import { applyDiscount } from "./DiscountLogic";
+import { auth } from "../../configuration/firebase";
+import { storeOrderDetailsInFirestore } from "../../hook/databaseQueries";
 
 import Checkbox from "expo-checkbox";
 
@@ -32,6 +34,8 @@ const OrderConfirmationModal = ({
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
+  const user = auth.currentUser;
+  const uid = user ? user.uid : null;
   const {
     userName,
     userEmail,
@@ -87,6 +91,45 @@ const OrderConfirmationModal = ({
   const totalWithTax = (
     parseFloat(totalValue) + parseFloat(totalValue * taxRate)
   ).toFixed(2);
+
+  //to save it in the database for order history
+  const handleCheckout = async () => {
+    if (!uid) {
+      console.error("User is not authenticated.");
+      return;
+    }
+
+    // Generate the order number
+    const generateOrderNumber = () => {
+      return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+    };
+
+    const orderNumber = generateOrderNumber();
+
+    const orderData = {
+      orderNumber: orderNumber, // Save the generated order number in the order data
+      billingDetails: billingDetails,
+      shippingDetails: shippingDetails,
+      paymentDetails: paymentDetails,
+      orderValue: totalValue,
+      deliveryFee: "FREE",
+      estimatedTaxes: (totalValue * taxRate).toFixed(2),
+      total: totalWithTax,
+      totalAfterDiscount: discountDetails
+        ? discountDetails.discountedTotal.toFixed(2)
+        : (parseFloat(totalValue) + parseFloat(totalValue * taxRate)).toFixed(
+            2
+          ),
+    };
+
+    try {
+      await storeOrderDetailsInFirestore(uid, orderData);
+      console.log(`Order saved successfully with order number: ${orderNumber}`);
+      onClose(); // Close the modal after saving
+    } catch (error) {
+      console.error("Error saving order: ", error);
+    }
+  };
 
   return (
     <Modal
@@ -259,7 +302,7 @@ const OrderConfirmationModal = ({
             <View style={styles.separator} />
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
-              <Text style={styles.valueText}>${totalWithTax} </Text>
+              <Text style={styles.valueText}> ${totalWithTax} </Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.FeesText}>Total After Discount</Text>
@@ -308,7 +351,7 @@ const OrderConfirmationModal = ({
             style={
               isChecked ? styles.checkoutButton : styles.checkoutButtonDisabled
             }
-            onPress={onClose}
+            onPress={handleCheckout}
             disabled={!isChecked}
           >
             <Text style={styles.checkoutButtonText}>Checkout</Text>
@@ -487,7 +530,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: 10,
   },
-  
 });
 
 export default OrderConfirmationModal;
