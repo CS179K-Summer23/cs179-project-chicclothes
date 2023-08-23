@@ -14,8 +14,9 @@ import UserBilling from "./UserBilling";
 import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
 import useUser from "./UserInfoDataBase";
-import DiscountCode from "./DiscountCode";
+import DiscountCodeInput from "./DiscountCodeInput";
 import statesWithTaxList from "./StateWithTaxList";
+import { applyDiscount } from "./DiscountLogic";
 
 const OrderConfirmationModal = ({
   isVisible,
@@ -38,13 +39,21 @@ const OrderConfirmationModal = ({
   } = useUser(refreshKey); // Pass refreshKey as dependency
   const [isDiscountModalVisible, setDiscountModalVisible] = useState(false); // for discount code
 
+  //for fucking discounts
+  const [discountDetails, setDiscountDetails] = useState(null);
+
+  const handleDiscountApplied = (details) => {
+    setDiscountDetails(details);
+  };
+
   //for tax purposes
   const getTaxRateForState = (stateName) => {
-    const stateTax = statesWithTaxList.find(state => state.name === stateName);
+    const stateTax = statesWithTaxList.find(
+      (state) => state.name === stateName
+    );
     return stateTax ? stateTax.taxRate : 0; // default to 0 if state not found
   };
   const taxRate = getTaxRateForState(shippingDetails.state);
-
 
   useEffect(() => {
     if (isVisible) {
@@ -213,7 +222,7 @@ const OrderConfirmationModal = ({
                 }}
               >
                 <Text style={styles.buttonText}>Apply Discount</Text>
-                <DiscountCode
+                <DiscountCodeInput
                   isVisible={isDiscountModalVisible}
                   onClose={() => setDiscountModalVisible(false)}
                 />
@@ -245,6 +254,14 @@ const OrderConfirmationModal = ({
                 {(
                   parseFloat(totalValue) + parseFloat(totalValue * taxRate)
                 ).toFixed(2)}{" "}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.FeesText}>Total After Discount</Text>
+              <Text style={styles.valueText}>
+                {discountDetails
+                  ? discountDetails.discountedTotal.toFixed(2)
+                  : "N/A"}
               </Text>
             </View>
           </View>
@@ -280,6 +297,13 @@ const OrderConfirmationModal = ({
           isVisible={isUserModalVisible4}
           onClose={() => setUserModalVisible4(false)}
           onPaymentUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
+        />
+
+        <DiscountCodeInput
+          isVisible={isDiscountModalVisible}
+          onClose={() => setDiscountModalVisible(false)}
+          totalValue={totalValue}
+          onDiscountApplied={handleDiscountApplied}
         />
       </ScrollView>
     </Modal>

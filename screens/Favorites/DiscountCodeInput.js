@@ -9,15 +9,24 @@ import {
   TextInput,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { applyDiscount } from './DiscountLogic';
 
-const DiscountCode = ({ isVisible, onClose }) => {
+const DiscountCodeInput = ({ isVisible, onClose, totalValue, onDiscountApplied }) => {
   const [code, setCode] = useState(""); // Initialize the state for 'code'
-
+  const [errorMessage, setErrorMessage] = useState(null); // Initialize the state for 'errorMessage'
   const isDisabled = !code;
 
-  const saveUserData = () => {
-    // Define what you want to do when saving user data
-    console.log("Saving user data...");
+  const applyAndSaveDiscount = () => {
+    const newDiscountedValue = applyDiscount(code, totalValue);
+    if (newDiscountedValue.discountRate === 0) {
+      setErrorMessage("Invalid code. Try again.");
+    } else {
+      if (onDiscountApplied) {
+        onDiscountApplied(newDiscountedValue);
+      }
+      console.log("Discount applied. New total:", newDiscountedValue);
+      setErrorMessage(null); // Clear the error message if the discount is valid
+    }
   };
 
   return (
@@ -51,7 +60,7 @@ const DiscountCode = ({ isVisible, onClose }) => {
                 styles.addButton,
                 isDisabled ? styles.disabledButton : styles.enabledButton,
               ]}
-              onPress={isDisabled ? null : saveUserData}
+              onPress={isDisabled ? null : applyAndSaveDiscount}
             >
               <Text style={styles.checkoutButtonText}>Add</Text>
             </TouchableOpacity>
@@ -61,7 +70,7 @@ const DiscountCode = ({ isVisible, onClose }) => {
               styles.checkoutButton,
               isDisabled ? styles.disabledButton : styles.enabledButton,
             ]}
-            onPress={isDisabled ? null : saveUserData}
+            onPress={onClose}
           >
             <Text style={styles.checkoutButtonText}>Save</Text>
           </TouchableOpacity>
@@ -135,4 +144,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default DiscountCode;
+export default DiscountCodeInput;
