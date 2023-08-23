@@ -41,6 +41,8 @@ const OrderConfirmationModal = ({
 
   //for fucking discounts
   const [discountDetails, setDiscountDetails] = useState(null);
+ 
+
 
   const handleDiscountApplied = (details) => {
     setDiscountDetails(details);
@@ -79,6 +81,10 @@ const OrderConfirmationModal = ({
   const handlePaymentInfo = () => {
     setUserModalVisible4(true);
   };
+
+  const totalWithTax = (
+    parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+  ).toFixed(2);
 
   return (
     <Modal
@@ -221,10 +227,12 @@ const OrderConfirmationModal = ({
                   setDiscountModalVisible(true);
                 }}
               >
-                <Text style={styles.buttonText}>Apply Discount</Text>
+                <Text style={styles.buttonTextApply}>Apply Discount</Text>
                 <DiscountCodeInput
                   isVisible={isDiscountModalVisible}
                   onClose={() => setDiscountModalVisible(false)}
+                  totalValue={totalWithTax}
+                  onDiscountApplied={handleDiscountApplied}
                 />
               </TouchableOpacity>
             </View>
@@ -243,25 +251,24 @@ const OrderConfirmationModal = ({
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
               <Text style={styles.valueText}>
-                ${(totalValue * taxRate).toFixed(2)}
+                 ${(totalValue * taxRate).toFixed(2)}
               </Text>
             </View>
             <View style={styles.separator} />
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
               <Text style={styles.valueText}>
-                $
-                {(
-                  parseFloat(totalValue) + parseFloat(totalValue * taxRate)
-                ).toFixed(2)}{" "}
+                ${totalWithTax}{" "}
               </Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.FeesText}>Total After Discount</Text>
               <Text style={styles.valueText}>
-                {discountDetails
+                ${discountDetails
                   ? discountDetails.discountedTotal.toFixed(2)
-                  : "N/A"}
+                  : (
+                    parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+                  ).toFixed(2)}
               </Text>
             </View>
           </View>
@@ -299,12 +306,7 @@ const OrderConfirmationModal = ({
           onPaymentUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
         />
 
-        <DiscountCodeInput
-          isVisible={isDiscountModalVisible}
-          onClose={() => setDiscountModalVisible(false)}
-          totalValue={totalValue}
-          onDiscountApplied={handleDiscountApplied}
-        />
+        
       </ScrollView>
     </Modal>
   );
@@ -436,6 +438,12 @@ const styles = StyleSheet.create({
   creditCard: {
     marginTop: 15,
     marginRight: 10,
+  },
+  buttonTextApply:{
+    color: "#000",
+    fontSize: 14,
+    textDecorationLine: 'underline',
+    
   },
 });
 
