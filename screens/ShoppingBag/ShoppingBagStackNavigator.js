@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ShoppingBagScreen from "../ShoppingBagScreen";
 import ShoppingBagScreenMen from "../ShoppingBag/ShoppingBagScreenMen";
 import ShoppingBagScreenKid from "../ShoppingBag/ShoppingBagScreenKid";
+import ShoppingBagTest from "../ShoppingBag/ShoppingBagTest";
 
 // Import screens
 
@@ -18,7 +18,7 @@ const ShoppingBagStackNavigator = () => {
     >
       <Stack.Screen
         name="ShoppingBagWomen"
-        component={ShoppingBagScreen}
+        component={ShoppingBagTest}
         options={{ headerShown: false }}
       />
       <Stack.Screen
