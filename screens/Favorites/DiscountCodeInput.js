@@ -9,15 +9,24 @@ import {
   TextInput,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { applyDiscount } from './DiscountLogic';
 
-const DiscountCode = ({ isVisible, onClose }) => {
-  const [code, setCode] = useState(""); // Initialize the state for 'code'
-
+const DiscountCodeInput = ({ isVisible, onClose, totalValue, onDiscountApplied }) => {
+  const [code, setCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState({ message: null, type: null });
   const isDisabled = !code;
 
-  const saveUserData = () => {
-    // Define what you want to do when saving user data
-    console.log("Saving user data...");
+  const applyAndSaveDiscount = () => {
+    const newDiscountedValue = applyDiscount(code, totalValue);
+    if (newDiscountedValue.discountRate === 0) {
+      setErrorMessage({ message: "Invalid code. Try again.", type: "error" });
+    } else {
+      if (onDiscountApplied) {
+        onDiscountApplied(newDiscountedValue);
+      }
+      console.log("Discount applied. New total:", newDiscountedValue);
+      setErrorMessage({ message: "Discount applied.", type: "success" });
+    }
   };
 
   return (
@@ -51,17 +60,22 @@ const DiscountCode = ({ isVisible, onClose }) => {
                 styles.addButton,
                 isDisabled ? styles.disabledButton : styles.enabledButton,
               ]}
-              onPress={isDisabled ? null : saveUserData}
+              onPress={isDisabled ? null : applyAndSaveDiscount}
             >
               <Text style={styles.checkoutButtonText}>Add</Text>
             </TouchableOpacity>
           </View>
+          {errorMessage.message && (
+            <Text style={[styles.errorText, errorMessage.type === "error" ? styles.errorColor : styles.successColor]}>
+              {errorMessage.message}
+            </Text>
+          )}
           <TouchableOpacity
             style={[
               styles.checkoutButton,
               isDisabled ? styles.disabledButton : styles.enabledButton,
             ]}
-            onPress={isDisabled ? null : saveUserData}
+            onPress={onClose}
           >
             <Text style={styles.checkoutButtonText}>Save</Text>
           </TouchableOpacity>
@@ -93,7 +107,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   checkoutButton: {
-    marginTop: 30,
+    marginTop: 15,
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -131,8 +145,17 @@ const styles = StyleSheet.create({
     width: 250,
     backgroundColor: "#fff",
   },
- 
-  
+  errorText: {
+    marginTop: 0,
+    fontSize: 14,
+    
+  },
+  errorColor: {
+    color: "red",
+  },
+  successColor: {
+    color: "green",
+  },
 });
 
-export default DiscountCode;
+export default DiscountCodeInput;

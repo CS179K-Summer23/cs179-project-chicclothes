@@ -23,6 +23,8 @@ export const getUserDataFromFirestore = async (uid) => {
             email: userData.email,
             billingDetails: userData.billingDetails || {},
             shippingDetails: userData.shippingDetails || {},
+            paymentDetails: userData.paymentDetails || {},
+
           };
     } else {
         console.log("No such document!");
@@ -110,5 +112,12 @@ export const storeUserShippingDetailsInFirestore = async (uid, shippingData) => 
     const userRef = doc(db, "users", uid);
     await updateDoc(userRef, {
         shippingDetails: shippingData
+    });
+};
+
+export const storeUserPaymentDetailsInFirestore = async (uid, paymentData) => {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        paymentDetails: paymentData
     });
 };

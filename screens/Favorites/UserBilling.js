@@ -14,47 +14,74 @@ import { AntDesign } from "@expo/vector-icons";
 import useUser from "./UserInfoDataBase";
 import { auth } from "../../configuration/firebase";
 import { storeUserBillingDetailsInFirestore } from "../../hook/databaseQueries";
+import { Picker } from "@react-native-picker/picker";
+import StateWithTaxList from "./StateWithTaxList";
+import { validateZipcode,validatePhoneNumber,} from "./AddressRegex";
 
-
-const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {   
-  const [name,setName] = useState("");
+const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
+  const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [state, setState] = useState("");
   const [company, setCompany] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+
+  const [isPickerVisible, setPickerVisible] = useState(false);
+
+  //for regex
+  const [zipcodeError, setZipcodeError] = useState("");
+  const [phoneNumError, setPhoneNumError] = useState("");
+
+
+  const handleZipcodeChange = (text) => {
+    setZipcode(text); // setting text to zipvocde value
+
+    const error = validateZipcode(text);
+    setZipcodeError(error);
+  };
+
+  const handlePhoneNumberChange = (number) => {
+    setPhoneNum(number);
+    const error = validatePhoneNumber(number);
+    setPhoneNumError(error);
+};
+
+  // const handleAddressChange 
+
   // databaseinfos
   //const { userName } = useUser();
 
   //to make sure user can press button if some field is not filled
-  const isDisabled = !name ||!address || !city || !zipcode || !state;
+  const isDisabled = !name || !address || !city || !zipcode || !state || !phoneNum ;
 
   const saveUserData = async () => {
     const currentUser = auth.currentUser;
     const uid = currentUser ? currentUser.uid : null;
     if (uid) {
-        const billingData = {
-            name,
-            address,
-            company,
-            addressLine2,
-            city,
-            zipcode,
-            state,
-        };
-        await storeUserBillingDetailsInFirestore(uid, billingData);
-        onClose(); // after it saves, close the modal
+      const billingData = {
+        name,
+        address,
+        company,
+        addressLine2,
+        city,
+        zipcode,
+        state,
+        phoneNum
+      };
+      await storeUserBillingDetailsInFirestore(uid, billingData);
+      onClose(); // after it saves, close the modal
 
-        //refresh
-        if (onBillingUpdated) { /// Notify the parent component that billing details were updated 
-            onBillingUpdated();
-        }
+      //refresh
+      if (onBillingUpdated) {
+        /// Notify the parent component that billing details were updated
+        onBillingUpdated();
+      }
     } else {
-        console.error("No user is logged in.");
+      console.error("No user is logged in.");
     }
-};
-
+  };
 
   return (
     <Modal
@@ -72,12 +99,11 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
         <KeyboardAvoidingView behavior="padding" style={styles.container2}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.infoContainer}>
-              <Text style={styles.infoTitle}>Name<Text style={styles.asterisk}>*</Text></Text>
+              <Text style={styles.infoTitle}>
+                Name<Text style={styles.asterisk}>*</Text>
+              </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  name ? styles.filled : styles.notFilled,
-                ]} //if filled green else red :P
+                style={[styles.input, name ? styles.filled : styles.notFilled]} //if filled green else red :P
                 placeholder="Enter your billing Name"
                 onChangeText={(text) => setName(text)}
                 value={name}
@@ -143,23 +169,68 @@ const UserBilling = ({ isVisible, onClose, onBillingUpdated }) => {
                 style={[
                   styles.input,
                   zipcode ? styles.filled : styles.notFilled,
+                  zipcodeError ? styles.error : null,
                 ]}
-                onChangeText={(text) => setZipcode(text)}
+                onChangeText={handleZipcodeChange}
                 value={zipcode}
               />
+              {zipcodeError ? (
+                <Text style={styles.errorText}>{zipcodeError}</Text>
+              ) : null}
               {/*<Text style={styles.instructions}>Zipcode</Text>*/}
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.infoTitle}>
                 State <Text style={styles.asterisk}>*</Text>
               </Text>
-              <TextInput
-                placeholder="Enter your State"
+              <TouchableOpacity
                 style={[styles.input, state ? styles.filled : styles.notFilled]}
-                onChangeText={(text) => setState(text)}
-                value={state}
+                onPress={() => setPickerVisible(!isPickerVisible)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <TextInput
+                  value={state}
+                  placeholder="Enter your State"
+                  editable={false} //so user cant type anything after selecting one!!
+                />
+              </TouchableOpacity>
+              {isPickerVisible && (
+                <Picker
+                  selectedValue={state}
+                  onValueChange={(itemValue) => {
+                    setState(itemValue);
+                    setPickerVisible(false); // Hide the picker after selection
+                  }}
+                  style={styles.picker}
+                >
+                  {StateWithTaxList.map((stateInfo, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={stateInfo.name}
+                      value={stateInfo.name}
+                    />
+                  ))}
+                </Picker>
+              )}
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>
+                Phone Number <Text style={styles.asterisk}>*</Text>
+              </Text>
+              <TextInput
+                placeholder="Enter your Phone Number"
+                keyboardType="numeric"
+                style={[
+                  styles.input,
+                  phoneNum ? styles.filled : styles.notFilled,
+                  phoneNumError ? styles.error : null
+                ]}
+                onChangeText={handlePhoneNumberChange}
+                value={phoneNum}
               />
-              {/*<Text style={styles.instructions}>State</Text>*/}
+               {phoneNumError ? (
+                <Text style={styles.errorText}>{phoneNumError}</Text>
+              ) : null}
             </View>
             <TouchableOpacity
               style={[
@@ -211,12 +282,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   input: {
+    paddingVertical: 10,
     marginTop: 5,
     borderWidth: 1,
     height: 40,
     borderColor: "grey",
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    zIndex: 10,
   },
   asterisk: {
     color: "#8B0000",
@@ -234,7 +307,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   checkoutButton: {
-    marginTop: 20,
+    marginTop: 50,
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -250,6 +323,17 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  picker: {
+    marginTop: -70,
+  },
+  error: {
+    borderColor: "red",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 2,
   },
 });
 

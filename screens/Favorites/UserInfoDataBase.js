@@ -8,6 +8,8 @@ const useUser = (refreshKey) => {
     const [billingDetails, setBillingDetails] = useState({
         name: '',
         address: '',
+        company: '',
+        addressLine2: '',
         city: '',
         zipcode: '',
         state: '',
@@ -15,9 +17,17 @@ const useUser = (refreshKey) => {
     const [shippingDetails, setShippingDetails] = useState({
         name: '',
         address: '',
+        company: '',
+        addressLine2: '',
         city: '',
         zipcode: '',
         state: '',
+    });
+    const [paymentDetails, setPaymentDetails] = useState({
+        cardNumber: '',
+        nameOnCard: '',
+        expiry: '',
+        ccv: '',
     });
 
     useEffect(() => {
@@ -36,13 +46,16 @@ const useUser = (refreshKey) => {
                     if (userData.shippingDetails) {
                         setShippingDetails(userData.shippingDetails);
                     }
+                    if (userData.paymentDetails) {
+                        setPaymentDetails(userData.paymentDetails);
+                    }
                 }
             }
             fetchUserData();
         }
     }, [refreshKey]); // Added refreshKey to the dependency array
 
-    return { userName, userEmail, billingDetails,shippingDetails};
+    return { userName, userEmail, billingDetails, shippingDetails, paymentDetails };
 }
 
 export default useUser;

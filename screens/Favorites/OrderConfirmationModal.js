@@ -14,7 +14,9 @@ import UserBilling from "./UserBilling";
 import UserShipping from "./UserShipping";
 import UserPayment from "./UserPayment";
 import useUser from "./UserInfoDataBase";
-import DiscountCode from "./DiscountCode";
+import DiscountCodeInput from "./DiscountCodeInput";
+import statesWithTaxList from "./StateWithTaxList";
+import { applyDiscount } from "./DiscountLogic";
 
 const OrderConfirmationModal = ({
   isVisible,
@@ -28,9 +30,32 @@ const OrderConfirmationModal = ({
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
-  const { userName, userEmail, billingDetails, shippingDetails } = useUser(refreshKey); // Pass refreshKey as dependency
+  const {
+    userName,
+    userEmail,
+    billingDetails,
+    shippingDetails,
+    paymentDetails,
+  } = useUser(refreshKey); // Pass refreshKey as dependency
   const [isDiscountModalVisible, setDiscountModalVisible] = useState(false); // for discount code
 
+  //for fucking discounts
+  const [discountDetails, setDiscountDetails] = useState(null);
+ 
+
+
+  const handleDiscountApplied = (details) => {
+    setDiscountDetails(details);
+  };
+
+  //for tax purposes
+  const getTaxRateForState = (stateName) => {
+    const stateTax = statesWithTaxList.find(
+      (state) => state.name === stateName
+    );
+    return stateTax ? stateTax.taxRate : 0; // default to 0 if state not found
+  };
+  const taxRate = getTaxRateForState(shippingDetails.state);
 
   useEffect(() => {
     if (isVisible) {
@@ -57,6 +82,10 @@ const OrderConfirmationModal = ({
     setUserModalVisible4(true);
   };
 
+  const totalWithTax = (
+    parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+  ).toFixed(2);
+
   return (
     <Modal
       animationType="slide"
@@ -82,13 +111,27 @@ const OrderConfirmationModal = ({
             <Text style={styles.infoText2}>
               {billingDetails.address || "Street Address"}
             </Text>
+            {billingDetails.addressLine2 && (
+              <Text style={styles.infoText2}>
+                {billingDetails.addressLine2}
+              </Text>
+            )}
+            {billingDetails.company && (
+              <Text style={styles.infoText2}> {billingDetails.company} </Text>
+            )}
             <Text style={styles.infoText2}>
-              {billingDetails.city || "City"}
+              {billingDetails.city && billingDetails.state
+                ? `${billingDetails.city}, ${billingDetails.state}`
+                : "City, State"}
             </Text>
+
             <Text style={styles.infoText2}>
               {billingDetails.zipcode || "Zipcode"}
             </Text>
             <Text style={styles.infoText2}>United States</Text>
+            <Text style={styles.infoText2}>
+              {billingDetails.phoneNum || "Phone Number"}
+            </Text>
             <TouchableOpacity
               onPress={handleBillingInfo}
               style={styles.right2Arrow}
@@ -106,7 +149,9 @@ const OrderConfirmationModal = ({
               {shippingDetails.address || "Street Address"}
             </Text>
             <Text style={styles.infoText2}>
-              {shippingDetails.city || "City"}
+              {shippingDetails.city && shippingDetails.state
+                ? `${shippingDetails.city}, ${shippingDetails.state}`
+                : "City, State"}
             </Text>
             <Text style={styles.infoText2}>
               {shippingDetails.zipcode || "Zipcode"}
@@ -125,8 +170,19 @@ const OrderConfirmationModal = ({
 
           <View style={styles.infoContainer}>
             <Text style={styles.titleInfo}>Payment</Text>
-            <Text style={styles.infoText}>PamentcardOption </Text>
-            <Text style={styles.infoText2}>PamentcardOption </Text>
+
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <AntDesign
+                name="creditcard"
+                size={24}
+                color="black"
+                style={styles.creditCard}
+              />
+              <Text style={styles.infoText}>
+                Card Information: **** **** ****{" "}
+                {paymentDetails.cardNumber?.slice(-4) || "XXXX"}
+              </Text>
+            </View>
 
             <TouchableOpacity
               onPress={handlePaymentInfo}
@@ -171,8 +227,13 @@ const OrderConfirmationModal = ({
                   setDiscountModalVisible(true);
                 }}
               >
-                <Text style={styles.buttonText}>Apply Discount</Text>
-                <DiscountCode isVisible={isDiscountModalVisible} onClose={() => setDiscountModalVisible(false)} />
+                <Text style={styles.buttonTextApply}>Apply Discount</Text>
+                <DiscountCodeInput
+                  isVisible={isDiscountModalVisible}
+                  onClose={() => setDiscountModalVisible(false)}
+                  totalValue={totalWithTax}
+                  onDiscountApplied={handleDiscountApplied}
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.separator} />
@@ -189,14 +250,25 @@ const OrderConfirmationModal = ({
 
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
-              <Text style={styles.valueText}>${totalValue * 0.095}</Text>
+              <Text style={styles.valueText}>
+                 ${(totalValue * taxRate).toFixed(2)}
+              </Text>
             </View>
             <View style={styles.separator} />
-
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
               <Text style={styles.valueText}>
-                ${parseFloat(totalValue) + parseFloat(totalValue * 0.095)}{" "}
+                ${totalWithTax}{" "}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.FeesText}>Total After Discount</Text>
+              <Text style={styles.valueText}>
+                ${discountDetails
+                  ? discountDetails.discountedTotal.toFixed(2)
+                  : (
+                    parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+                  ).toFixed(2)}
               </Text>
             </View>
           </View>
@@ -225,6 +297,7 @@ const OrderConfirmationModal = ({
           isVisible={isUserModalVisible3}
           onClose={() => setUserModalVisible3(false)}
           onShippingUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
+          billingDetails={billingDetails}
         />
 
         <UserPayment
@@ -232,6 +305,8 @@ const OrderConfirmationModal = ({
           onClose={() => setUserModalVisible4(false)}
           onPaymentUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
         />
+
+        
       </ScrollView>
     </Modal>
   );
@@ -359,6 +434,16 @@ const styles = StyleSheet.create({
     width: 100,
     height: 130,
     resizeMode: "cover",
+  },
+  creditCard: {
+    marginTop: 15,
+    marginRight: 10,
+  },
+  buttonTextApply:{
+    color: "#000",
+    fontSize: 14,
+    textDecorationLine: 'underline',
+    
   },
 });
 
