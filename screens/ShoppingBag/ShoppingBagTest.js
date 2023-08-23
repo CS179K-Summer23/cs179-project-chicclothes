@@ -15,9 +15,98 @@ import {
   Image,
 } from "react-native";
 
-const ShoppingBagTest = ({ navigation }) => {
-  const [selection, setSelection] = useState(1);
+let buttonState = "";
 
+function setButtonState(mode) {
+  buttonState = mode;
+  console.log("set " + buttonState);
+}
+
+function getButtonState() {
+  console.log("get " + buttonState);
+  return buttonState;
+}
+
+const FirstRoute = () => (
+  // <View style={{ flex: 1 }} />
+
+  // <Text>Hello</Text>
+
+  <View style={styles.leftColumnContainer}>
+    <View style={styles.categories}>
+      <Pressable>
+        <Text style={styles.TextCategories}>Tops</Text>
+      </Pressable>
+    </View>
+
+    <View>
+      <Pressable style={styles.categoriesSelected}>
+        <Text style={styles.selectedTextCategories}>Outerwear</Text>
+      </Pressable>
+    </View>
+  </View>
+);
+
+const SecondRoute = () => (
+  // <View style={{ flex: 1 }} />;
+
+  <View style={styles.leftColumnContainer}>
+    <View style={styles.categoriesSelected}>
+      <Pressable>
+        <Text style={styles.selectedTextCategories}>Tops</Text>
+      </Pressable>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Bottoms</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Dresses</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Outerwear</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Swimwear</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Jeans</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Loungewear</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Accessories</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.categories}>
+      <TouchableOpacity>
+        <Text style={styles.TextCategories}>Shoes</Text>
+      </TouchableOpacity>
+    </View>
+
+    <View style={styles.productsList}></View>
+  </View>
+);
+
+const renderScene = SceneMap({
+  Men: FirstRoute,
+  Women: SecondRoute,
+});
+
+const ShoppingBagTest = ({ navigation }) => {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
@@ -25,6 +114,29 @@ const ShoppingBagTest = ({ navigation }) => {
     { key: "Men", title: "Men" },
     { key: "Women", title: "Women" },
   ]);
+
+  // const renderTabBar = (props) => {
+  //   return (
+
+  //       <TabBar
+  //         {...props}
+  //         renderLabel={({ focused, route }) => {
+  //           return (
+  //             <TextView
+  //               size={20}
+  //               category="Medium"
+  //               color={focused ? "BLACK" : "GRAY3"}
+  //             >
+  //               {route.title}
+  //             </TextView>
+  //           );
+  //         }}
+  //         indicatorStyle={styles.indicatorStyle}
+  //         style={styles.tabBar}
+  //       />
+  //     </SafeAreaView>
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.containerShop}>
@@ -153,72 +265,3 @@ const styles = StyleSheet.create({
 });
 
 export default ShoppingBagTest;
-
-const FirstRoute = () => (
-  <View style={styles.leftColumnContainer}>
-    <TouchableOpacity
-      style={[
-        styles.categories,
-        selection === 1 ? { backgroundColor: "#eeeeef" } : null,
-      ]}
-      onPress={() => setSelection(1)}
-    >
-      <Text
-        style={[
-          styles.TextCategories,
-          selection === 1 ? { color: "white" } : null,
-        ]}
-      >
-        Button 1
-      </Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={[
-        styles.categories,
-        selection === 2 ? { backgroundColor: "#eeeeef" } : null,
-      ]}
-      onPress={() => setSelection(2)}
-    >
-      <Text
-        style={[
-          styles.TextCategories,
-          selection === 2 ? { fontWeight: "bold" } : null,
-        ]}
-      >
-        Button 2
-      </Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={[
-        styles.categories,
-        selection === 3 ? { backgroundColor: "#eeeeef" } : null,
-      ]}
-      onPress={() => setSelection(3)}
-    >
-      <Text
-        style={[
-          styles.TextCategories,
-          selection === 3 ? { fontWeight: "bold" } : null,
-        ]}
-      >
-        Button 3
-      </Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={[
-        styles.categories,
-        selection === 4 ? { backgroundColor: "#eeeeef" } : null,
-      ]}
-      onPress={() => setSelection(4)}
-    >
-      <Text
-        style={[
-          styles.TextCategories,
-          selection === 4 ? { fontWeight: "bold" } : null,
-        ]}
-      >
-        Button 4
-      </Text>
-    </TouchableOpacity>
-  </View>
-);
