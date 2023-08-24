@@ -18,9 +18,18 @@ const HomeScreen = (navigation) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [numColumns, setNumColumns] = useState(4);
 
-  //   const handleHome = () => {
-  //       navigation.navigate("Profile");
-  //   };
+  const getPic2LineStyles = (index) => {
+    switch (index) {
+      case 0: 
+        return { fontSize: 35,bottom:50, alignSelf:'auto',textAlign: "right", }; // or any other styles for the first line
+      case 1: 
+        return {fontSize: 18, bottom: 30, alignSelf: 'auto', textAlign: "left", }; // styles for the second line
+      case 2: 
+        return { fontSize: 18,bottom: 10, alignSelf: 'auto',textAlign: "left", }; // styles for the third line
+      default: 
+        return {};
+    }
+  };
 
   const renderItem = ({ item }) => {
     let textStyles;
@@ -42,14 +51,29 @@ const HomeScreen = (navigation) => {
       default:
         textStyles = styles.carouselText;
     } 
+    if (item.textStyle === "pic2") {
+      return (
+        <View style={styles.slide}>
+          <Image source={item.uri} style={styles.image} />
+          <View style={styles.textOverlayPic2}>
+            {item.text.map((line, index) => (
+              <Text key={index} style={[styles.pic2Text, getPic2LineStyles(index)]}>{line}</Text>
+            ))}
+            <TouchableOpacity style={styles.carouselButton} onPress={handleButtonPress}>
+                      <Text style={styles.carouselButtonText}>Join Now</Text>
+                  </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
     if (item.textStyle === "pic3") {
       return (
           <View style={styles.slide}>
               <Image source={item.uri} style={styles.image} />
               <View style={textOverlayStyles}>
                   <Text style={textStyles}>{item.text}</Text>
-                  <TouchableOpacity style={styles.suggestionButton} onPress={handleSuggestionPress}>
-                      <Text style={styles.suggestionButtonText}>Suggestion Bot</Text>
+                  <TouchableOpacity style={styles.carouselSuggestionButton} onPress={handleButtonPress}>
+                      <Text style={styles.carouselButtonText}>Try Now</Text>
                   </TouchableOpacity>
               </View>
           </View>
@@ -77,7 +101,7 @@ const HomeScreen = (navigation) => {
   const handleCategoryPress = (category) => {
     console.log(`Selected category: ${category.name}`);
   };
-  const handleSuggestionPress = () => {
+  const handleButtonPress = () => {
     console.log(`Suggestion Bot Pressed`);
   };
   const categoriesData = [
@@ -103,12 +127,16 @@ const HomeScreen = (navigation) => {
     },
     {
       uri: require("./images/homePhoto6.jpg"),
-      text: "Become a member\n\n Get exclusive deals\n\n Get the latest news",
+      text: [
+        "Join the Clique",
+        "Get the latest news\n on new and returning items",
+        "Earn points for rewards\n and special offers"
+      ],
       textStyle: "pic2",
     },
     {
       uri: require("./images/homePhoto5.jpg"),
-      text:["Need Help Choosing\nTry the Suggestion Bot\nClick the button below"],
+      text:["Need Help Choosing New Clothes\nTry our Suggestion Bot"],
       textStyle: "pic3",
     },
   ];
@@ -220,7 +248,6 @@ const styles = StyleSheet.create({
   textOverlayPic3: {
     position: "absolute",
     top: 325,
-    //transform: [{ translateY: -0.5 * height * 0.1 }],
     alignItems: "flex-start",
     zIndex: 10,
   },
@@ -254,8 +281,8 @@ const styles = StyleSheet.create({
   },
 
   categoryImage: {
-    width: 70, // adjust size as needed
-    height: 70, // adjust size as needed
+    width: 70, 
+    height: 70, 
     borderRadius: 10,
   },
 
@@ -274,11 +301,9 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
   pic2Text: {
-    fontSize: 18,
     color: "white",
     fontWeight: "bold",
-    textAlign: "right", // for example
-    lineHeight: 40,
+     
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
@@ -293,19 +318,29 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
   },
-  suggestionButton: {
+  carouselButton: {
     marginTop: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginLeft: 23,
-    backgroundColor: "black", // or any other desired color
+    backgroundColor: "black", 
     borderRadius: 5,
     alignItems: "center",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
 },
-suggestionButtonText: {
+carouselSuggestionButton: {
+  marginTop: 15,
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  backgroundColor: "black", 
+  borderRadius: 5,
+  marginLeft: 85,
+  textShadowColor: "rgba(0, 0, 0, 0.75)",
+  textShadowOffset: { width: -1, height: 1 },
+  textShadowRadius: 10,
+},
+carouselButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
@@ -313,3 +348,4 @@ suggestionButtonText: {
 });
 
 export default HomeScreen;
+
