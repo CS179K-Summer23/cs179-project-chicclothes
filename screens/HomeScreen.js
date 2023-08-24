@@ -10,294 +10,306 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { Favorites } from "../data";
+import Carousel, { Pagination } from "react-native-snap-carousel";
+import data from "../data.json";
 
 const HomeScreen = (navigation) => {
-  const [products, setProducts] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState({ item: null, index: null });
+  const [products, setProducts] = useState(data.products || []);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [numColumns, setNumColumns] = useState(4);
 
   //   const handleHome = () => {
   //       navigation.navigate("Profile");
   //   };
 
-  useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((response) => response.json())
-      .then((data) => {
-        const clothesProducts = data.filter(
-          (product) =>
-            product.category === "men's clothing" ||
-            product.category === "women's clothing"
-        );
-        setProducts(clothesProducts);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  const renderItem = ({ item }) => {
+    let textStyles;
+    let textOverlayStyles = styles.textOverlay;
 
-  const favoritePress = (index) => {
-    Favorites.push(products[index]);
-    setModalVisible(false);
-  };
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-					<View style={[styles.smallContentTitle]}>
-						<Text style={styles.title}>Welcome</Text>
-					</View>
-				</View>
-      <View style={styles.welcomeContainer}>
-        <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          style={styles.imageScrollView}
-        >
-          <View style={styles.carouselSlide}>
-            <Image
-              source={require("./images/Clique_logo.png")}
-              style={styles.carouselImage}
-            />
-          </View>
-
-          <View style={styles.carouselSlide}>
-            {/* <TouchableOpacity onPress={handleHome}> */}
-            <Image
-              source={require("./images/group_picture.jpg")}
-              style={styles.carouselImage}
-            />
-            {/* </TouchableOpacity> */}
-            <Text style={styles.overlayText}>Join the Clique</Text>
-          </View>
-
-          <View style={styles.carouselSlide}>
-            <Image
-              source={require("./images/group_picture2.jpg")}
-              style={styles.carouselImage}
-            />
-            <Text style={styles.overlayText}>Checkout our Deals</Text>
-          </View>
-        </ScrollView>
-      </View>
-      <View style={styles.title2Container}>
-					<View style={[styles.smallContentTitle]}>
-						<Text style={styles.title}>Latest Exculsives</Text>
-					</View>
-				</View>
-      <View style={styles.productContainer}>
-        <View style={{ padding: 10 }}>
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item, index }) => (
-              <View style={styles.productBox}>
-              <View style={{ marginBottom: 20, marginHorizontal: 10}}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedProduct({ item: item, index: index });
-                    setModalVisible(true);
-                  }}
-                >
-                  <Image
-                    source={{ uri: item.image }}
-                    style={{ width: 115, height: 95 }}
-                  />
-                    <Text style={{ fontWeight: "bold", textAlign: "center" , marginTop: 5}}>
-                    {item.price} USD
-                  </Text>
-                </TouchableOpacity>
-                </View>
+    switch (item.textStyle) {
+      case "pic1":
+        textStyles = styles.pic1Text;
+        textOverlayStyles = styles.textOverlayPic1;
+        break;
+      case "pic2":
+        textStyles = styles.pic2Text;
+        textOverlayStyles = styles.textOverlayPic2;
+        break;
+      case "pic3":
+        textStyles = styles.pic3Text;
+        textOverlayStyles = styles.textOverlayPic3;
+        break;
+      default:
+        textStyles = styles.carouselText;
+    } 
+    if (item.textStyle === "pic3") {
+      return (
+          <View style={styles.slide}>
+              <Image source={item.uri} style={styles.image} />
+              <View style={textOverlayStyles}>
+                  <Text style={textStyles}>{item.text}</Text>
+                  <TouchableOpacity style={styles.suggestionButton} onPress={handleSuggestionPress}>
+                      <Text style={styles.suggestionButtonText}>Suggestion Bot</Text>
+                  </TouchableOpacity>
               </View>
-            )}
-            numColumns={2}
-          />
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(false);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <AntDesign
-                  name="arrowleft"
-                  size={30}
-                  color="black"
-                  position="absolute"
-                  left={10}
-                  onPress={() => setModalVisible(false)}
-                />
-                 <AntDesign
-                  name="hearto"
-                  size={30}
-                  color="red"
-                  style={styles.heartIcon}
-                  onPress={() => favoritePress(selectedProduct.index)}
-                />
-                {selectedProduct.item && (
-                  <>
-                    <Image
-                      source={{ uri: selectedProduct.item.image }}
-                      style={{ width: 250, height: 250 }}
-                    />
-                    <Text style={{ textAlign: "center" }}>
-                      {selectedProduct.item.title}
-                    </Text>
-                    <Text>{selectedProduct.item.description}</Text>
-                    <Text>{selectedProduct.item.price} USD</Text>
-                  </>
-                )}
-                <TouchableOpacity
-                  style={{ ...styles.button, backgroundColor: "#2196F3" }}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.textStyle}>Add to Cart</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
+          </View>
+      );
+  }
+    return (
+      <View style={styles.slide}>
+        <Image source={item.uri} style={styles.image} />
+        <View style={textOverlayStyles}>
+          <Text style={textStyles}>{item.text}</Text>
         </View>
       </View>
-    </View>
+    );
+  };
+  const renderCategoryItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handleCategoryPress(item)}>
+      <View style={styles.categoryContainer}>
+        <View style={styles.categoryBox}>
+          <Image source={item.uri} style={styles.categoryImage} />
+        </View>
+        <Text style={styles.categoryText}>{item.name}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+  const handleCategoryPress = (category) => {
+    console.log(`Selected category: ${category.name}`);
+  };
+  const handleSuggestionPress = () => {
+    console.log(`Suggestion Bot Pressed`);
+  };
+  const categoriesData = [
+    { uri: require("./images/categoryImage/jacket.jpg"), name: "Jackets" },
+    { uri: require("./images/categoryImage/shoes.jpg"), name: "Shoes" },
+    { uri: require("./images/categoryImage/accessories.jpg"), name: "Accessories",},
+    { uri: require("./images/categoryImage/jean2.jpg"), name: "Jeans" },
+    { uri: require("./images/categoryImage/spanxs.jpg"), name: "Spanxs" },
+    { uri: require("./images/categoryImage/shirt.jpg"), name: "Shirts" },
+    { uri: require("./images/categoryImage/hoodie.jpg"), name: "Hoodies" },
+    { uri: require("./images/categoryImage/dress2.jpg"), name: "Dresses" },
+    { uri: require("./images/categoryImage/swimwear.jpg"), name: "Swimwear" },
+    { uri: require("./images/categoryImage/graphic_shirt.jpg"), name: "T-shirts",},
+    { uri: require("./images/categoryImage/shorts.jpg"), name: "Shorts" },
+    { uri: require("./images/Clique_logo.png"), name: "Deals" },
+  ];
+
+  const carouselItems = [
+    {
+      uri: require("./images/homePhoto4.jpg"),
+      text: "Welcome to the Clique",
+      textStyle: "pic1",
+    },
+    {
+      uri: require("./images/homePhoto6.jpg"),
+      text: "Become a member\n\n Get exclusive deals\n\n Get the latest news",
+      textStyle: "pic2",
+    },
+    {
+      uri: require("./images/homePhoto5.jpg"),
+      text:["Need Help Choosing\nTry the Suggestion Bot\nClick the button below"],
+      textStyle: "pic3",
+    },
+  ];
+
+  return (
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollViewContent}
+    >
+      <Carousel
+        data={carouselItems}
+        renderItem={renderItem}
+        sliderWidth={width}
+        itemWidth={width}
+        itemHeight={height * 0.75} 
+        sliderHeight={height * 0.75}
+        loop={true}
+        autoplay={true}
+        autoplayDelay={10000}
+        autoplayInterval={10000}
+        onSnapToItem={(index) => setActiveSlide(index)}
+      />
+      <Pagination
+        dotsLength={carouselItems.length}
+        activeDotIndex={activeSlide}
+        containerStyle={styles.paginationContainer}
+        dotStyle={styles.paginationDot}
+        dotColor="black"
+        inactiveDotColor="grey"
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+      />
+      <View style={styles.categoriesContainer}>
+        <Text style={styles.categoriesTitle}>Search By Category</Text>
+        <FlatList
+          key={numColumns} 
+          data={categoriesData}
+          renderItem={renderCategoryItem}
+          keyExtractor={(item) => item.name}
+          numColumns={numColumns}
+          scrollEnabled={false}
+        />
+      </View>
+    </ScrollView>
   );
 };
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    height: "auto",
+    backgroundColor: "white",
   },
-  smallContentTitle: {
-    flex: 1,
-    flexDirection: "column",
-  },
-  titleContainer: {
-    height: "12%",
-    backgroundColor: "#e2ded3",
-    justifyContent: "flex-start",
-    flexDirection: "row",
-    marginBottom: -40,
-  },
-  title2Container: {
-    height: "12%",
-    backgroundColor: "#fff",
-    justifyContent: "flex-start",
-    flexDirection: "row",
-    marginTop: -40,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: "black",
-    marginLeft: 15,
-    top: 10,
-  },
-  welcomeContainer: {
-    width: "100%",
-    padding: 20,
-    backgroundColor: "#e2ded3", // or any other color you prefer
+  slide: {
+    height: height * 0.75, 
+    width: width,
     justifyContent: "center",
     alignItems: "center",
-    height: 300,
+    backgroundColor: "white",
+  },
+  image: {
+    width: width,
+    height: height * 0.75,
+    resizeMode: "cover",
+  },
+  paginationContainer: {
+    paddingVertical: 10,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
+  },
+  categoriesContainer: {
+    marginTop: 20,
+    padding: 15,
+  },
+  categoriesTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  textOverlay: {
+    position: "absolute",
+    left: 10, 
+    top: "50%",
+    transform: [{ translateY: -0.5 * height * 0.1 }],
+    alignItems: "flex-start",
+  },
+  textOverlayPic1: {
+    position: "absolute",
+    top: 50,
+    alignItems: "flex-start",
+    zIndex: 10,
+  },
+  textOverlayPic2: {
+    position: "absolute",
+    left: 10, 
+    top: "50%",
+    transform: [{ translateY: -0.5 * height * 0.1 }],
+    alignItems: "flex-start",
+  },
+  textOverlayPic3: {
+    position: "absolute",
+    top: 325,
+    //transform: [{ translateY: -0.5 * height * 0.1 }],
+    alignItems: "flex-start",
+    zIndex: 10,
+  },
+  carouselText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "left",
+    lineHeight: 50,
+  },
+  categoriesContainer: {
+    marginTop: 20,
+    padding: 15,
+    alignItems: "center",
   },
 
-  productContainer: {
-    width: "100%",
-    height: 350,
+  categoriesTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+
+  categoryBox: {
+    width: Dimensions.get("window").width / 3 - 50,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#fff",
-    padding: 20,
-    bottom: 35,
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginTop: 15,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  imageScrollView: {
-    width: width,
-  },
-  carouselImage: {
-    width: width,
-    height: 200,
-    resizeMode: "cover",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  carouselSlide: {
-    width: width,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: -65,
-  },
-  overlayText: {
-    position: "absolute",
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    textShadowColor: "black",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 1,
-  },
-  heartIcon: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    zIndex: 1,
-  },
-  productBox: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    padding: 5,
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    marginBottom: 20,
-    marginHorizontal: 10, // Give space between boxes horizontally
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 5,
   },
+
+  categoryImage: {
+    width: 70, // adjust size as needed
+    height: 70, // adjust size as needed
+    borderRadius: 10,
+  },
+
+  categoryText: {
+    marginTop: 10,
+    fontSize: 12,
+    textAlign: "center",
+  },
+  pic1Text: {
+    fontSize: 35,
+    color: "yellow",
+    fontWeight: "bold",
+    textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  pic2Text: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "right", // for example
+    lineHeight: 40,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  pic3Text: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    lineHeight: 35,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  suggestionButton: {
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginLeft: 23,
+    backgroundColor: "black", // or any other desired color
+    borderRadius: 5,
+    alignItems: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+},
+suggestionButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+},
 });
 
 export default HomeScreen;
