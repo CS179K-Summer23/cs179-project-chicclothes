@@ -342,7 +342,7 @@ const OrderConfirmationModal = ({
             />
             <Text style={styles.bottomText3}>
               I have agreed that I have check all my information above. I also
-              agree that any mistake on my behave will not be reimbursed by
+              agree that any mistake on my behalf will not be reimbursed by
               Clique Closet.
             </Text>
           </View>
