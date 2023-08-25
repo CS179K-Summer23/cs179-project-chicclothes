@@ -17,6 +17,10 @@ import useUser from "./UserInfoDataBase";
 import DiscountCodeInput from "./DiscountCodeInput";
 import statesWithTaxList from "./StateWithTaxList";
 import { applyDiscount } from "./DiscountLogic";
+import { auth } from "../../configuration/firebase";
+import { storeOrderDetailsInFirestore } from "../../hook/databaseQueries";
+
+import Checkbox from "expo-checkbox";
 
 const OrderConfirmationModal = ({
   isVisible,
@@ -30,6 +34,8 @@ const OrderConfirmationModal = ({
   const [isUserModalVisible4, setUserModalVisible4] = useState(false);
   //const { userName, userEmail, billingDetails } = useUser(); // i am calling them from userInfoDataBase.js just to not make this file longer
   const [refreshKey, setRefreshKey] = useState(0); // for re-rendering
+  const user = auth.currentUser;
+  const uid = user ? user.uid : null;
   const {
     userName,
     userEmail,
@@ -41,8 +47,8 @@ const OrderConfirmationModal = ({
 
   //for fucking discounts
   const [discountDetails, setDiscountDetails] = useState(null);
- 
 
+  const [isChecked, setChecked] = useState(false);
 
   const handleDiscountApplied = (details) => {
     setDiscountDetails(details);
@@ -85,6 +91,45 @@ const OrderConfirmationModal = ({
   const totalWithTax = (
     parseFloat(totalValue) + parseFloat(totalValue * taxRate)
   ).toFixed(2);
+
+  //to save it in the database for order history
+  const handleCheckout = async () => {
+    if (!uid) {
+      console.error("User is not authenticated.");
+      return;
+    }
+
+    // Generate the order number
+    const generateOrderNumber = () => {
+      return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+    };
+
+    const orderNumber = generateOrderNumber();
+
+    const orderData = {
+      orderNumber: orderNumber, // Save the generated order number in the order data
+      billingDetails: billingDetails,
+      shippingDetails: shippingDetails,
+      paymentDetails: paymentDetails,
+      orderValue: totalValue,
+      deliveryFee: "FREE",
+      estimatedTaxes: (totalValue * taxRate).toFixed(2),
+      total: totalWithTax,
+      totalAfterDiscount: discountDetails
+        ? discountDetails.discountedTotal.toFixed(2)
+        : (parseFloat(totalValue) + parseFloat(totalValue * taxRate)).toFixed(
+            2
+          ),
+    };
+
+    try {
+      await storeOrderDetailsInFirestore(uid, orderData);
+      console.log(`Order saved successfully with order number: ${orderNumber}`);
+      onClose(); // Close the modal after saving
+    } catch (error) {
+      console.error("Error saving order: ", error);
+    }
+  };
 
   return (
     <Modal
@@ -251,24 +296,23 @@ const OrderConfirmationModal = ({
             <View style={styles.row}>
               <Text style={styles.FeesText}>Est. taxes</Text>
               <Text style={styles.valueText}>
-                 ${(totalValue * taxRate).toFixed(2)}
+                ${(totalValue * taxRate).toFixed(2)}
               </Text>
             </View>
             <View style={styles.separator} />
             <View style={styles.row}>
               <Text style={styles.TotalText}>Total</Text>
-              <Text style={styles.valueText}>
-                ${totalWithTax}{" "}
-              </Text>
+              <Text style={styles.valueText}> ${totalWithTax} </Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.FeesText}>Total After Discount</Text>
               <Text style={styles.valueText}>
-                ${discountDetails
+                $
+                {discountDetails
                   ? discountDetails.discountedTotal.toFixed(2)
                   : (
-                    parseFloat(totalValue) + parseFloat(totalValue * taxRate)
-                  ).toFixed(2)}
+                      parseFloat(totalValue) + parseFloat(totalValue * taxRate)
+                    ).toFixed(2)}
               </Text>
             </View>
           </View>
@@ -283,7 +327,33 @@ const OrderConfirmationModal = ({
             We will process your personal data in accordance with Clique
             Closet's Privacy Notes
           </Text>
-          <TouchableOpacity style={styles.checkoutButton} onPress={onClose}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <Checkbox
+              style={styles.checkbox}
+              value={isChecked}
+              onValueChange={setChecked}
+              color={isChecked ? "#f0ebdf" : undefined}
+            />
+            <Text style={styles.bottomText3}>
+              I have agreed that I have check all my information above. I also
+              agree that any mistake on my behalf will not be reimbursed by
+              Clique Closet.
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={
+              isChecked ? styles.checkoutButton : styles.checkoutButtonDisabled
+            }
+            onPress={handleCheckout}
+            disabled={!isChecked}
+          >
             <Text style={styles.checkoutButtonText}>Checkout</Text>
           </TouchableOpacity>
         </View>
@@ -305,8 +375,6 @@ const OrderConfirmationModal = ({
           onClose={() => setUserModalVisible4(false)}
           onPaymentUpdated={() => setRefreshKey((prevKey) => prevKey + 1)}
         />
-
-        
       </ScrollView>
     </Modal>
   );
@@ -413,9 +481,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   checkoutButton: {
-    marginTop: 20,
+    marginTop: 5,
     padding: 10,
     backgroundColor: "#000",
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  checkoutButtonDisabled: {
+    marginTop: 5,
+    padding: 10,
+    backgroundColor: "grey",
     borderRadius: 5,
     alignItems: "center",
     marginBottom: 30,
@@ -439,11 +515,20 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginRight: 10,
   },
-  buttonTextApply:{
+  buttonTextApply: {
     color: "#000",
     fontSize: 14,
-    textDecorationLine: 'underline',
-    
+    textDecorationLine: "underline",
+  },
+  checkbox: {
+    marginTop: 10,
+    backgroundColor: "white",
+  },
+  bottomText3: {
+    marginTop: 10,
+    color: "grey",
+    fontSize: 12,
+    padding: 10,
   },
 });
 

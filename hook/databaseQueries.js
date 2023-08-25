@@ -121,3 +121,32 @@ export const storeUserPaymentDetailsInFirestore = async (uid, paymentData) => {
         paymentDetails: paymentData
     });
 };
+
+
+
+export const storeOrderDetailsInFirestore = async (uid, orderData) => {
+    const userRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        let existingOrders = userData.orderDetails;
+
+        // Ensure existingOrders is an array
+        if (!Array.isArray(existingOrders)) {
+            existingOrders = [];
+        }
+
+        // Append the new order to the existing orders
+        const updatedOrders = [...existingOrders, orderData];
+
+        await updateDoc(userRef, {
+            orderDetails: updatedOrders
+        });
+    } else {
+        console.log("User document doesn't exist!");
+    }
+};
+
+
+
