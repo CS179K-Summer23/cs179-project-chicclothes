@@ -15,6 +15,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
+import data from "../../data.json"
 
 let buttonState = "";
 
@@ -30,6 +31,7 @@ function getButtonState() {
 
 const ShoppingBagTest = ({ navigation }) => {
   const layout = useWindowDimensions();
+  const BASE_URL = "https://";
 
   var [categoryState, setcategoryState] = React.useState(0);
 
@@ -57,30 +59,16 @@ const ShoppingBagTest = ({ navigation }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    if (index == 1) {
-      fetch("https://fakestoreapi.com/products")
-        .then((response) => response.json())
-        .then((data) => {
-          const clothesProducts = data.filter(
-            (product) =>
-              // product.category === "men's clothing" |
-              product.category === womensClothes[categoryState].toString()
-          );
-          setProducts(clothesProducts);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
-    } else if (index == 0) {
-      fetch("https://fakestoreapi.com/products")
-        .then((response) => response.json())
-        .then((data) => {
-          const clothesProducts = data.filter(
-            (product) =>
-              // product.category === "men's clothing" |
-              product.category === mensClothes[categoryState].toString()
-          );
-          setProducts(clothesProducts);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
+    const majorCategory = index === 0 ? 'Men' : 'Women';
+
+    // Find the corresponding sub-category from your local data.json
+    const subCategoryData = data.find(
+      (item) => item.majorCategory === majorCategory
+    )?.subCategories[categoryState];
+
+    // If sub-category exists, set its products to the component state
+    if (subCategoryData) {
+      setProducts(subCategoryData.products);
     }
   }, [categoryState, index]);
 
@@ -167,29 +155,29 @@ const ShoppingBagTest = ({ navigation }) => {
       </View>
 
       <View style={styles.productsList}>
-        <FlatList
-          data={products}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedProduct(item);
-                  setModalVisible(true);
-                }}
-              >
-                <Image
-                  source={{ uri: item.image }}
-                  style={{ width: 90, height: 90 }}
-                />
-                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
-                  {item.price} USD
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          numColumns={2}
-        />
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedProduct(item);
+                setModalVisible(true);
+              }}
+            >
+              <Image
+                source={{ uri: `${BASE_URL}${item.image}` }}
+                style={{ width: 90, height: 90 }}
+              />
+              <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                {item.price} USD
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        numColumns={2}
+      />
       </View>
     </SafeAreaView>
   );
@@ -257,29 +245,29 @@ const ShoppingBagTest = ({ navigation }) => {
       </View>
 
       <View style={styles.productsList}>
-        <FlatList
-          data={products}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedProduct(item);
-                  setModalVisible(true);
-                }}
-              >
-                <Image
-                  source={{ uri: item.image }}
-                  style={{ width: 90, height: 90 }}
-                />
-                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
-                  {item.price} USD
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          numColumns={2}
-        />
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedProduct(item);
+                setModalVisible(true);
+              }}
+            >
+              <Image
+                source={{ uri: `${BASE_URL}${item.image}` }}
+                style={{ width: 90, height: 90 }}
+              />
+              <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                {item.price} USD
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        numColumns={2}
+      />
       </View>
     </SafeAreaView>
   );
