@@ -24,7 +24,6 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import data from "../../data.json";
 
 let buttonState = "";
 
@@ -44,7 +43,6 @@ const ShoppingBagTest = ({ route, navigation }) => {
   const currCat = route.params;
 
   const layout = useWindowDimensions();
-  const BASE_URL = "https://";
 
   var [categoryState, setcategoryState] = React.useState(5);
   const BASE_URL = "https://";
@@ -81,17 +79,6 @@ const ShoppingBagTest = ({ route, navigation }) => {
   // };
 
   useEffect(() => {
-    const majorCategory = index === 0 ? "Men" : "Women";
-
-    // Find the corresponding sub-category from your local data.json
-    const subCategoryData = data.find(
-      (item) => item.majorCategory === majorCategory
-    )?.subCategories[categoryState];
-
-    // If sub-category exists, set its products to the component state
-    if (subCategoryData) {
-      setProducts(subCategoryData.products);
-=======
     // console.log(currCat);
 
     if (currCat) {
@@ -294,11 +281,8 @@ const ShoppingBagTest = ({ route, navigation }) => {
                 }}
               >
                 <Image
-                  source={{ uri: `${BASE_URL}${item.image}` }}
-                  style={{ width: 90, height: 90 }}
                   source={{ uri: `${BASE_URL}${item.imageUrl}` }}
                   style={styles.pics}
->>>>>>> sarokar/CatalogClothesRendering
                 />
                 <Modal isVisible={isModalVisible}>
                   <View
@@ -522,8 +506,6 @@ const ShoppingBagTest = ({ route, navigation }) => {
                 }}
               >
                 <Image
-                  source={{ uri: `${BASE_URL}${item.image}` }}
-                  style={{ width: 90, height: 90 }}
                   source={{ uri: `${BASE_URL}${item.imageUrl}` }}
                   style={styles.pics}
                 />
