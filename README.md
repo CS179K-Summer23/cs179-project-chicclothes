@@ -19,7 +19,7 @@ Our Project is CliqueClothes. We are creating a clothing mobile app designed for
 # Major Features:
 - 1.Login/Registration System : This feature uses Firebase Authentication. Users will be able to interact with the login/registration system when they first start using the app. This feature will ensure that the users information is secure. 
 - 2.Product Filtering : This feature will ensure users will be able to find the items they desire allowing the user to have an easy shopping experience.
-- 3.Suggestion Idea for Clothing : On our homepage, users will be able to view a few suggested or featured items they can purchase.
+- 3.Suggestion Idea for Clothing : On our homepage, users will be able to view a few suggested or featured items they can purchase. There would also be a way to ask a bot what clothes you should buy and there will be  a response based on our catalog.
 - 4.Swipe Feature : This feature will allow user to swipe left or right on show items from our store. Swipe left will move the item to the bottom of the stack and swipe right will move items into a users favorite page. This feature allows the user to have a more interactive experience.
 - 5.Favorites : Items seen in the favorites page are taken from the items the users liked from the swipe feature. Any item on the favorites page can be added to the users cart. 
 - 6.Search : The search feature will allow users to find a specific item they were looking for. By entering a keyword or phrase, the system will look through the database and display relevant results. 
