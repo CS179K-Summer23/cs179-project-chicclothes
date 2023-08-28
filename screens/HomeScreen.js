@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   Modal,
+  navigate,
   TouchableOpacity,
   ScrollView,
   Dimensions,
@@ -13,20 +14,35 @@ import {
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import data from "../data.json";
 
-const HomeScreen = (navigation) => {
+const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState(data.products || []);
   const [activeSlide, setActiveSlide] = useState(0);
   const [numColumns, setNumColumns] = useState(4);
 
   const getPic2LineStyles = (index) => {
     switch (index) {
-      case 0: 
-        return { fontSize: 35,bottom:50, alignSelf:'auto',textAlign: "right", }; // or any other styles for the first line
-      case 1: 
-        return {fontSize: 18, bottom: 30, alignSelf: 'auto', textAlign: "left", }; // styles for the second line
-      case 2: 
-        return { fontSize: 18,bottom: 10, alignSelf: 'auto',textAlign: "left", }; // styles for the third line
-      default: 
+      case 0:
+        return {
+          fontSize: 35,
+          bottom: 50,
+          alignSelf: "auto",
+          textAlign: "right",
+        }; // or any other styles for the first line
+      case 1:
+        return {
+          fontSize: 18,
+          bottom: 30,
+          alignSelf: "auto",
+          textAlign: "left",
+        }; // styles for the second line
+      case 2:
+        return {
+          fontSize: 18,
+          bottom: 10,
+          alignSelf: "auto",
+          textAlign: "left",
+        }; // styles for the third line
+      default:
         return {};
     }
   };
@@ -50,35 +66,46 @@ const HomeScreen = (navigation) => {
         break;
       default:
         textStyles = styles.carouselText;
-    } 
+    }
     if (item.textStyle === "pic2") {
       return (
         <View style={styles.slide}>
           <Image source={item.uri} style={styles.image} />
           <View style={styles.textOverlayPic2}>
             {item.text.map((line, index) => (
-              <Text key={index} style={[styles.pic2Text, getPic2LineStyles(index)]}>{line}</Text>
+              <Text
+                key={index}
+                style={[styles.pic2Text, getPic2LineStyles(index)]}
+              >
+                {line}
+              </Text>
             ))}
-            <TouchableOpacity style={styles.carouselButton} onPress={handleButtonPress}>
-                      <Text style={styles.carouselButtonText}>Join Now</Text>
-                  </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.carouselButton}
+              onPress={handleButtonPress}
+            >
+              <Text style={styles.carouselButtonText}>Join Now</Text>
+            </TouchableOpacity>
           </View>
         </View>
       );
     }
     if (item.textStyle === "pic3") {
       return (
-          <View style={styles.slide}>
-              <Image source={item.uri} style={styles.image} />
-              <View style={textOverlayStyles}>
-                  <Text style={textStyles}>{item.text}</Text>
-                  <TouchableOpacity style={styles.carouselSuggestionButton} onPress={handleButtonPress}>
-                      <Text style={styles.carouselButtonText}>Try Now</Text>
-                  </TouchableOpacity>
-              </View>
+        <View style={styles.slide}>
+          <Image source={item.uri} style={styles.image} />
+          <View style={textOverlayStyles}>
+            <Text style={textStyles}>{item.text}</Text>
+            <TouchableOpacity
+              style={styles.carouselSuggestionButton}
+              onPress={handleButtonPress}
+            >
+              <Text style={styles.carouselButtonText}>Try Now</Text>
+            </TouchableOpacity>
           </View>
+        </View>
       );
-  }
+    }
     return (
       <View style={styles.slide}>
         <Image source={item.uri} style={styles.image} />
@@ -99,24 +126,69 @@ const HomeScreen = (navigation) => {
     </TouchableOpacity>
   );
   const handleCategoryPress = (category) => {
-    console.log(`Selected category: ${category.name}`);
+    // let currCat = 2;
+    // console.log(`Selected category: ${category.name}`);
+    // navigation.navigate("ShoppingBag", {
+    //   currCat: 2,
+    // });
+
+    navigation.navigate(
+      "ShoppingBag",
+      {
+        screen: "ShoppingBagWomen",
+      },
+      { currCat: 2 }
+    );
   };
   const handleButtonPress = () => {
     console.log(`Suggestion Bot Pressed`);
   };
   const categoriesData = [
-    { uri: require("./images/categoryImage/jacket.jpg"), name: "Jackets" },
-    { uri: require("./images/categoryImage/shoes.jpg"), name: "Shoes" },
-    { uri: require("./images/categoryImage/accessories.jpg"), name: "Accessories",},
-    { uri: require("./images/categoryImage/jean2.jpg"), name: "Jeans" },
-    { uri: require("./images/categoryImage/spanxs.jpg"), name: "Spanxs" },
-    { uri: require("./images/categoryImage/shirt.jpg"), name: "Shirts" },
-    { uri: require("./images/categoryImage/hoodie.jpg"), name: "Hoodies" },
-    { uri: require("./images/categoryImage/dress2.jpg"), name: "Dresses" },
-    { uri: require("./images/categoryImage/swimwear.jpg"), name: "Swimwear" },
-    { uri: require("./images/categoryImage/graphic_shirt.jpg"), name: "T-shirts",},
-    { uri: require("./images/categoryImage/shorts.jpg"), name: "Shorts" },
-    { uri: require("./images/Clique_logo.png"), name: "Deals" },
+    {
+      uri: require("../screens/images/categoryImage/jacket.jpg"),
+      name: "Jackets",
+    },
+    {
+      uri: require("../screens/images/categoryImage/shoes.jpg"),
+      name: "Shoes",
+    },
+    {
+      uri: require("../screens/images/categoryImage/accessories.jpg"),
+      name: "Accessories",
+    },
+    {
+      uri: require("../screens/images/categoryImage/jean2.jpg"),
+      name: "Jeans",
+    },
+    {
+      uri: require("../screens/images/categoryImage/spanxs.jpg"),
+      name: "Spanxs",
+    },
+    {
+      uri: require("../screens/images/categoryImage/shirt.jpg"),
+      name: "Shirts",
+    },
+    {
+      uri: require("../screens/images/categoryImage/hoodie.jpg"),
+      name: "Hoodies",
+    },
+    {
+      uri: require("../screens/images/categoryImage/dress2.jpg"),
+      name: "Dresses",
+    },
+    {
+      uri: require("../screens/images/categoryImage/swimwear.jpg"),
+      name: "Swimwear",
+    },
+    {
+      uri: require("../screens/images/categoryImage/graphic_shirt.jpg"),
+      name: "T-shirts",
+    },
+    {
+      uri: require("../screens/images/categoryImage/shorts.jpg"),
+      name: "Shorts",
+    },
+    { uri: require("../screens/images/Clique_logo.png"), name: "Deals" },
   ];
 
   const carouselItems = [
@@ -130,13 +202,13 @@ const HomeScreen = (navigation) => {
       text: [
         "Join the Clique",
         "Get the latest news\n on new and returning items",
-        "Earn points for rewards\n and special offers"
+        "Earn points for rewards\n and special offers",
       ],
       textStyle: "pic2",
     },
     {
       uri: require("./images/homePhoto5.jpg"),
-      text:["Need Help Choosing New Clothes\nTry our Suggestion Bot"],
+      text: ["Need Help Choosing New Clothes\nTry our Suggestion Bot"],
       textStyle: "pic3",
     },
   ];
@@ -151,7 +223,7 @@ const HomeScreen = (navigation) => {
         renderItem={renderItem}
         sliderWidth={width}
         itemWidth={width}
-        itemHeight={height * 0.75} 
+        itemHeight={height * 0.75}
         sliderHeight={height * 0.75}
         loop={true}
         autoplay={true}
@@ -172,7 +244,7 @@ const HomeScreen = (navigation) => {
       <View style={styles.categoriesContainer}>
         <Text style={styles.categoriesTitle}>Search By Category</Text>
         <FlatList
-          key={numColumns} 
+          key={numColumns}
           data={categoriesData}
           renderItem={renderCategoryItem}
           keyExtractor={(item) => item.name}
@@ -190,7 +262,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   slide: {
-    height: height * 0.75, 
+    height: height * 0.75,
     width: width,
     justifyContent: "center",
     alignItems: "center",
@@ -227,7 +299,7 @@ const styles = StyleSheet.create({
   },
   textOverlay: {
     position: "absolute",
-    left: 10, 
+    left: 10,
     top: "50%",
     transform: [{ translateY: -0.5 * height * 0.1 }],
     alignItems: "flex-start",
@@ -240,7 +312,7 @@ const styles = StyleSheet.create({
   },
   textOverlayPic2: {
     position: "absolute",
-    left: 10, 
+    left: 10,
     top: "50%",
     transform: [{ translateY: -0.5 * height * 0.1 }],
     alignItems: "flex-start",
@@ -281,8 +353,8 @@ const styles = StyleSheet.create({
   },
 
   categoryImage: {
-    width: 70, 
-    height: 70, 
+    width: 70,
+    height: 70,
     borderRadius: 10,
   },
 
@@ -303,7 +375,7 @@ const styles = StyleSheet.create({
   pic2Text: {
     color: "white",
     fontWeight: "bold",
-     
+
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
@@ -322,30 +394,29 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: "black", 
+    backgroundColor: "black",
     borderRadius: 5,
     alignItems: "center",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
-},
-carouselSuggestionButton: {
-  marginTop: 15,
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  backgroundColor: "black", 
-  borderRadius: 5,
-  marginLeft: 85,
-  textShadowColor: "rgba(0, 0, 0, 0.75)",
-  textShadowOffset: { width: -1, height: 1 },
-  textShadowRadius: 10,
-},
-carouselButtonText: {
+  },
+  carouselSuggestionButton: {
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "black",
+    borderRadius: 5,
+    marginLeft: 85,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  carouselButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-},
+  },
 });
 
 export default HomeScreen;
-
