@@ -122,31 +122,90 @@ export const storeUserPaymentDetailsInFirestore = async (uid, paymentData) => {
     });
 };
 
+export const syncFavoritesAndPurchases = async (uid, purchasedItemIds = []) => {
+    try {
+        // Log to debug
+        console.log('UID:', uid);
+        console.log('Purchased Item Ids:', purchasedItemIds);
 
+        // Fetch the current favorite items for the user
+        const currentFavorites = await getFavoritesForUser(uid);
+        console.log('Current Favorites:', currentFavorites);
+
+        // Identify which favorite items have been purchased
+        const itemsToRemove = currentFavorites.filter(item => purchasedItemIds.includes(item.id));
+
+        // Remove purchased items from the user's favorites
+        if (itemsToRemove.length > 0) {
+            for (const item of itemsToRemove) {
+                await deleteFavoriteForUser(uid, item);
+            }
+        }
+
+        console.log("Successfully synchronized favorites and purchases.");
+    } catch (error) {
+        console.error("Error synchronizing favorites and purchases:", error);
+    }
+};
 
 export const storeOrderDetailsInFirestore = async (uid, orderData) => {
+    console.log("Received UID:", uid); // Debug log
+    console.log("Received Order Data:", JSON.stringify(orderData)); // Debug log
+
+    if (!uid) {
+        console.error('Error saving order: UID is undefined');
+        return;
+    }
+
+    if (!orderData) {
+        console.error('Error saving order: orderData is undefined');
+        return;
+    }
+
     const userRef = doc(db, "users", uid);
     const userDoc = await getDoc(userRef);
 
     if (userDoc.exists()) {
         const userData = userDoc.data();
-        let existingOrders = userData.orderDetails;
 
-        // Ensure existingOrders is an array
-        if (!Array.isArray(existingOrders)) {
-            existingOrders = [];
+        if (!userData) {
+            console.error('Error saving order: userData is undefined');
+            return;
         }
 
-        // Append the new order to the existing orders
+        let existingOrders = userData.orderDetails || [];
+        let existingPurchasedItemIds = userData.purchasedItemIds || [];
+
+        const newItemIds = orderData.purchasedItemIds || []; // <-- Notice the change here
+    if (newItemIds.length === 0) {
+        console.error('Error saving order: purchasedItemIds is empty or undefined');
+        return;
+    }
+
         const updatedOrders = [...existingOrders, orderData];
+        const updatedPurchasedItemIds = [...existingPurchasedItemIds, ...newItemIds];
 
         await updateDoc(userRef, {
-            orderDetails: updatedOrders
+            orderDetails: updatedOrders,
+            purchasedItemIds: updatedPurchasedItemIds
         });
+
+        console.log(`Order saved successfully with order number: ${orderData.orderNumber}`);
     } else {
         console.log("User document doesn't exist!");
     }
 };
 
-
-
+// Fetch all purchased items for a user from Firestore
+export const getPurchasedItemIdsForUser = async (uid) => {
+    const userRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userRef);
+    
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData.purchasedItemIds || [];
+    } else {
+        console.log("User document doesn't exist!");
+        return [];
+    }
+};
