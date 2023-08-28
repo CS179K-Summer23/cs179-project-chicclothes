@@ -1,13 +1,22 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { auth } from "../../configuration/firebase";
 import { Button, useWindowDimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
+import data from "../../data.json";
+import { AntDesign, Fontisto } from "@expo/vector-icons";
+import {
+  getLastSwipedIndexForUser,
+  storeFavoriteForUser,
+  x,
+} from "../../hook/databaseQueries";
 import {
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  map,
   SafeAreaView,
   FlatList,
   View,
@@ -20,32 +29,31 @@ let buttonState = "";
 
 function setButtonState(mode) {
   buttonState = mode;
-  console.log("set " + buttonState);
+  // console.log("set " + buttonState);
 }
 
 function getButtonState() {
-  console.log("get " + buttonState);
+  // console.log("get " + buttonState);
   return buttonState;
 }
 
-const ShoppingBagTest = ({ navigation }) => {
+var productCount = 0;
+
+const ShoppingBagTest = ({ route, navigation }) => {
+  const currCat = route.params;
+
   const layout = useWindowDimensions();
 
-  var [categoryState, setcategoryState] = React.useState(0);
+  var [categoryState, setcategoryState] = React.useState(5);
+  const BASE_URL = "https://";
+  const [products, setProducts] = useState([]);
 
-  const mensClothes = [
-    "men's clothing",
-    "women's clothing",
-    "men's clothing",
-    "women's clothing",
-  ];
+  const [modalItemIndex, setModalItemIndex] = useState(0);
 
-  const womensClothes = [
-    "women's clothing",
-    "men's clothing",
-    "women's clothing",
-    "men's clothing",
-  ];
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [uid, setUid] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -53,36 +61,70 @@ const ShoppingBagTest = ({ navigation }) => {
     { key: "Women", title: "Women" },
   ]);
 
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const handleCategorySelection = (majorCategoryName) => {
+    setSelectedCategory(majorCategoryName);
+    // console.log(`Handling category selection for: ${majorCategoryName}`);
+
+    const selectedMajorCategory = data.find(
+      (major) =>
+        major.majorCategory &&
+        major.majorCategory.toLowerCase() === majorCategoryName.toLowerCase()
+    );
+  };
+
+  // const addToFav = () => {
+  //   storeFavoriteForUser(uid, products[modalItemIndex])
+  //   setModalVisible(false);
+
+  // };
 
   useEffect(() => {
-    if (index == 1) {
-      fetch("https://fakestoreapi.com/products")
-        .then((response) => response.json())
-        .then((data) => {
-          const clothesProducts = data.filter(
-            (product) =>
-              // product.category === "men's clothing" |
-              product.category === womensClothes[categoryState].toString()
-          );
-          setProducts(clothesProducts);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
-    } else if (index == 0) {
-      fetch("https://fakestoreapi.com/products")
-        .then((response) => response.json())
-        .then((data) => {
-          const clothesProducts = data.filter(
-            (product) =>
-              // product.category === "men's clothing" |
-              product.category === mensClothes[categoryState].toString()
-          );
-          setProducts(clothesProducts);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
+    // console.log(currCat);
+
+    if (currCat) {
+      setSelectedCategory(currCat);
+      // console.log(selectedCategory);
     }
+
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUid(user.uid);
+      }
+    });
+
+    const majorCategory = index === 0 ? "Men" : "Women";
+
+    // Find the corresponding sub-category from your local data.json
+    const subCategoryData = data.find(
+      (item) => item.majorCategory === majorCategory
+    )?.subCategories[categoryState];
+
+    // const itemData = data.find((item) => item.majorCategory === majorCategory)
+    //   ?.subCategories[categoryState].products[clothsIndex];
+
+    // // If sub-category exists, set its products to the component state
+    if (subCategoryData) {
+      setProducts(subCategoryData.products);
+    }
+
+    // if (itemData) {
+    //   setClothes(itemData);
+    // }
   }, [categoryState, index]);
+
+  const genderSwipeHandler = (swipedIndex) => {
+    setIndex(swipedIndex);
+    setcategoryState(5);
+  };
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const setProductIndex = (itemIndex) => {
+    setModalItemIndex(itemIndex);
+    // console.log(itemIndex);
+  };
 
   var touchProps = {
     opacity: 0,
@@ -90,7 +132,7 @@ const ShoppingBagTest = ({ navigation }) => {
     // onHideUnderlay: () => setcategoryState(0),
     // onShowUnderlay: () => setcategoryState(2),
     // onPress: () => setcategoryState(true), // <-- "onPress" is apparently required
-    onPress: () => renderClothes(),
+    onPress: () => console.log(categoryState),
   };
 
   var touchProps2 = {
@@ -101,6 +143,7 @@ const ShoppingBagTest = ({ navigation }) => {
     // onPress: () => setcategoryState(true), // <-- "onPress" is apparently required
     onPress: () => console.log(categoryState),
   };
+
   //routes
 
   const FirstRoute = () => (
@@ -111,10 +154,10 @@ const ShoppingBagTest = ({ navigation }) => {
       <View style={styles.leftColumnContainer}>
         <View>
           <TouchableHighlight
-            onShowUnderlay={() => setcategoryState(0)}
+            onShowUnderlay={() => setcategoryState(5)}
             {...touchProps}
             style={
-              categoryState == 0 && index == 0
+              categoryState == 5 && index == 0
                 ? styles.categoriesSelected
                 : styles.categories
             }
@@ -125,15 +168,15 @@ const ShoppingBagTest = ({ navigation }) => {
 
         <View>
           <TouchableHighlight
-            onShowUnderlay={() => setcategoryState(1)}
+            onShowUnderlay={() => setcategoryState(6)}
             {...touchProps}
             style={
-              categoryState == 1 && index == 0
+              categoryState == 6 && index == 0
                 ? styles.categoriesSelected
                 : styles.categories
             }
           >
-            <Text style={styles.selectedTextCategories}>Graphics</Text>
+            <Text style={styles.selectedTextCategories}>Graphic Tees</Text>
           </TouchableHighlight>
         </View>
 
@@ -161,7 +204,65 @@ const ShoppingBagTest = ({ navigation }) => {
                 : styles.categories
             }
           >
+            <Text style={styles.selectedTextCategories}>
+              Hoodies & Sweatshirts
+            </Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(1)}
+            {...touchProps}
+            style={
+              categoryState == 1 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Jeans</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(7)}
+            {...touchProps}
+            style={
+              categoryState == 7 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
             <Text style={styles.selectedTextCategories}>Shorts</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(4)}
+            {...touchProps}
+            style={
+              categoryState == 4 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Swim</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(0)}
+            {...touchProps}
+            style={
+              categoryState == 0 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Footwear</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -169,20 +270,70 @@ const ShoppingBagTest = ({ navigation }) => {
       <View style={styles.productsList}>
         <FlatList
           data={products}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+          keyExtractor={(item, index) => item.id.toString()}
+          renderItem={({ item, index }) => (
+            <View style={styles.picContainer}>
               <TouchableOpacity
                 onPress={() => {
                   setSelectedProduct(item);
                   setModalVisible(true);
+                  setProductIndex(index);
                 }}
               >
                 <Image
-                  source={{ uri: item.image }}
-                  style={{ width: 90, height: 90 }}
+                  source={{ uri: `${BASE_URL}${item.imageUrl}` }}
+                  style={styles.pics}
                 />
-                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                <Modal isVisible={isModalVisible}>
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginLeft: 20,
+                      marginRight: 20,
+                      marginTop: 200,
+                      marginBottom: 200,
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <Image
+                      source={{
+                        uri: `${BASE_URL}${products[modalItemIndex].imageUrl}`,
+                      }}
+                      style={styles.modalPics}
+                    />
+                    <Text style={{ alignItems: "center", fontSize: 16 }}>
+                      {products[modalItemIndex].name} USD
+                    </Text>
+                    <Text style={{ alignItems: "center", fontSize: 16 }}>
+                      {products[modalItemIndex].price} USD
+                    </Text>
+
+                    <AntDesign
+                      name="hearto"
+                      size={30}
+                      color="red"
+                      style={styles.heartIcon}
+                      onPress={() =>
+                        storeFavoriteForUser(
+                          uid,
+                          products[modalItemIndex],
+                          setModalVisible(false)
+                        )
+                      }
+                    />
+
+                    <Button title="Close" onPress={toggleModal} />
+                  </View>
+                </Modal>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    fontSize: 13,
+                  }}
+                >
                   {item.price} USD
                 </Text>
               </TouchableOpacity>
@@ -196,15 +347,14 @@ const ShoppingBagTest = ({ navigation }) => {
 
   const SecondRoute = () => (
     // <View style={{ flex: 1 }} />;
-
     <SafeAreaView style={styles.ye}>
       <View style={styles.leftColumnContainer}>
         <View>
           <TouchableHighlight
-            onShowUnderlay={() => setcategoryState(0)}
+            onShowUnderlay={() => setcategoryState(5)}
             {...touchProps}
             style={
-              categoryState == 0 && index == 1
+              categoryState == 5 && index == 1
                 ? styles.categoriesSelected
                 : styles.categories
             }
@@ -215,29 +365,43 @@ const ShoppingBagTest = ({ navigation }) => {
 
         <View>
           <TouchableHighlight
-            onShowUnderlay={() => setcategoryState(1)}
+            onShowUnderlay={() => setcategoryState(7)}
             {...touchProps}
             style={
-              categoryState == 1 && index == 1
+              categoryState == 7 && index == 1
                 ? styles.categoriesSelected
                 : styles.categories
             }
           >
-            <Text style={styles.selectedTextCategories}>Graphics</Text>
+            <Text style={styles.selectedTextCategories}>Printed Tees</Text>
           </TouchableHighlight>
         </View>
 
         <View>
           <TouchableHighlight
-            onShowUnderlay={() => setcategoryState(2)}
+            onShowUnderlay={() => setcategoryState(0)}
             {...touchProps}
             style={
-              categoryState == 2 && index == 1
+              categoryState == 0 && index == 1
                 ? styles.categoriesSelected
                 : styles.categories
             }
           >
-            <Text style={styles.selectedTextCategories}>Jackets & Coats</Text>
+            <Text style={styles.selectedTextCategories}>Outerwear</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(4)}
+            {...touchProps}
+            style={
+              categoryState == 4 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Dresses</Text>
           </TouchableHighlight>
         </View>
 
@@ -251,7 +415,79 @@ const ShoppingBagTest = ({ navigation }) => {
                 : styles.categories
             }
           >
+            <Text style={styles.selectedTextCategories}>
+              Hoodies & Sweatshirts
+            </Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(2)}
+            {...touchProps}
+            style={
+              categoryState == 2 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
             <Text style={styles.selectedTextCategories}>Jeans</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(9)}
+            {...touchProps}
+            style={
+              categoryState == 9 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Shorts</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(1)}
+            {...touchProps}
+            style={
+              categoryState == 1 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Spanx</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(6)}
+            {...touchProps}
+            style={
+              categoryState == 6 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Swim & Beach</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(8)}
+            {...touchProps}
+            style={
+              categoryState == 8 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Footwear</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -259,20 +495,70 @@ const ShoppingBagTest = ({ navigation }) => {
       <View style={styles.productsList}>
         <FlatList
           data={products}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={{ marginBottom: 20, marginHorizontal: 25 }}>
+          keyExtractor={(item, index) => item.id.toString()}
+          renderItem={({ item, index }) => (
+            <View style={styles.picContainer}>
               <TouchableOpacity
                 onPress={() => {
                   setSelectedProduct(item);
                   setModalVisible(true);
+                  setProductIndex(index);
                 }}
               >
                 <Image
-                  source={{ uri: item.image }}
-                  style={{ width: 90, height: 90 }}
+                  source={{ uri: `${BASE_URL}${item.imageUrl}` }}
+                  style={styles.pics}
                 />
-                <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                <Modal isVisible={isModalVisible}>
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginLeft: 20,
+                      marginRight: 20,
+                      marginTop: 200,
+                      marginBottom: 200,
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <Image
+                      source={{
+                        uri: `${BASE_URL}${products[modalItemIndex].imageUrl}`,
+                      }}
+                      style={styles.modalPics}
+                    />
+                    <Text style={{ alignItems: "center", fontSize: 16 }}>
+                      {products[modalItemIndex].name} USD
+                    </Text>
+                    <Text style={{ alignItems: "center", fontSize: 16 }}>
+                      {products[modalItemIndex].price} USD
+                    </Text>
+
+                    <AntDesign
+                      name="hearto"
+                      size={30}
+                      color="red"
+                      style={styles.heartIcon}
+                      onPress={() =>
+                        storeFavoriteForUser(
+                          uid,
+                          products[modalItemIndex],
+                          setModalVisible(false)
+                        )
+                      }
+                    />
+
+                    <Button title="Close" onPress={toggleModal} />
+                  </View>
+                </Modal>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    fontSize: 13,
+                  }}
+                >
                   {item.price} USD
                 </Text>
               </TouchableOpacity>
@@ -328,7 +614,7 @@ const ShoppingBagTest = ({ navigation }) => {
         )}
         renderScene={renderScene}
         indicatorStyle={styles.indicatorStyle}
-        onIndexChange={setIndex}
+        onIndexChange={genderSwipeHandler}
         style={styles.tabBar}
       />
     </SafeAreaView>
@@ -395,7 +681,7 @@ const styles = StyleSheet.create({
     // alignItems: "flex-start", // if you want to fill rows left to right
   },
   categoriesSelected: {
-    width: "35%", // is 50% of container width
+    width: "30%", // is 50% of container width
     paddingTop: 14,
     paddingBottom: 14,
     paddingLeft: 18,
@@ -406,7 +692,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "black",
   },
   categories: {
-    width: "40%", // is 50% of container width
+    width: "30%", // is 50% of container width
     paddingTop: 14,
     paddingBottom: 14,
     paddingLeft: 18,
@@ -420,10 +706,34 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     // backgroundColor: "black",
-    width: "64%",
-    marginLeft: 152,
+    // width: "64%",
+    marginLeft: 111,
     justifyContent: "flex-start",
-    marginTop: -414,
+    // marginTop: -414,
+    marginTop: -560,
+  },
+  pics: {
+    width: 90,
+    height: 90,
+    backgroundColor: "black",
+  },
+  modalPics: {
+    width: 250,
+    height: 250,
+    backgroundColor: "black",
+  },
+  picContainer: {
+    marginBottom: 20,
+    marginHorizontal: 25,
+    backgroundColor: "#eeeeef",
+    padding: 10,
+  },
+  heartIcon: {
+    // position: "absolute",
+    paddingTop: 7,
+    // top: 10,
+    // right: 10,
+    zIndex: 1,
   },
 });
 
