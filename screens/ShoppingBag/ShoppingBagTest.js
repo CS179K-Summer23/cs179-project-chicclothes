@@ -57,20 +57,29 @@ const ShoppingBagTest = ({ navigation }) => {
 
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
   useEffect(() => {
-    const majorCategory = index === 0 ? 'Men' : 'Women';
-
-    // Find the corresponding sub-category from your local data.json
-    const subCategoryData = data.find(
-      (item) => item.majorCategory === majorCategory
-    )?.subCategories[categoryState];
-
-    // If sub-category exists, set its products to the component state
-    if (subCategoryData) {
-      setProducts(subCategoryData.products);
+    if (data && Array.isArray(data)) {
+      const allProducts = data.reduce((acc, curr) => {
+        if (curr && curr.subCategories && Array.isArray(curr.subCategories)) {
+          return [...acc, ...curr.subCategories.flatMap((sub) => (sub && sub.products) || [])];
+        }
+        return acc;
+      }, []);
+  
+      if (searchQuery) {
+        const matches = allProducts.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredSuggestions(matches.slice(0, 5));
+      } else {
+        setFilteredSuggestions([]);
+      }
     }
-  }, [categoryState, index]);
+  }, [categoryState, index, searchQuery]);
+  
 
   var touchProps = {
     opacity: 0,
@@ -290,10 +299,24 @@ const ShoppingBagTest = ({ navigation }) => {
             color="#7c7c7d"
             onPressIn={() => {}}
             placeholder="What are you looking for"
+            onChangeText={(text) => setSearchQuery(text)}
           />
         </View>
       </View>
-
+      {searchQuery.length > 0 && (
+        <View style={styles.suggestionsDropdown}>
+          {filteredSuggestions.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setSearchQuery(item.name); // or navigate, add to cart, etc.
+              }}
+            >
+              <Text>{item.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
       <TabView
         navigationState={{ index, routes }}
         renderTabBar={(props) => (
@@ -412,6 +435,13 @@ const styles = StyleSheet.create({
     marginLeft: 152,
     justifyContent: "flex-start",
     marginTop: -414,
+  },
+  suggestionsDropdown: {
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    maxHeight: 200,  // You can adjust this
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
 });
 
