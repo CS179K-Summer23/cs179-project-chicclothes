@@ -26,7 +26,10 @@ const SuggestionScreen = () => {
   const [considerations, setConsiderations] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedProductModalVisible, setSelectedProductModalVisible] =useState(false);
   const [suitableProductsList, setSuitableProductsList] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+ 
 
   const data = require("../../data.json");
   const filterData = (
@@ -71,10 +74,15 @@ const SuggestionScreen = () => {
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]]; 
+      [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
   }
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setSelectedProductModalVisible(true);
+  };
+
   const sendMessage = async () => {
     const suitableProducts = filterData(
       age,
@@ -108,7 +116,7 @@ The products I found suitable are ${formattedNames}. For only the first three pr
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          "Bearer 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",
+          "Bearer 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",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 300 }),
     };
@@ -221,18 +229,9 @@ The products I found suitable are ${formattedNames}. For only the first three pr
                 <ChatGptResponseModalContent
                   message={responseMessage}
                   setModalVisible={setModalVisible}
+                  suitableProductsList={suitableProductsList}
+                  handleProductSelect={handleProductSelect}
                 />
-                <View style={styles.productsContainer}>
-                  {suitableProductsList.slice(0, 3).map((product) => (
-                    <View key={product.id} style={styles.product}>
-                      <Image
-                        source={{ uri: `${BASE_URL}${product.imageUrl}` }}
-                        style={styles.productImage}
-                      />
-                      <Text>{product.name}</Text>
-                    </View>
-                  ))}
-                </View>
               </View>
             </View>
           </ScrollView>
