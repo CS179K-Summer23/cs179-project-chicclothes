@@ -10,7 +10,6 @@ import {
   getLastSwipedIndexForUser,
   storeFavoriteForUser,
   x,
-  fetchSearchSuggestions,
 } from "../../hook/databaseQueries";
 import {
   Text,
@@ -73,6 +72,20 @@ const ShoppingBagTest = ({ route, navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
+  const navigateToProductDetails = (product) => {
+    // Find the index of this product in the 'products' array
+    const productIndex = products.findIndex((p) => p.id === product.id);
+
+    // Set the current modal item index
+    setModalItemIndex(productIndex);
+
+    // Set the current selected product
+    setSelectedProduct(product);
+
+    // Open the modal
+    toggleModal();
+  };
+
   useEffect(() => {
     if (currCat) {
       setSelectedCategory(currCat);
@@ -94,46 +107,34 @@ const ShoppingBagTest = ({ route, navigation }) => {
     if (subCategoryData) {
       setProducts(subCategoryData.products);
     }
-    // if (data && Array.isArray(data)) {
-    //   const allProducts = data.reduce((acc, curr) => {
-    //     if (curr && curr.subCategories && Array.isArray(curr.subCategories)) {
-    //       return [...acc, ...curr.subCategories.flatMap((sub) => (sub && sub.products) || [])];
-    //     }
-    //     return acc;
-    //   }, []);
+    if (data && Array.isArray(data)) {
+      const allProducts = data.reduce((acc, curr) => {
+        if (curr && curr.subCategories && Array.isArray(curr.subCategories)) {
+          return [...acc, ...curr.subCategories.flatMap((sub) => (sub && sub.products) || [])];
+        }
+        return acc;
+      }, []);
   
-    //   if (searchQuery) {
-    //     const matches = allProducts.filter((product) =>
-    //       product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    //     );
-    //     setFilteredSuggestions(matches.slice(0, 5));
+      if (searchQuery) {
+        const matches = allProducts.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredSuggestions(matches.slice(0, 5));
 
         // const exactMatch = allProducts.find(
         //   (product) => product.name.toLowerCase() === searchQuery.toLowerCase()
         // );
-      
-    // New logic for fetching suggested products
-  const fetchSuggestions = async () => {
-    if (searchQuery) {
-      const suggestedProducts = await fetchSearchSuggestions(searchQuery);
-      setFilteredSuggestions(suggestedProducts.slice(0, 5));
-      const exactMatch = suggestedProducts.find(
-        (product) => product.name.toLowerCase() === searchQuery.toLowerCase()
-      );
-      if (exactMatch) {
-        navigateToProductDetails(exactMatch.id);
+        // if(exactMatch){
+        //   navigateToProductDetails(exactMatch.id);
+        // }
+      } else {
+        setFilteredSuggestions([]);
       }
-    } else {
-      setFilteredSuggestions([]);
     }
-  };
-
-  fetchSuggestions();
-
-  return () => {
-    unsubscribe && unsubscribe();
-  };
-}, [data, searchQuery]);
+    // return () => {
+    //   unsubscribe && unsubscribe();
+    // }
+  }, [data, searchQuery]);
   
 
   const genderSwipeHandler = (swipedIndex) => {
@@ -605,16 +606,25 @@ const ShoppingBagTest = ({ route, navigation }) => {
     {searchQuery.length > 0 && (
       <View style={styles.suggestionsContainer}>
         <View style={styles.suggestionsDropdown}>
-          {filteredSuggestions.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                setSearchQuery(item.name);
-              }}
-            >
-              <Text>{item.name}</Text>
-            </TouchableOpacity>
-          ))}
+        <FlatList
+            data={filteredSuggestions}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setSearchQuery(item.name);
+                  setSelectedProduct(item);
+                  setModalVisible(true);
+                }}
+              >
+                <Image
+                source={{ uri: `${BASE_URL}${item.imageUrl}` }}
+                style={styles.pics}
+                />
+                <Text>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
       </View>
       )}
@@ -643,6 +653,35 @@ const ShoppingBagTest = ({ route, navigation }) => {
         onIndexChange={genderSwipeHandler}
         style={styles.tabBar}
       />
+      <Modal isVisible={isModalVisible}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          marginLeft: 20,
+          marginRight: 20,
+          marginTop: 200,
+          marginBottom: 200,
+          backgroundColor: "white",
+        }}
+      >
+        {/* <Image
+          source={{ uri: `${BASE_URL}${product.imageUrl}` }}
+          style={styles.pics}
+          /> */}
+        <Text style={{ alignItems: "center", fontSize: 16 }}>{selectedProduct?.name}</Text>
+        <Text style={{ alignItems: "center", fontSize: 16 }}>{selectedProduct?.price} USD</Text>
+        <AntDesign
+          name="hearto"
+          size={30}
+          color="red"
+          style={styles.heartIcon}
+          onPress={() => storeFavoriteForUser(uid, selectedProduct, setModalVisible(false))}
+        />
+        <Button title="Close" onPress={() => setModalVisible(false)} />
+      </View>
+      </Modal>
     </SafeAreaView>
   );
 };  
