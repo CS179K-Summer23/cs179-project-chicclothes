@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Keyboard,TouchableWithoutFeedback, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Keyboard,KeyboardAvoidingView,TouchableWithoutFeedback, ScrollView} from 'react-native';
 import { auth, db } from '../../configuration/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -58,6 +58,12 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior="padding"
+            keyboardVerticalOffset={20}
+            enabled
+        >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView style={{flex: 1}} contentContainerStyle={styles.container} keyboardShouldPersistTaps='handled'>
                 <Text style={styles.text}>Register Now!</Text>
@@ -106,6 +112,7 @@ const RegisterScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </ScrollView>
         </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 

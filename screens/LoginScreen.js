@@ -7,6 +7,9 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  
 } from "react-native";
 import { auth } from "../configuration/firebase";
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -52,6 +55,13 @@ const LoginScreen = ({ navigation }) => {
   
 
   return (
+    <KeyboardAvoidingView
+    style={styles.container}
+    behavior="padding"
+    keyboardVerticalOffset={20}
+    enabled
+  >
+    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
     <View style={styles.container}>
       <Image
         style={styles.image}
@@ -97,6 +107,8 @@ const LoginScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 const styles = StyleSheet.create({
