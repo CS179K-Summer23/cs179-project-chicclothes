@@ -1,4 +1,4 @@
-import React, { useState, useRef,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,16 +19,21 @@ import OrdersModalsContent from "./OrdersModalsContent";
 import ViewMemIdModalContent from "./ViewMemIdModalContent";
 import PointsHistoryModalContent from "./PointsHistoryModalContent";
 
-import { auth } from "../../configuration/firebase";
+import { auth, db } from "../../configuration/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 import { getUserDataFromFirestore } from "../../hook/databaseQueries";
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeModal, setActiveModal] = useState("");
   const scrollViewRef = useRef(null); //for setting button
   const sectionRef = useRef(null); //for setting range to show when press
-  const [userName, setUserName] = useState('User'); // Default to 'User' will update it with the user name :) should be hehe 
- 
+  const [userName, setUserName] = useState("User"); // Default to 'User' will update it with the user name :) should be hehe
+  const [userPoints, setUserPoints] = useState(0); // Default to 0 will update it with the user points
+
+  const rewardPoint = Math.max(200 - userPoints, 0);
+  const silverRewardPoint = Math.max(500 - userPoints, 0);
+
   const offers = [
     {
       image: require("../images/offer1.png"),
@@ -67,22 +72,17 @@ const ProfileScreen = ({navigation}) => {
     { title: "Suggestion Bot", icon: "bulb1" },
   ];
 
- 
-
   const OptionButton = ({ title, icon }) => {
     const handlePress = () => {
       if (title === "Sign out") {
-          navigation.navigate('Login'); // Navigate to Login screen
+        navigation.navigate("Login"); // Navigate to Login screen
       } else {
-          setActiveModal(title);
-          setModalVisible(true);
+        setActiveModal(title);
+        setModalVisible(true);
       }
-  };
+    };
     return (
-      <TouchableOpacity
-        style={styles.optionButton}
-        onPress={handlePress}
-      >
+      <TouchableOpacity style={styles.optionButton} onPress={handlePress}>
         <View
           style={{
             flexDirection: "row",
@@ -128,9 +128,9 @@ const ProfileScreen = ({navigation}) => {
           <HelpUsImproveModalContent onClose={() => setModalVisible(false)} />
         );
       case "Suggestion Bot":
-          return <SuggestionScreen onClose={() => setModalVisible(false)} />;
+        return <SuggestionScreen onClose={() => setModalVisible(false)} />;
       case "Sign out":
-          return null;
+        return null;
       default:
         return null;
     }
@@ -145,18 +145,30 @@ const ProfileScreen = ({navigation}) => {
   useEffect(() => {
     const currentUser = auth.currentUser;
     const uid = currentUser ? currentUser.uid : null;
+    let unsubscribe;
 
     if (uid) {
-        const fetchUserName = async () => {
-            const userData = await getUserDataFromFirestore(uid);
-            if (userData && userData.name) {
-                setUserName(userData.name);
-            }
+      const userRef = doc(db, "users", uid);
+      unsubscribe = onSnapshot(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.data();
+          setUserName(userData.name || "User");
+          setUserPoints(userData.points || 0);
+        } else {
+          console.log("No such document!");
         }
-        fetchUserName();
+      });
     }
-}, []);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
 
+  const getDotPosition = (points, maxPoints, tracerWidth) => {
+    let position = (points / maxPoints) * tracerWidth;
+    return Math.min(position, tracerWidth);
+  };
+  const dotPosition = getDotPosition(userPoints, 500, 350);
 
   return (
     <ScrollView ref={scrollViewRef} style={styles.mainScrollView}>
@@ -176,7 +188,7 @@ const ProfileScreen = ({navigation}) => {
               alignItems: "center",
             }}
           >
-            <Text style={styles.rewardText}>0 points</Text>
+            <Text style={styles.rewardText}>{userPoints} points</Text>
             <TouchableOpacity
               onPress={() => {
                 setActiveModal("Points History");
@@ -187,12 +199,13 @@ const ProfileScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.pointTracer}>
-            <View style={styles.redDot}></View>
+            <View style={[styles.redLine, { width: dotPosition }]}></View>
+            <View style={[styles.redDot, { left: dotPosition - 5 }]}></View>
           </View>
           <Text style={styles.greyText}>
-            You're 200 points away from your next reward and 500 points are
-            needed to become a Silver Member. Vouchers are issued 30 days after
-            purchased.
+            You're {rewardPoint} points away from your next reward and{" "}
+            {silverRewardPoint} points are needed to become a Silver Member.
+            Vouchers are issued 30 days after purchased.
           </Text>
           <TouchableOpacity
             style={styles.memberIdButton}

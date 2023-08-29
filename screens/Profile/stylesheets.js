@@ -1,6 +1,4 @@
-
 import { StyleSheet } from "react-native";
-
 
 const styles = StyleSheet.create({
   //profile screen css
@@ -90,7 +88,14 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     borderRadius: 5,
   },
-
+  redLine: {
+    position: "absolute",
+    top: "50%",
+    left: 0,
+    height: 3,
+    backgroundColor: "#FF8080",
+    transform: [{ translateY: -1.5 }],
+  },
 
   offersTitle: {
     alignSelf: "flex-start", // Add this to override the parent's alignItems
@@ -186,6 +191,5 @@ const styles = StyleSheet.create({
   },
   //profile screen css
 });
-
 
 export default styles;
