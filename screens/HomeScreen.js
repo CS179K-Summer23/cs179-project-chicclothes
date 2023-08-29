@@ -126,19 +126,49 @@ const HomeScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
   const handleCategoryPress = (category) => {
-    // let currCat = 2;
+    // let hi = "2";
     // console.log(`Selected category: ${category.name}`);
-    // navigation.navigate("ShoppingBag", {
-    //   currCat: 2,
-    // });
+    // navigation.navigate("ShoppingBag", { hi }); // Passing Value
+    // passIndex = 2;
+    console.log(category.name);
 
-    navigation.navigate(
-      "ShoppingBag",
-      {
-        screen: "ShoppingBagWomen",
-      },
-      { currCat: 2 }
-    );
+    switch (category.name) {
+      case "Jackets":
+        passIndex = 2;
+        break;
+      case "Shoes":
+        passIndex = 0;
+        break;
+      case "Jeans":
+        passIndex = 1;
+        break;
+      case "Spanxs":
+        passIndex = 11;
+        break;
+      case "Shirts":
+        passIndex = 5;
+        break;
+      case "Hoodies":
+        passIndex = 3;
+        break;
+      case "Dresses":
+        passIndex = 44;
+        break;
+      case "Swimwear":
+        passIndex = 4;
+        break;
+      case "T-shirts":
+        passIndex = 6;
+        break;
+      case "Shorts":
+        passIndex = 7;
+        break;
+    }
+
+    navigation.navigate("ShoppingBag", {
+      screen: "ShoppingBagWomen",
+      params: { passIndex },
+    });
   };
   const handleButtonPress = () => {
     console.log(`Suggestion Bot Pressed`);

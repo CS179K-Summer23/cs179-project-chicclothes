@@ -40,9 +40,9 @@ function getButtonState() {
 var productCount = 0;
 
 const ShoppingBagTest = ({ route, navigation }) => {
-  const currCat = route.params;
+  const { passIndex } = route.params;
 
-  const layout = useWindowDimensions();
+  // console.log(hi);
 
   var [categoryState, setcategoryState] = React.useState(5);
   const BASE_URL = "https://";
@@ -79,10 +79,23 @@ const ShoppingBagTest = ({ route, navigation }) => {
   // };
 
   useEffect(() => {
-    // console.log(currCat);
+    // console.log(passIndex);
 
-    if (currCat) {
-      setSelectedCategory(currCat);
+    if (passIndex >= 0) {
+      //spanx
+      if (passIndex == 11) {
+        console.log("spanx");
+        setcategoryState(1);
+        setIndex(1);
+      }
+
+      //dresses
+      else if (passIndex == 44) {
+        setcategoryState(4);
+        setIndex(1);
+      } else {
+        setcategoryState(passIndex);
+      }
       // console.log(selectedCategory);
     }
 
@@ -110,7 +123,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
     // if (itemData) {
     //   setClothes(itemData);
     // }
-  }, [categoryState, index]);
+  }, [categoryState, index, passIndex]);
 
   const genderSwipeHandler = (swipedIndex) => {
     setIndex(swipedIndex);
