@@ -10,6 +10,7 @@ import {
   getLastSwipedIndexForUser,
   storeFavoriteForUser,
   x,
+  fetchSearchSuggestions,
 } from "../../hook/databaseQueries";
 import {
   Text,
@@ -29,11 +30,9 @@ let buttonState = "";
 
 function setButtonState(mode) {
   buttonState = mode;
-  // console.log("set " + buttonState);
 }
 
 function getButtonState() {
-  // console.log("get " + buttonState);
   return buttonState;
 }
 
@@ -63,7 +62,6 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
   const handleCategorySelection = (majorCategoryName) => {
     setSelectedCategory(majorCategoryName);
-    // console.log(`Handling category selection for: ${majorCategoryName}`);
 
     const selectedMajorCategory = data.find(
       (major) =>
@@ -72,20 +70,12 @@ const ShoppingBagTest = ({ route, navigation }) => {
     );
   };
 
-  // const addToFav = () => {
-  //   storeFavoriteForUser(uid, products[modalItemIndex])
-  //   setModalVisible(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
-  // };
-
   useEffect(() => {
-    // console.log(currCat);
-
     if (currCat) {
       setSelectedCategory(currCat);
-      // console.log(selectedCategory);
     }
 
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -101,34 +91,49 @@ const ShoppingBagTest = ({ route, navigation }) => {
       (item) => item.majorCategory === majorCategory
     )?.subCategories[categoryState];
 
-    // const itemData = data.find((item) => item.majorCategory === majorCategory)
-    //   ?.subCategories[categoryState].products[clothsIndex];
-
-    // // If sub-category exists, set its products to the component state
     if (subCategoryData) {
       setProducts(subCategoryData.products);
-    if (data && Array.isArray(data)) {
-      const allProducts = data.reduce((acc, curr) => {
-        if (curr && curr.subCategories && Array.isArray(curr.subCategories)) {
-          return [...acc, ...curr.subCategories.flatMap((sub) => (sub && sub.products) || [])];
-        }
-        return acc;
-      }, []);
-  
-      if (searchQuery) {
-        const matches = allProducts.filter((product) =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setFilteredSuggestions(matches.slice(0, 5));
-      } else {
-        setFilteredSuggestions([]);
-      }
     }
+    // if (data && Array.isArray(data)) {
+    //   const allProducts = data.reduce((acc, curr) => {
+    //     if (curr && curr.subCategories && Array.isArray(curr.subCategories)) {
+    //       return [...acc, ...curr.subCategories.flatMap((sub) => (sub && sub.products) || [])];
+    //     }
+    //     return acc;
+    //   }, []);
+  
+    //   if (searchQuery) {
+    //     const matches = allProducts.filter((product) =>
+    //       product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    //     );
+    //     setFilteredSuggestions(matches.slice(0, 5));
 
-    // if (itemData) {
-    //   setClothes(itemData);
-    // }
-  }, [categoryState, index, searchQuery]);
+        // const exactMatch = allProducts.find(
+        //   (product) => product.name.toLowerCase() === searchQuery.toLowerCase()
+        // );
+      
+    // New logic for fetching suggested products
+  const fetchSuggestions = async () => {
+    if (searchQuery) {
+      const suggestedProducts = await fetchSearchSuggestions(searchQuery);
+      setFilteredSuggestions(suggestedProducts.slice(0, 5));
+      const exactMatch = suggestedProducts.find(
+        (product) => product.name.toLowerCase() === searchQuery.toLowerCase()
+      );
+      if (exactMatch) {
+        navigateToProductDetails(exactMatch.id);
+      }
+    } else {
+      setFilteredSuggestions([]);
+    }
+  };
+
+  fetchSuggestions();
+
+  return () => {
+    unsubscribe && unsubscribe();
+  };
+}, [data, searchQuery]);
   
 
   const genderSwipeHandler = (swipedIndex) => {
@@ -142,33 +147,21 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
   const setProductIndex = (itemIndex) => {
     setModalItemIndex(itemIndex);
-    // console.log(itemIndex);
   };
 
   var touchProps = {
     opacity: 0,
-    // style: categoryState == 0 ? styles.categoriesSelected : styles.categories, // <-- but you can still apply other style changes
-    // onHideUnderlay: () => setcategoryState(0),
-    // onShowUnderlay: () => setcategoryState(2),
-    // onPress: () => setcategoryState(true), // <-- "onPress" is apparently required
     onPress: () => console.log(categoryState),
   };
 
   var touchProps2 = {
     opacity: 0,
-    style: categoryState == 2 ? styles.categoriesSelected : styles.categories, // <-- but you can still apply other style changes
-    // onHideUnderlay: () => setcategoryState(0),
-    // onShowUnderlay: () => setcategoryState(2),
-    // onPress: () => setcategoryState(true), // <-- "onPress" is apparently required
+    style: categoryState == 2 ? styles.categoriesSelected : styles.categories,
+
     onPress: () => console.log(categoryState),
   };
 
-  //routes
-
   const FirstRoute = () => (
-    // <View style={{ flex: 1 }} />
-
-    // <Text>Hello</Text>
     <SafeAreaView style={styles.ye}>
       <View style={styles.leftColumnContainer}>
         <View>
@@ -365,7 +358,6 @@ const ShoppingBagTest = ({ route, navigation }) => {
   );
 
   const SecondRoute = () => (
-    // <View style={{ flex: 1 }} />;
     <SafeAreaView style={styles.ye}>
       <View style={styles.leftColumnContainer}>
         <View>
@@ -596,34 +588,35 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.containerShop}>
-      <View style={styles.searchContainer}>
-        <TouchableOpacity>
-          <Feather name="search" size={24} style={styles.searchIcon} />
-        </TouchableOpacity>
-        <View style={styles.searchWrapper}>
-          <TextInput
-            style={styles.searchWrapper}
-            // value=""
-            color="#7c7c7d"
-            onPressIn={() => {}}
-            placeholder="What are you looking for"
-            onChangeText={(text) => setSearchQuery(text)}
-          />
-        </View>
+    <View style={styles.searchContainer}>
+      <TouchableOpacity>
+        <Feather name="search" size={24} style={styles.searchIcon} />
+      </TouchableOpacity>
+      <View style={styles.searchWrapper}>
+        <TextInput
+          style={styles.searchInput}
+          color="#7c7c7d"
+          placeholder="What are you looking for"
+          onChangeText={(text) => setSearchQuery(text)}
+        />
       </View>
-      {searchQuery.length > 0 && (
+    </View>
+    {/* Separate View for suggestions */}
+    {searchQuery.length > 0 && (
+      <View style={styles.suggestionsContainer}>
         <View style={styles.suggestionsDropdown}>
           {filteredSuggestions.map((item, index) => (
             <TouchableOpacity
               key={index}
               onPress={() => {
-                setSearchQuery(item.name); // or navigate, add to cart, etc.
+                setSearchQuery(item.name);
               }}
             >
               <Text>{item.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
+      </View>
       )}
       <TabView
         navigationState={{ index, routes }}
@@ -652,7 +645,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
       />
     </SafeAreaView>
   );
-};
+};  
 
 const styles = StyleSheet.create({
   ye: {
@@ -675,15 +668,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     backgroundColor: "#eeeeef",
-    // borderRadius: 16,
     marginVertical: "4%",
-    // marginVertical: 16,
     height: 50,
-    // paddingLeft: 5,
-    // paddingRight: 5,
     marginLeft: 15,
     marginRight: 15,
-    // marginBottom: "-0.1%",
   },
   searchIcon: {
     marginHorizontal: 10,
@@ -697,8 +685,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   searchInput: {
-    width: "100",
-    height: "100",
+    width: 100,
+    height: "100%",
     paddingHorizontal: 12,
   },
   indicatorStyle: {
@@ -710,11 +698,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flexWrap: "nowrap",
     justifyContent: "flex-start",
-    // backgroundColor: "black",
-    // alignItems: "flex-start", // if you want to fill rows left to right
   },
   categoriesSelected: {
-    width: "30%", // is 50% of container width
+    width: "30%", 
     paddingTop: 14,
     paddingBottom: 14,
     paddingLeft: 18,
@@ -722,10 +708,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "#000101",
-    // backgroundColor: "black",
   },
   categories: {
-    width: "30%", // is 50% of container width
+    width: "30%",
     paddingTop: 14,
     paddingBottom: 14,
     paddingLeft: 18,
@@ -738,11 +723,8 @@ const styles = StyleSheet.create({
   productsList: {
     flex: 1,
     flexDirection: "row",
-    // backgroundColor: "black",
-    // width: "64%",
     marginLeft: 111,
     justifyContent: "flex-start",
-    // marginTop: -414,
     marginTop: -560,
   },
   pics: {
@@ -762,16 +744,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   heartIcon: {
-    // position: "absolute",
     paddingTop: 7,
-    // top: 10,
-    // right: 10,
     zIndex: 1,
   },
   suggestionsDropdown: {
     backgroundColor: "white",
     paddingHorizontal: 20,
-    maxHeight: 200,  // You can adjust this
+    maxHeight: 200,
     borderWidth: 1,
     borderColor: "#ccc",
   },

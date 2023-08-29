@@ -1,5 +1,5 @@
 import { db } from '../configuration/firebase';
-import { doc, setDoc, updateDoc, arrayRemove, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayRemove, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 // Store user data in Firestore with an empty favorites array
 export const storeUserDataInFirestore = async (uid, data) => {
@@ -209,3 +209,56 @@ export const getPurchasedItemIdsForUser = async (uid) => {
         return [];
     }
 };
+
+// Helper function to split category names into individual words
+const splitCategoryIntoKeywords = (category) => {
+    return category.split(' ').concat([category]);
+}
+
+// Store product data in Firestore with searchable keywords
+export const storeProductDataInFirestore = async (productId, data) => {
+    const productRef = doc(db, "products", productId);
+    
+    // Start with the product name split into individual words
+    let searchKeywords = data.name.split(' ');
+
+    // Add major and subcategories if they exist
+    if (data.majorCategory) {
+        searchKeywords.push(data.majorCategory, ...splitCategoryIntoKeywords(data.majorCategory));
+    }
+
+    if (data.subCategory) {
+        searchKeywords.push(data.subCategory, ...splitCategoryIntoKeywords(data.subCategory));
+    }
+
+    // Remove duplicates (if any)
+    searchKeywords = Array.from(new Set(searchKeywords));
+
+    const productDataWithKeywords = {
+        ...data,
+        search_keywords: searchKeywords
+    };
+
+    await setDoc(productRef, productDataWithKeywords);
+}
+
+// Fetch suggestions from Firestore based on user input
+export const fetchSearchSuggestions = async (userInput) => {
+    // Create a Firestore query
+    const q = query(
+      collection(db, "products"),
+      where("search_keywords", "array-contains-any", userInput.split(' '))
+    );
+  
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+    const suggestions = [];
+  
+    // Collect product names from the query result
+    querySnapshot.forEach((doc) => {
+      suggestions.push(doc.data().name); // Assuming the product name would be the suggestion
+    });
+  
+    // Return the suggestions
+    return suggestions;
+  };
