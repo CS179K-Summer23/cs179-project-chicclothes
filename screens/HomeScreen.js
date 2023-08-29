@@ -98,7 +98,7 @@ const HomeScreen = ({ navigation }) => {
             <Text style={textStyles}>{item.text}</Text>
             <TouchableOpacity
               style={styles.carouselSuggestionButton}
-              onPress={handleButtonPress}
+              onPress={handleButtonPress2}
             >
               <Text style={styles.carouselButtonText}>Try Now</Text>
             </TouchableOpacity>
@@ -141,7 +141,20 @@ const HomeScreen = ({ navigation }) => {
     );
   };
   const handleButtonPress = () => {
-    console.log(`Suggestion Bot Pressed`);
+    navigation.navigate(
+      "Profile",
+      {
+        screen: "Profile",
+      },
+    );
+  };
+  const handleButtonPress2 = () => {
+    navigation.navigate(
+      "Profile",
+      {
+        screen: "SuggestionBotModalContent",
+      },
+    );
   };
   const categoriesData = [
     {

@@ -11,38 +11,114 @@ import {
   Keyboard,
   TouchableOpacity,
   Modal,
+  Image,
 } from "react-native";
 import ChatGptResponseModalContent from "./ChatGptResponseModalContent";
 
 const SuggestionScreen = () => {
+  const BASE_URL = "https://";
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [location, setLocation] = useState("");
-  const [bodyType, setBodyType] = useState("");
-  const [occasion, setOccasion] = useState("");
   const [stylePreference, setStylePreference] = useState("");
   const [budget, setBudget] = useState("");
-  const [sizes, setSizes] = useState("");
-  const [brandPreference, setBrandPreference] = useState("");
-  const [Considerations, setConsiderations] = useState("");
+  const [color, setColor] = useState("");
+  const [considerations, setConsiderations] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
-
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedProductModalVisible, setSelectedProductModalVisible] =useState(false);
+  const [suitableProductsList, setSuitableProductsList] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+ 
+
+  const data = require("../../data.json");
+  const filterData = (
+    age,
+    gender,
+    typeOfClothes,
+    budget,
+    color,
+    currentSeason
+  ) => {
+    let suitableProducts = [];
+    const [minBudget, maxBudget] = budget
+      .split("-")
+      .map((val) => parseFloat(val));
+
+    data.forEach((category) => {
+      if (gender === "Female" && category.majorCategory !== "Women") return;
+      if (gender === "Male" && category.majorCategory !== "Men") return;
+
+      category.subCategories.forEach((subCategory) => {
+        if (
+          subCategory.categoryName
+            .toLowerCase()
+            .includes(typeOfClothes.toLowerCase())
+        ) {
+          subCategory.products.forEach((product) => {
+            const priceValue = parseFloat(product.price.replace("$", ""));
+            if (priceValue >= minBudget && priceValue <= maxBudget) {
+              if (product.name.toLowerCase().includes(color.toLowerCase())) {
+                suitableProducts.push(product);
+              }
+            }
+          });
+        }
+      });
+      suitableProducts = shuffleArray(suitableProducts);
+    });
+
+    return suitableProducts;
+  };
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setSelectedProductModalVisible(true);
+  };
 
   const sendMessage = async () => {
-    const message = `You are a top-tier fashion consultant, StyleGPT. Given the following information about me, provide a customized clothing recommendation. 
-    I am ${age} years old, ${gender}, living in ${location}. My body type is ${bodyType}, and I'm looking for ${occasion} wear. My style preference is ${stylePreference},
-    with a budget around ${budget}. My sizes are ${sizes}, and my preferred brands are ${brandPreference}. I also have these ethical considerations: ${Considerations}. 
-    Provide a detailed suggestion without any superfluous pre and post descriptive text. Don't break character under any circumstance.Make sure it is limited in 200 tokens`;
+    const suitableProducts = filterData(
+      age,
+      gender,
+      stylePreference,
+      budget,
+      color,
+      location
+    );
+    setSuitableProductsList(suitableProducts);
+    const productNames = suitableProducts.map((product) => product.name);
+    const formatProductNames = (names) => {
+      if (names.length === 1) return names[0];
+      if (names.length === 2) return `${names[0]} and ${names[1]}`;
+      const lastProductName = names.pop();
+      return `${names.join(", ")}, and ${lastProductName}`;
+    };
 
+    const formattedNames = formatProductNames(productNames);
+
+    const message = `You are a top-tier fashion consultant, StyleGPT. Given the following information: 
+Age: ${age}, 
+Gender: ${gender}, 
+Type of Clothes: ${stylePreference},
+Budget: ${budget},
+Favorite Color: ${color},
+Current Season: ${location}. 
+The products I found suitable are ${formattedNames}. For only the first three products how would you describe or recommend them?`;
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          "Bearer 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",
+          "Bearer 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",
       },
-      body: JSON.stringify({ prompt: message, max_tokens: 200 }),
+      body: JSON.stringify({ prompt: message, max_tokens: 300 }),
     };
 
     try {
@@ -97,20 +173,6 @@ const SuggestionScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Body Shape (Triangle, Rectangle, Oval, Hourglass)"
-            placeholderTextColor="#999"
-            value={bodyType}
-            onChangeText={setBodyType}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Sizes (waist, chest, T-shirt/Dress)"
-            placeholderTextColor="#999"
-            value={sizes}
-            onChangeText={setSizes}
-          />
-          <TextInput
-            style={styles.input}
             placeholder="Current Season/ Location"
             placeholderTextColor="#999"
             value={location}
@@ -118,37 +180,30 @@ const SuggestionScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Occasion/Event"
-            placeholderTextColor="#999"
-            value={occasion}
-            onChangeText={setOccasion}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Style Preference (Classic? Formal? Vintage? Stree? etc.)"
+            placeholder="Type of Clothes (Jacket? T-Shirts? Shoes? etc.)"
             placeholderTextColor="#999"
             value={stylePreference}
             onChangeText={setStylePreference}
           />
           <TextInput
             style={styles.input}
-            placeholder="Budget Range"
+            placeholder="Budget Range (Ex. 20-100)"
             placeholderTextColor="#999"
             value={budget}
             onChangeText={setBudget}
           />
           <TextInput
             style={styles.input}
-            placeholder="Brand Preference"
+            placeholder="Favorite Color"
             placeholderTextColor="#999"
-            value={brandPreference}
-            onChangeText={setBrandPreference}
+            value={color}
+            onChangeText={setColor}
           />
           <TextInput
             style={styles.input}
             placeholder="Considerations (Ex: Don't like it too tight)"
             placeholderTextColor="#999"
-            value={Considerations}
+            value={considerations}
             onChangeText={setConsiderations}
           />
 
@@ -168,11 +223,18 @@ const SuggestionScreen = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <ChatGptResponseModalContent message={responseMessage} setModalVisible={setModalVisible}/>
+          <ScrollView>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <ChatGptResponseModalContent
+                  message={responseMessage}
+                  setModalVisible={setModalVisible}
+                  suitableProductsList={suitableProductsList}
+                  handleProductSelect={handleProductSelect}
+                />
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </Modal>
       </ScrollView>
     </TouchableWithoutFeedback>
@@ -188,8 +250,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 20,
     backgroundColor: "#f0ebdf",
-    height: "100%",
-  
+    height: "150%",
   },
   input: {
     height: 40,
@@ -202,12 +263,12 @@ const styles = StyleSheet.create({
   },
   response: {
     marginTop: 20,
-    fontSize: 20, // Increase the font size
-    fontWeight: "500", // Adjust the font weight
+    fontSize: 20,
+    fontWeight: "500",
     borderWidth: 1,
-    padding: 10, // Add padding inside the border
-    borderRadius: 5, // Optionally, add rounded corners to the border
-    backgroundColor: "#fff", // Set the background color, if needed
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: "#fff",
   },
 
   title: {
@@ -258,6 +319,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  productsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 20,
+  },
+  product: {
+    width: "50%",
+    padding: 10,
+    alignItems: "center",
+  },
+  productImage: {
+    width: 100,
+    height: 100,
   },
 });
 
