@@ -1,15 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { auth } from "../../configuration/firebase";
+import { getUserDataFromFirestore } from "../../hook/databaseQueries";
 
 const PointsHistoryScreen = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    const uid = currentUser ? currentUser.uid : null;
+
+    if (uid) {
+      const fetchUserName = async () => {
+        const userData = await getUserDataFromFirestore(uid);
+        if (userData && userData.name) {
+          setUserPoints(userData.points);
+        }
+      };
+      fetchUserName();
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Point History</Text>
       <View style={styles.container2}>
         <Text style={styles.text0}>Member</Text>
-        <Text style={styles.text1}>0 Points</Text>
+        <Text style={styles.text1}>{userPoints} Points</Text>
         <Text style={styles.text2}>
           Your membership will be renewed on 12/31/2030
         </Text>
@@ -19,13 +36,13 @@ const PointsHistoryScreen = () => {
         onPress={() => setIsExpanded(!isExpanded)}
       >
         <Text style={isExpanded ? styles.clickedText : styles.defaultText}>
-          POINTS 0
+          POINTS {userPoints}
         </Text>
         {isExpanded && (
           <>
             <Text style={styles.purchasedText}>Purchase</Text>
             <Text>
-              Every time you shop online in store, you'll earn points. $1.00 = 1
+              Every time you shop online in store, you'll earn points. $5.00 = 1
               points
             </Text>
             <Text style={styles.thereMoreText}>And there's more!</Text>
@@ -37,10 +54,14 @@ const PointsHistoryScreen = () => {
         )}
       </TouchableOpacity>
       <View style={isExpanded ? styles.expandedContainer3 : styles.container3}>
-        <Text style={styles.text3}>You don't have any points yet</Text>
-        <Text style={styles.text4}>
-          Take a look under Points to find out more.
-        </Text>
+        {userPoints === 0 ? (
+          <>
+            <Text style={styles.text3}>You don't have any points yet</Text>
+            <Text style={styles.text4}>
+              Take a look under Points to find out more.
+            </Text>
+          </>
+        ) : null}
       </View>
     </View>
   );

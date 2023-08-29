@@ -18,7 +18,11 @@ import DiscountCodeInput from "./DiscountCodeInput";
 import statesWithTaxList from "./StateWithTaxList";
 import { applyDiscount } from "./DiscountLogic";
 import { auth } from "../../configuration/firebase";
-import { storeOrderDetailsInFirestore, syncFavoritesAndPurchases } from '../../hook/databaseQueries';
+import {
+  storeOrderDetailsInFirestore,
+  syncFavoritesAndPurchases,
+  updatePointsInFirestore,
+} from "../../hook/databaseQueries";
 import Checkbox from "expo-checkbox";
 
 const OrderConfirmationModal = ({
@@ -91,7 +95,7 @@ const OrderConfirmationModal = ({
 
   const totalWithTax = (
     parseFloat(totalValue) + parseFloat(totalValue * taxRate)
-  ).toFixed(2);  
+  ).toFixed(2);
 
   //to save it in the database for order history
   const handleCheckout = async () => {
@@ -107,9 +111,13 @@ const OrderConfirmationModal = ({
 
     const orderNumber = generateOrderNumber();
 
-    const purchasedItemsIds = selectedItemsData.map(item => ({
+    const purchasedItemsIds = selectedItemsData.map((item) => ({
       id: item.id,
     }));
+
+    const calculatePointsToAdd = (totalAmount) => {
+      return Math.floor(totalAmount / 5);
+    };
 
     const orderData = {
       orderNumber: orderNumber, // Save the generated order number in the order data
@@ -131,6 +139,8 @@ const OrderConfirmationModal = ({
     try {
       await storeOrderDetailsInFirestore(uid, orderData);
       await syncFavoritesAndPurchases(uid, purchasedItemsIds);
+      const pointsToAdd = calculatePointsToAdd(orderData.totalAfterDiscount);
+      await updatePointsInFirestore(uid, pointsToAdd);
       console.log(`Order saved successfully with order number: ${orderNumber}`);
       onClose(); // Close the modal after saving
       if (onOrderSuccess) {
