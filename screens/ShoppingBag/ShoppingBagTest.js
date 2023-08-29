@@ -104,7 +104,8 @@ const ShoppingBagTest = ({ route, navigation }) => {
       } else {
         setcategoryState(passIndex);
       }
-      // console.log(selectedCategory);
+    }
+    // console.log(selectedCategory);
 
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -125,11 +126,14 @@ const ShoppingBagTest = ({ route, navigation }) => {
     if (data && Array.isArray(data)) {
       const allProducts = data.reduce((acc, curr) => {
         if (curr && curr.subCategories && Array.isArray(curr.subCategories)) {
-          return [...acc, ...curr.subCategories.flatMap((sub) => (sub && sub.products) || [])];
+          return [
+            ...acc,
+            ...curr.subCategories.flatMap((sub) => (sub && sub.products) || []),
+          ];
         }
         return acc;
       }, []);
-  
+
       if (searchQuery) {
         const matches = allProducts.filter((product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -150,7 +154,6 @@ const ShoppingBagTest = ({ route, navigation }) => {
     //   unsubscribe && unsubscribe();
     // }
   }, [data, searchQuery, categoryState, index, passIndex]);
-  
 
   const genderSwipeHandler = (swipedIndex) => {
     setIndex(swipedIndex);
@@ -604,44 +607,44 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.containerShop}>
-    <View style={styles.searchContainer}>
-      <TouchableOpacity>
-        <Feather name="search" size={24} style={styles.searchIcon} />
-      </TouchableOpacity>
-      <View style={styles.searchWrapper}>
-        <TextInput
-          style={styles.searchInput}
-          color="#7c7c7d"
-          placeholder="What are you looking for"
-          onChangeText={(text) => setSearchQuery(text)}
-        />
-      </View>
-    </View>
-    {/* Separate View for suggestions */}
-    {searchQuery.length > 0 && (
-      <View style={styles.suggestionsContainer}>
-        <View style={styles.suggestionsDropdown}>
-        <FlatList
-            data={filteredSuggestions}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearchQuery(item.name);
-                  setSelectedProduct(item);
-                  setModalVisible(true);
-                }}
-              >
-                <Image
-                source={{ uri: `${BASE_URL}${item.imageUrl}` }}
-                style={styles.pics}
-                />
-                <Text>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => index.toString()}
+      <View style={styles.searchContainer}>
+        <TouchableOpacity>
+          <Feather name="search" size={24} style={styles.searchIcon} />
+        </TouchableOpacity>
+        <View style={styles.searchWrapper}>
+          <TextInput
+            style={styles.searchInput}
+            color="#7c7c7d"
+            placeholder="What are you looking for"
+            onChangeText={(text) => setSearchQuery(text)}
           />
         </View>
       </View>
+      {/* Separate View for suggestions */}
+      {searchQuery.length > 0 && (
+        <View style={styles.suggestionsContainer}>
+          <View style={styles.suggestionsDropdown}>
+            <FlatList
+              data={filteredSuggestions}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearchQuery(item.name);
+                    setSelectedProduct(item);
+                    setModalVisible(true);
+                  }}
+                >
+                  <Image
+                    source={{ uri: `${BASE_URL}${item.imageUrl}` }}
+                    style={styles.pics}
+                  />
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
+        </View>
       )}
       <TabView
         navigationState={{ index, routes }}
@@ -669,37 +672,43 @@ const ShoppingBagTest = ({ route, navigation }) => {
         style={styles.tabBar}
       />
       <Modal isVisible={isModalVisible}>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          marginLeft: 20,
-          marginRight: 20,
-          marginTop: 200,
-          marginBottom: 200,
-          backgroundColor: "white",
-        }}
-      >
-        {/* <Image
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            marginLeft: 20,
+            marginRight: 20,
+            marginTop: 200,
+            marginBottom: 200,
+            backgroundColor: "white",
+          }}
+        >
+          {/* <Image
           source={{ uri: `${BASE_URL}${product.imageUrl}` }}
           style={styles.pics}
           /> */}
-        <Text style={{ alignItems: "center", fontSize: 16 }}>{selectedProduct?.name}</Text>
-        <Text style={{ alignItems: "center", fontSize: 16 }}>{selectedProduct?.price} USD</Text>
-        <AntDesign
-          name="hearto"
-          size={30}
-          color="red"
-          style={styles.heartIcon}
-          onPress={() => storeFavoriteForUser(uid, selectedProduct, setModalVisible(false))}
-        />
-        <Button title="Close" onPress={() => setModalVisible(false)} />
-      </View>
+          <Text style={{ alignItems: "center", fontSize: 16 }}>
+            {selectedProduct?.name}
+          </Text>
+          <Text style={{ alignItems: "center", fontSize: 16 }}>
+            {selectedProduct?.price} USD
+          </Text>
+          <AntDesign
+            name="hearto"
+            size={30}
+            color="red"
+            style={styles.heartIcon}
+            onPress={() =>
+              storeFavoriteForUser(uid, selectedProduct, setModalVisible(false))
+            }
+          />
+          <Button title="Close" onPress={() => setModalVisible(false)} />
+        </View>
       </Modal>
     </SafeAreaView>
   );
-};  
+};
 
 const styles = StyleSheet.create({
   ye: {
@@ -754,7 +763,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   categoriesSelected: {
-    width: "30%", 
+    width: "30%",
     paddingTop: 14,
     paddingBottom: 14,
     paddingLeft: 18,
