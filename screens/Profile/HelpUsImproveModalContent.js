@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   TextInput,
   Button,
   StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
@@ -51,44 +53,59 @@ const HelpUsImproveModalContent = ({ onClose }) => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <>
-        <Text style={styles.title}>Help us Improve</Text>
-        <Image source={require("../images/improve.jpg")} style={styles.image} />
-        <Text style={styles.rateText}>Rate your app experience</Text>
-        <View style={styles.starsDesign}>{renderStars()}</View>
-        <Text style={styles.description}>
-          Please share your feedback for us to improve the app or website
-          experience
-        </Text>
-        <TextInput
-          multiline={true}
-          maxLength={maxCharCount}
-          numberOfLines={4}
-          onChangeText={handleTextChange}
-          value={feedback}
-          style={{
-            width: "80%",
-            height: 120,
-            borderColor: "#000000",
-            backgroundColor: "white",
-            borderWidth: 1,
-            marginTop: 10,
-          }}
-        />
-        <Text style={styles.charCounter}>
-          {feedback.length}/{maxCharCount}
-        </Text>
-        <View style={styles.submitButtonContainer}>
-          <Button
-            title="Submit"
-            onPress={() => setShowThankYou(true)}
-            disabled={feedback.length === 0}
-            color="#272727"
-          />
-        </View>
-      </>
-    </TouchableWithoutFeedback>
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={20}
+      enabled
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView style={{ flex: 1 }}>
+          <Text style={styles.title}>Help us Improve</Text>
+          <View style={{ height: 150, overflow: "hidden" }}>
+            <Image
+              source={require("../images/improve.jpg")}
+              style={[styles.image]} 
+            />
+          </View>
+          <View style={styles.centeredContent}>
+            <Text style={styles.rateText}>Rate your app experience</Text>
+            <View style={styles.starsDesign}>{renderStars()}</View>
+            <Text style={styles.description}>
+              Please share your feedback for us to improve the app or website
+              experience
+            </Text>
+            <TextInput
+              multiline={true}
+              maxLength={maxCharCount}
+              numberOfLines={4}
+              onChangeText={handleTextChange}
+              value={feedback}
+              style={{
+                width: "80%",
+                height: 120,
+                borderColor: "#000000",
+                backgroundColor: "white",
+                borderWidth: 1,
+                marginTop: 10,
+              }}
+            />
+          </View>
+          <Text style={styles.charCounter}>
+            {feedback.length}/{maxCharCount}
+          </Text>
+
+          <View style={styles.submitButtonContainer}>
+            <Button
+              title="Submit"
+              onPress={() => setShowThankYou(true)}
+              disabled={feedback.length === 0}
+              color="#272727"
+            />
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -100,7 +117,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%", // 100% of its parent's width
-    height: 200, // An arbitrary height, adjust as needed
+    height: 220, // An arbitrary height, adjust as needed
     resizeMode: "cover",
     marginBottom: 10,
   },
@@ -144,10 +161,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: 30,
     padding: 10,
-    alignContent: "center",
+    textAlign: "center",
+  },
+  centeredContent: {
+    alignItems: "center",
   },
 });
 

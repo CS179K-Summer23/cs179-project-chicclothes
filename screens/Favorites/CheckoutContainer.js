@@ -4,7 +4,7 @@ import SelectableCircle from "./SelectableCircle";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import OrderConfirmationModal from "./OrderConfirmationModal";
 
-const CheckoutContainer = ({favorites,selectedItems,toggleAllSelection,}) => {
+const CheckoutContainer = ({favorites,selectedItems,toggleAllSelection, removePurchasedItemsFromFavorites,}) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const calculateTotal = () => {
@@ -26,6 +26,11 @@ const CheckoutContainer = ({favorites,selectedItems,toggleAllSelection,}) => {
         return acc + price;
       }, 0)
       .toFixed(2);
+  };
+
+  const handleOrderSuccess = () => {
+    removePurchasedItemsFromFavorites(selectedItems);
+    setModalVisible(false); // Close the modal
   };
 
   return (
@@ -52,9 +57,10 @@ const CheckoutContainer = ({favorites,selectedItems,toggleAllSelection,}) => {
             onClose={() => setModalVisible(false)}
             totalValue={calculateTotal()}
             selectedItemsData={favorites.filter(fav => selectedItems.includes(fav.id))}
+            onOrderSuccess={handleOrderSuccess} // <- Add this line
           />
         </View>
-      )}
+      )} 
     </View>
   );
 };
