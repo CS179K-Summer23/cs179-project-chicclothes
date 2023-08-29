@@ -14,7 +14,7 @@ import { getFavoritesForUser } from "../../hook/databaseQueries";
 import { auth } from "../../configuration/firebase";
 import { deleteFavoriteForUser } from "../../hook/databaseQueries";
 import { useIsFocused } from "@react-navigation/native";
-
+import OrderConfirmationModal from './OrderConfirmationModal';
 import ImageModal from "./ImageModal";
 import SelectableCircle from "./SelectableCircle";
 import CheckoutContainer from "./CheckoutContainer";
@@ -86,6 +86,13 @@ const FavoritesScreen = () => {
     );
   };
 
+  const removePurchasedItemsFromFavorites = (purchasedItemsIds) => {
+    const updatedFavorites = favorites.filter(
+      (item) => !purchasedItemsIds.includes(item.id)
+    );
+    setFavorites(updatedFavorites);
+  };
+
   const handleDelete = async (index) => {
     const itemToDelete = favorites[index];
     const updatedFavorites = [...favorites];
@@ -126,6 +133,7 @@ const FavoritesScreen = () => {
         favorites={favorites}
         selectedItems={selectedItems}
         toggleAllSelection={toggleAllSelection}
+        removePurchasedItemsFromFavorites={removePurchasedItemsFromFavorites}
       />
       <ImageModal
         isVisible={isModalVisible}

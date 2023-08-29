@@ -18,8 +18,7 @@ import DiscountCodeInput from "./DiscountCodeInput";
 import statesWithTaxList from "./StateWithTaxList";
 import { applyDiscount } from "./DiscountLogic";
 import { auth } from "../../configuration/firebase";
-import { storeOrderDetailsInFirestore } from "../../hook/databaseQueries";
-
+import { storeOrderDetailsInFirestore, syncFavoritesAndPurchases } from '../../hook/databaseQueries';
 import Checkbox from "expo-checkbox";
 
 const OrderConfirmationModal = ({
@@ -27,6 +26,8 @@ const OrderConfirmationModal = ({
   onClose,
   totalValue,
   selectedItemsData,
+  purchasedItemsIds,
+  onOrderSuccess,
 }) => {
   //const [isUserModalVisible, setUserModalVisible] = useState(false);
   const [isUserModalVisible2, setUserModalVisible2] = useState(false);
@@ -90,7 +91,7 @@ const OrderConfirmationModal = ({
 
   const totalWithTax = (
     parseFloat(totalValue) + parseFloat(totalValue * taxRate)
-  ).toFixed(2);
+  ).toFixed(2);  
 
   //to save it in the database for order history
   const handleCheckout = async () => {
@@ -106,6 +107,10 @@ const OrderConfirmationModal = ({
 
     const orderNumber = generateOrderNumber();
 
+    const purchasedItemsIds = selectedItemsData.map(item => ({
+      id: item.id,
+    }));
+
     const orderData = {
       orderNumber: orderNumber, // Save the generated order number in the order data
       billingDetails: billingDetails,
@@ -120,12 +125,17 @@ const OrderConfirmationModal = ({
         : (parseFloat(totalValue) + parseFloat(totalValue * taxRate)).toFixed(
             2
           ),
+      purchasedItemIds: purchasedItemsIds,
     };
 
     try {
       await storeOrderDetailsInFirestore(uid, orderData);
+      await syncFavoritesAndPurchases(uid, purchasedItemsIds);
       console.log(`Order saved successfully with order number: ${orderNumber}`);
       onClose(); // Close the modal after saving
+      if (onOrderSuccess) {
+        onOrderSuccess();
+      }
     } catch (error) {
       console.error("Error saving order: ", error);
     }
