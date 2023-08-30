@@ -40,54 +40,62 @@ const OrderScreen = () => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
-    <View style={styles.Titlecontainer}>
-      <Text style={styles.title}>Orders</Text>
-      <View style={styles.centeredContainer}>
-        <View style={styles.container}>
-          <View style={styles.tabContainer}>
-            <TouchableOpacity
-              style={styles.tab}
-              onPress={() => setSelectedTab("Online Orders")}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  selectedTab === "Online Orders" && styles.selectedTabText,
-                ]}
-              >
-                Online Orders
-              </Text>
-              {selectedTab === "Online Orders" && (
-                <View style={styles.underline} />
-              )}
-            </TouchableOpacity>
-          </View>
-
-          <View>
-            {orderDetails.map((order, index) => (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+    >
+      <View style={styles.Titlecontainer}>
+        <Text style={styles.title}>Orders</Text>
+        <View style={styles.centeredContainer}>
+          <View style={styles.container}>
+            <View style={styles.tabContainer}>
               <TouchableOpacity
-                key={index}
-                style={styles.orderButton}
-                onPress={() => openModal(order)}
+                style={styles.tab}
+                onPress={() => setSelectedTab("Online Orders")}
               >
-                <Text>Order Number: {order.orderNumber}</Text>
-                <Text>Total Price: {order.total}</Text>
+                <Text
+                  style={[
+                    styles.tabText,
+                    selectedTab === "Online Orders" && styles.selectedTabText,
+                  ]}
+                >
+                  Online Orders
+                </Text>
+                {selectedTab === "Online Orders" && (
+                  <View style={styles.underline} />
+                )}
               </TouchableOpacity>
-            ))}
-          </View>
+            </View>
 
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                
+            <View>
+              {orderDetails.map((order, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.orderButton}
+                  onPress={() => openModal(order)}
+                >
+                  <Text>
+                    <Text style={{ fontWeight: "bold" }}>Order Number:</Text>{" "}
+                    {order.orderNumber}
+                  </Text>
+                  <Text>
+                    <Text style={{ fontWeight: "bold" }}>Total Price:</Text>{" "}
+                    {order.total}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
                   <Text style={styles.modalText}>Receipt</Text>
                   <Text>Order Number: {selectedOrder?.orderNumber}</Text>
                   <Text>Total Price: {selectedOrder?.total}</Text>
@@ -112,33 +120,33 @@ const OrderScreen = () => {
 
                   <Text style={styles.sectionTitle}>Purchased Items</Text>
                   <ScrollView bounces={false}>
-                  {selectedOrder?.purchasedItemIds?.map((item, index) => (
-                    <View key={index} style={styles.itemContainer}>
-                      <Image
-                        style={styles.itemImage}
-                        source={{ uri: `https://` + item.imageUrl }}
-                      />
-                      <View style={styles.itemDetails}>
-                      <Text numberOfLines={2} style={{ width: 170 }}>
-  {item.name}
-</Text>
-                        <Text>Price: {item.price}</Text>
+                    {selectedOrder?.purchasedItemIds?.map((item, index) => (
+                      <View key={index} style={styles.itemContainer}>
+                        <Image
+                          style={styles.itemImage}
+                          source={{ uri: `https://` + item.imageUrl }}
+                        />
+                        <View style={styles.itemDetails}>
+                          <Text numberOfLines={2} style={{ width: 170 }}>
+                            {item.name}
+                          </Text>
+                          <Text>Price: {item.price}</Text>
+                        </View>
                       </View>
-                    </View>
-                  ))}
-                </ScrollView>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={{ color:"white" }}>Close</Text>
-                </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={{ color: "white" }}>Close</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
+          </View>
         </View>
       </View>
-    </View>
     </ScrollView>
   );
 };
