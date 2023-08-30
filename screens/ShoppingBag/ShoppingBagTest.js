@@ -86,6 +86,12 @@ const ShoppingBagTest = ({ route, navigation }) => {
         setHomeUsedCheck(true);
       }
 
+      if (passIndex == 88 && !homeUsedCheck && homeUsed) {
+        setcategoryState(20);
+        setIndex(0);
+        setHomeUsedCheck(true);
+      }
+
       if (!homeUsedCheck && homeUsed) {
         lastPassIn = passIndex;
         setcategoryState(passIndex);
@@ -93,6 +99,28 @@ const ShoppingBagTest = ({ route, navigation }) => {
         console.log("homeUsedCheck");
         console.log(homeUsedCheck);
       }
+    } else {
+      if (passIndex == 11) {
+        console.log("spanx");
+        setcategoryState(1);
+        setIndex(1);
+        setHomeUsedCheck(true);
+      }
+
+      //dresses
+      else if (passIndex == 44) {
+        console.log("dresses");
+        setcategoryState(4);
+        setIndex(1);
+        setHomeUsedCheck(true);
+      } else if (passIndex == 88 && !homeUsedCheck && homeUsed) {
+        setcategoryState(20);
+        setIndex(0);
+        setHomeUsedCheck(true);
+      } else {
+        setcategoryState(passIndex);
+      }
+      setPrevStatus(stat);
     }
   };
 
@@ -102,6 +130,23 @@ const ShoppingBagTest = ({ route, navigation }) => {
       setHomeUsedCheck(false);
       setHomeUsedCheck(false);
       setHomeUsedCheck(false);
+      if (passIndex == 11) {
+        console.log("spanx");
+        setcategoryState(1);
+        setIndex(1);
+        setHomeUsedCheck(true);
+      }
+
+      //dresses
+      else if (passIndex == 44) {
+        console.log("dresses");
+        setcategoryState(4);
+        setIndex(1);
+        setHomeUsedCheck(true);
+      } else {
+        setcategoryState(passIndex);
+      }
+      setPrevStatus(stat);
 
       console.log("new: " + homeUsedCheck);
     }
@@ -162,12 +207,21 @@ const ShoppingBagTest = ({ route, navigation }) => {
       }
     });
 
-    const majorCategory = index === 0 ? "Men" : "Women";
+    let majorCategory = index === 0 ? "Men" : "Women";
 
     // Find the corresponding sub-category from your local data.json
-    const subCategoryData = data.find(
+
+    let subCategoryData = data.find(
       (item) => item.majorCategory === majorCategory
     )?.subCategories[categoryState];
+
+    if (categoryState == 20) {
+      majorCategory = "Accessories";
+      console.log("Accessories");
+      subCategoryData = data.find(
+        (item) => item.majorCategory === majorCategory
+      );
+    }
 
     if (subCategoryData) {
       setProducts(subCategoryData.products);
@@ -202,7 +256,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
     // return () => {
     //   unsubscribe && unsubscribe();
     // }
-  }, [data, searchQuery, categoryState, index, passIndex]);
+  }, [data, searchQuery, categoryState, index, passIndex, prevStatus]);
 
   const genderSwipeHandler = (swipedIndex) => {
     setIndex(swipedIndex);
@@ -343,6 +397,20 @@ const ShoppingBagTest = ({ route, navigation }) => {
             }
           >
             <Text style={styles.selectedTextCategories}>Footwear</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(20)}
+            {...touchProps}
+            style={
+              categoryState == 20 && index == 0
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Accessories</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -567,6 +635,20 @@ const ShoppingBagTest = ({ route, navigation }) => {
             }
           >
             <Text style={styles.selectedTextCategories}>Footwear</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View>
+          <TouchableHighlight
+            onShowUnderlay={() => setcategoryState(20)}
+            {...touchProps}
+            style={
+              categoryState == 20 && index == 1
+                ? styles.categoriesSelected
+                : styles.categories
+            }
+          >
+            <Text style={styles.selectedTextCategories}>Accessories</Text>
           </TouchableHighlight>
         </View>
       </View>

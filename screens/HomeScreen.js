@@ -203,6 +203,13 @@ const HomeScreen = ({ navigation }) => {
           params: { passIndex, homeUsed: true, stat: -1 },
         });
         break;
+      case "Accessories":
+        passIndex = 88;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -11 },
+        });
+        break;
     }
   };
   const handleButtonPress = () => {
