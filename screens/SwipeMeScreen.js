@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f9f9f9",
+    marginTop: 30,
   },
   swiperWrapper: {
     flex: 1,
