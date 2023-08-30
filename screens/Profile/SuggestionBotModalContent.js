@@ -26,10 +26,10 @@ const SuggestionScreen = () => {
   const [considerations, setConsiderations] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedProductModalVisible, setSelectedProductModalVisible] =useState(false);
+  const [selectedProductModalVisible, setSelectedProductModalVisible] =
+    useState(false);
   const [suitableProductsList, setSuitableProductsList] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
- 
 
   const data = require("../../data.json");
   const filterData = (
@@ -110,13 +110,13 @@ Type of Clothes: ${stylePreference},
 Budget: ${budget},
 Favorite Color: ${color},
 Current Season: ${location}. 
-The products I found suitable are ${formattedNames}. For only the first three products how would you describe or recommend them?`;
+The products I found suitable are ${formattedNames}. For only the first 4 products how would you describe or recommend them?`;
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          "Bearer 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",
+          "Bearer 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",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 300 }),
     };
@@ -166,7 +166,7 @@ The products I found suitable are ${formattedNames}. For only the first three pr
           />
           <TextInput
             style={styles.input}
-            placeholder="Gender"
+            placeholder="Gender (Male/Female)"
             placeholderTextColor="#999"
             value={gender}
             onChangeText={setGender}
