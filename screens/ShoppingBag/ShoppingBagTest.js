@@ -746,7 +746,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
           <TextInput
             style={styles.searchInput}
             color="#7c7c7d"
-            placeholder="What are you looking for"
+            placeholder="What Are you looking for"
             onChangeText={(text) => setSearchQuery(text)}
           />
         </View>
