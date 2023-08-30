@@ -58,7 +58,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="ShoppingBag"
+        name="Catalog"
         component={ShoppingBagStackNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (

@@ -38,12 +38,12 @@ const ProfileScreen = ({ navigation }) => {
     {
       image: require("../images/offer1.png"),
       title: "Up to 25% off select \t       styles",
-      description: "      MEMBER PRICES \n Valid until: 12/31/2030 ",
+      description: "           MEMBER25 \n Valid until: 12/31/2030 ",
     },
     {
-      image: require("../images/offer2.jpg"),
-      title: "25% off select jeans",
-      description: "\tDENIM DEAL \n Valid until: 12/31/2030 ",
+      image: require("../images/img2.jpg"),
+      title: "50% off for Professors",
+      description: "\tPROFESSOR50 \n Valid until: 12/31/2030 ",
     },
     {
       image: require("../images/offer3.png"),
@@ -52,13 +52,13 @@ const ProfileScreen = ({ navigation }) => {
     },
     {
       image: require("../images/offer4.jpg"),
-      title: "Earn $5 for every $50 \t    you spend",
-      description: "BACK-TO-SCHOOL DONATION \n        Valid until: 12/31/2030 ",
+      title: "30% off for Students",
+      description: "\t    STUDENT30 \n     Valid until: 12/31/2030 ",
     },
     {
       image: require("../images/offer5.jpg"),
       title: "20% off Clique Closet \t\tSport",
-      description: "  DO SOME EXERCISE! \n Valid until: 12/31/2030 ",
+      description: " \tEXERCISE20 \n Valid until: 12/31/2030 ",
     },
   ];
 
