@@ -304,3 +304,17 @@ export const updatePointsInFirestore = async (uid, pointsToAdd) => {
 //     // Return the suggestions
 //     return suggestions;
 //   };
+
+// Fetch all order details for a user from Firestore
+export const getOrderDetailsForUser = async (uid) => {
+  const userRef = doc(db, "users", uid);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    return userData.orderDetails || [];
+  } else {
+    console.log("User document doesn't exist!");
+    return [];
+  }
+};
