@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Modal,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import ChatGptResponseModalContent from "./ChatGptResponseModalContent";
 
@@ -116,7 +117,7 @@ The products I found suitable are ${formattedNames}. For only the first 4 produc
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          "Bearer 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",
+          "Bearer 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",
       },
       body: JSON.stringify({ prompt: message, max_tokens: 300 }),
     };
@@ -145,6 +146,12 @@ The products I found suitable are ${formattedNames}. For only the first 4 produc
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView
+    style={styles.container}
+    behavior="padding"
+    keyboardVerticalOffset={20}
+    enabled
+  >
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
@@ -237,6 +244,7 @@ The products I found suitable are ${formattedNames}. For only the first 4 produc
           </ScrollView>
         </Modal>
       </ScrollView>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
