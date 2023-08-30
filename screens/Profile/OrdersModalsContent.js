@@ -40,6 +40,7 @@ const OrderScreen = () => {
   };
 
   return (
+    <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
     <View style={styles.Titlecontainer}>
       <Text style={styles.title}>Orders</Text>
       <View style={styles.centeredContainer}>
@@ -138,6 +139,7 @@ const OrderScreen = () => {
         </View>
       </View>
     </View>
+    </ScrollView>
   );
 };
 
@@ -148,6 +150,7 @@ const styles = StyleSheet.create({
   centeredContainer: {
     flex: 1,
     width: "100%",
+    marginBottom: 20,
   },
   container: {
     flex: 1,

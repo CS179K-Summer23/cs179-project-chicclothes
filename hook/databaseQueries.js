@@ -141,33 +141,33 @@ export const storeUserPaymentDetailsInFirestore = async (uid, paymentData) => {
   });
 };
 
-export const syncFavoritesAndPurchases = async (uid, purchasedItemIds = []) => {
-  try {
-    // Log to debug
-    console.log("UID:", uid);
-    console.log("Purchased Item Ids:", purchasedItemIds);
+// export const syncFavoritesAndPurchases = async (uid, purchasedItemIds = []) => {
+//   try {
+//     // Log to debug
+//     console.log("UID:", uid);
+//     console.log("Purchased Item Ids:", purchasedItemIds);
 
-    // Fetch the current favorite items for the user
-    const currentFavorites = await getFavoritesForUser(uid);
-    console.log("Current Favorites:", currentFavorites);
+//     // Fetch the current favorite items for the user
+//     const currentFavorites = await getFavoritesForUser(uid);
+//     console.log("Current Favorites:", currentFavorites);
 
-    // Identify which favorite items have been purchased
-    const itemsToRemove = currentFavorites.filter((item) =>
-      purchasedItemIds.includes(item.id)
-    );
+//     // Identify which favorite items have been purchased
+//     const itemsToRemove = currentFavorites.filter((item) =>
+//       purchasedItemIds.includes(item.id)
+//     );
 
-    // Remove purchased items from the user's favorites
-    if (itemsToRemove.length > 0) {
-      for (const item of itemsToRemove) {
-        await deleteFavoriteForUser(uid, item);
-      }
-    }
+//     // Remove purchased items from the user's favorites
+//     if (itemsToRemove.length > 0) {
+//       for (const item of itemsToRemove) {
+//         await deleteFavoriteForUser(uid, item);
+//       }
+//     }
 
-    console.log("Successfully synchronized favorites and purchases.");
-  } catch (error) {
-    console.error("Error synchronizing favorites and purchases:", error);
-  }
-};
+//     console.log("Successfully synchronized favorites and purchases.");
+//   } catch (error) {
+//     console.error("Error synchronizing favorites and purchases:", error);
+//   }
+// };
 
 export const storeOrderDetailsInFirestore = async (uid, orderData) => {
   console.log("Received UID:", uid); // Debug log
@@ -317,4 +317,15 @@ export const getOrderDetailsForUser = async (uid) => {
     console.log("User document doesn't exist!");
     return [];
   }
+};
+
+
+// Clear all favorite items for a user in Firestore
+export const clearFavoritesForUser = async (uid) => {
+  const userRef = doc(db, "users", uid);
+
+  // Set the favorites array to an empty array
+  await updateDoc(userRef, {
+    favorites: [],
+  });
 };

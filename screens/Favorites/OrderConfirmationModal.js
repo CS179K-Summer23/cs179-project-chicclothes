@@ -20,8 +20,9 @@ import { applyDiscount } from "./DiscountLogic";
 import { auth } from "../../configuration/firebase";
 import {
   storeOrderDetailsInFirestore,
-  syncFavoritesAndPurchases,
+  // syncFavoritesAndPurchases,
   updatePointsInFirestore,
+  clearFavoritesForUser,
 } from "../../hook/databaseQueries";
 import Checkbox from "expo-checkbox";
 
@@ -143,9 +144,13 @@ const OrderConfirmationModal = ({
 
     try {
       await storeOrderDetailsInFirestore(uid, orderData);
-      await syncFavoritesAndPurchases(uid, purchasedItemsIds);
+      //await syncFavoritesAndPurchases(uid, purchasedItemsIds);
       const pointsToAdd = calculatePointsToAdd(orderData.totalAfterDiscount);
       await updatePointsInFirestore(uid, pointsToAdd);
+  
+      // Clear the favorites array
+      await clearFavoritesForUser(uid);
+  
       console.log(`Order saved successfully with order number: ${orderNumber}`);
       onClose(); // Close the modal after saving
       if (onOrderSuccess) {

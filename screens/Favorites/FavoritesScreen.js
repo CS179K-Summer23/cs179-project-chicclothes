@@ -14,7 +14,7 @@ import { getFavoritesForUser } from "../../hook/databaseQueries";
 import { auth } from "../../configuration/firebase";
 import { deleteFavoriteForUser } from "../../hook/databaseQueries";
 import { useIsFocused } from "@react-navigation/native";
-import OrderConfirmationModal from './OrderConfirmationModal';
+import OrderConfirmationModal from "./OrderConfirmationModal";
 import ImageModal from "./ImageModal";
 import SelectableCircle from "./SelectableCircle";
 import CheckoutContainer from "./CheckoutContainer";
@@ -99,6 +99,8 @@ const FavoritesScreen = () => {
     updatedFavorites.splice(index, 1);
     setFavorites(updatedFavorites);
 
+    console.log("Trying to delete item with ID:", itemToDelete.id);
+    console.log("Current favorites:", favorites);
     const uid = auth.currentUser?.uid;
     if (uid) {
       await deleteFavoriteForUser(uid, itemToDelete);
