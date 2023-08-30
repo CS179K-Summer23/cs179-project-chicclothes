@@ -38,7 +38,13 @@ function getButtonState() {
 var productCount = 0;
 
 const ShoppingBagTest = ({ route, navigation }) => {
-  const { passIndex } = route.params;
+  let { passIndex, homeUsed, stat } = route.params;
+
+  const [prevStatus, setPrevStatus] = useState(0);
+  const [homeUsedCheck, setHomeUsedCheck] = useState(false);
+  let lastPassIn = -1;
+  console.log("status:" + stat);
+  console.log("prevstatus:" + prevStatus);
 
   // console.log(hi);
 
@@ -58,6 +64,48 @@ const ShoppingBagTest = ({ route, navigation }) => {
     { key: "Men", title: "Men" },
     { key: "Women", title: "Women" },
   ]);
+
+  const checkPass = () => {
+    // homeUsed = false;
+
+    console.log(homeUsedCheck);
+    //spanx
+    if (stat == prevStatus) {
+      setPrevStatus(stat);
+      if (passIndex == 11 && !homeUsedCheck && homeUsed) {
+        console.log("spanx");
+        setcategoryState(1);
+        setIndex(1);
+        setHomeUsedCheck(true);
+      }
+
+      //dresses
+      if (passIndex == 44 && !homeUsedCheck && homeUsed) {
+        setcategoryState(4);
+        setIndex(1);
+        setHomeUsedCheck(true);
+      }
+
+      if (!homeUsedCheck && homeUsed) {
+        lastPassIn = passIndex;
+        setcategoryState(passIndex);
+        setHomeUsedCheck(true);
+        console.log("homeUsedCheck");
+        console.log(homeUsedCheck);
+      }
+    }
+  };
+
+  const isNewIndex = () => {
+    if (stat != prevStatus) {
+      setHomeUsedCheck(false);
+      setHomeUsedCheck(false);
+      setHomeUsedCheck(false);
+      setHomeUsedCheck(false);
+
+      console.log("new: " + homeUsedCheck);
+    }
+  };
 
   const handleCategorySelection = (majorCategoryName) => {
     setSelectedCategory(majorCategoryName);
@@ -87,24 +135,25 @@ const ShoppingBagTest = ({ route, navigation }) => {
   };
 
   useEffect(() => {
+    // console.log("homeUsedCheck1");
+    // console.log(homeUsedCheck);
+    // if (stat != prevStatus) {
+    //   setHomeUsedCheck(false);
+    //   console.log("new: " + homeUsedCheck);
+    // }
+    isNewIndex();
+
+    if (!homeUsedCheck) {
+      console.log("checkPass");
+      checkPass();
+    }
+    // console.log("homeUsedCheck2");
+    // console.log(homeUsedCheck);
+
+    // passIndex = categoryState;
+
     // console.log(passIndex);
 
-    if (passIndex >= 0) {
-      //spanx
-      if (passIndex == 11) {
-        console.log("spanx");
-        setcategoryState(1);
-        setIndex(1);
-      }
-
-      //dresses
-      else if (passIndex == 44) {
-        setcategoryState(4);
-        setIndex(1);
-      } else {
-        setcategoryState(passIndex);
-      }
-    }
     // console.log(selectedCategory);
 
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -170,7 +219,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
   var touchProps = {
     opacity: 0,
-    onPress: () => console.log(categoryState),
+    onPress: () => console.log("button Touched"),
   };
 
   var touchProps2 = {

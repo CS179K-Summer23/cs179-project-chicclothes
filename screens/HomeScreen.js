@@ -130,61 +130,90 @@ const HomeScreen = ({ navigation }) => {
     // console.log(`Selected category: ${category.name}`);
     // navigation.navigate("ShoppingBag", { hi }); // Passing Value
     // passIndex = 2;
-    console.log(category.name);
+    // console.log(category.name);
 
     switch (category.name) {
       case "Jackets":
         passIndex = 2;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -10 },
+        });
         break;
       case "Shoes":
         passIndex = 0;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -9 },
+        });
         break;
       case "Jeans":
         passIndex = 1;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -8 },
+        });
         break;
       case "Spanxs":
         passIndex = 11;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -7 },
+        });
         break;
       case "Shirts":
         passIndex = 5;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -6 },
+        });
         break;
       case "Hoodies":
         passIndex = 3;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -5 },
+        });
         break;
       case "Dresses":
         passIndex = 44;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -4 },
+        });
         break;
       case "Swimwear":
         passIndex = 4;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -3 },
+        });
         break;
       case "T-shirts":
         passIndex = 6;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -2 },
+        });
         break;
       case "Shorts":
         passIndex = 7;
+        navigation.navigate("ShoppingBag", {
+          screen: "ShoppingBagWomen",
+          params: { passIndex, homeUsed: true, stat: -1 },
+        });
         break;
     }
-
-    navigation.navigate("ShoppingBag", {
-      screen: "ShoppingBagWomen",
-      params: { passIndex },
-    });
   };
   const handleButtonPress = () => {
-    navigation.navigate(
-      "Profile",
-      {
-        screen: "Profile",
-      },
-    );
+    navigation.navigate("Profile", {
+      screen: "Profile",
+    });
   };
   const handleButtonPress2 = () => {
-    navigation.navigate(
-      "Profile",
-      {
-        screen: "SuggestionBotModalContent",
-      },
-    );
+    navigation.navigate("Profile", {
+      screen: "SuggestionBotModalContent",
+    });
   };
   const categoriesData = [
     {
