@@ -111,9 +111,14 @@ const OrderConfirmationModal = ({
 
     const orderNumber = generateOrderNumber();
 
-    const purchasedItemsIds = selectedItemsData.map((item) => ({
+    const purchasedItemsInfo = selectedItemsData.map((item) => ({
       id: item.id,
+      imageUrl: item.imageUrl,
+      name: item.name,
+      price: item.price,
+      url: item.url,
     }));
+    
 
     const calculatePointsToAdd = (totalAmount) => {
       return Math.floor(totalAmount / 5);
@@ -133,7 +138,7 @@ const OrderConfirmationModal = ({
         : (parseFloat(totalValue) + parseFloat(totalValue * taxRate)).toFixed(
             2
           ),
-      purchasedItemIds: purchasedItemsIds,
+      purchasedItemIds: purchasedItemsInfo,
     };
 
     try {
