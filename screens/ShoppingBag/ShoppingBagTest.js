@@ -43,8 +43,8 @@ const ShoppingBagTest = ({ route, navigation }) => {
   const [prevStatus, setPrevStatus] = useState(0);
   const [homeUsedCheck, setHomeUsedCheck] = useState(false);
   let lastPassIn = -1;
-  console.log("status:" + stat);
-  console.log("prevstatus:" + prevStatus);
+  // console.log("status:" + stat);
+  // console.log("prevstatus:" + prevStatus);
 
   // console.log(hi);
 
@@ -68,12 +68,12 @@ const ShoppingBagTest = ({ route, navigation }) => {
   const checkPass = () => {
     // homeUsed = false;
 
-    console.log(homeUsedCheck);
+    // console.log(homeUsedCheck);
     //spanx
     if (stat == prevStatus) {
       setPrevStatus(stat);
       if (passIndex == 11 && !homeUsedCheck && homeUsed) {
-        console.log("spanx");
+        // console.log("spanx");
         setcategoryState(1);
         setIndex(1);
         setHomeUsedCheck(true);
@@ -96,12 +96,12 @@ const ShoppingBagTest = ({ route, navigation }) => {
         lastPassIn = passIndex;
         setcategoryState(passIndex);
         setHomeUsedCheck(true);
-        console.log("homeUsedCheck");
+        // console.log("homeUsedCheck");
         console.log(homeUsedCheck);
       }
     } else {
       if (passIndex == 11) {
-        console.log("spanx");
+        // console.log("spanx");
         setcategoryState(1);
         setIndex(1);
         setHomeUsedCheck(true);
@@ -109,7 +109,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
       //dresses
       else if (passIndex == 44) {
-        console.log("dresses");
+        // console.log("dresses");
         setcategoryState(4);
         setIndex(1);
         setHomeUsedCheck(true);
@@ -131,7 +131,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
       setHomeUsedCheck(false);
       setHomeUsedCheck(false);
       if (passIndex == 11) {
-        console.log("spanx");
+        // console.log("spanx");
         setcategoryState(1);
         setIndex(1);
         setHomeUsedCheck(true);
@@ -139,7 +139,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
       //dresses
       else if (passIndex == 44) {
-        console.log("dresses");
+        // console.log("dresses");
         setcategoryState(4);
         setIndex(1);
         setHomeUsedCheck(true);
@@ -148,7 +148,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
       }
       setPrevStatus(stat);
 
-      console.log("new: " + homeUsedCheck);
+      // console.log("new: " + homeUsedCheck);
     }
   };
 
@@ -189,7 +189,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
     isNewIndex();
 
     if (!homeUsedCheck) {
-      console.log("checkPass");
+      // console.log("checkPass");
       checkPass();
     }
     // console.log("homeUsedCheck2");
@@ -217,7 +217,7 @@ const ShoppingBagTest = ({ route, navigation }) => {
 
     if (categoryState == 20) {
       majorCategory = "Accessories";
-      console.log("Accessories");
+      // console.log("Accessories");
       subCategoryData = data.find(
         (item) => item.majorCategory === majorCategory
       );
