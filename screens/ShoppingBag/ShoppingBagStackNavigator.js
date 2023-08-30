@@ -20,7 +20,7 @@ const ShoppingBagStackNavigator = () => {
         name="ShoppingBagWomen"
         component={ShoppingBagTest}
         options={{ headerShown: false }}
-        initialParams={{ passIndex: 5 }}
+        initialParams={{ passIndex: 5, homeUsed: false, stat: 100 }}
       />
       <Stack.Screen
         name="ShoppingBagMen"
