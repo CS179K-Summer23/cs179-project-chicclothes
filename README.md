@@ -27,3 +27,6 @@ Our Project is CliqueClothes. We are creating a clothing mobile app designed for
 - 8.Purchase History : This feature will allow the user to see their past purchases. 
 - 9.Having discount if with discount code : Users can use/apply discount codes at checkout. 
 
+# Report file 
+[Download the Clique Clothes Report](./Clique%20Clothes%20Report.pdf)
+
